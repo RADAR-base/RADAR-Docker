@@ -7,7 +7,7 @@ services:
   # *NB Zookeeper clust should prob go on separate network                    #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:3.1.0
+    image: confluentinc/cp-zookeeper:3.1.1
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 22181
@@ -18,7 +18,7 @@ services:
     network_mode: host
 
   zookeeper-2:
-    image: confluentinc/cp-zookeeper:3.1.0
+    image: confluentinc/cp-zookeeper:3.1.1
     environment:
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_CLIENT_PORT: 32181
@@ -29,7 +29,7 @@ services:
     network_mode: host
 
   zookeeper-3:
-    image: confluentinc/cp-zookeeper:3.1.0
+    image: confluentinc/cp-zookeeper:3.1.1
     environment:
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_CLIENT_PORT: 42181
@@ -44,7 +44,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:3.1.0
+    image: confluentinc/cp-kafka:3.1.1
     network_mode: host
     depends_on:
       - zookeeper-1
@@ -56,7 +56,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:19092
 
   kafka-2:
-    image: confluentinc/cp-kafka:3.1.0
+    image: confluentinc/cp-kafka:3.1.1
     network_mode: host
     depends_on:
       - zookeeper-1
@@ -68,7 +68,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092
 
   kafka-3:
-    image: confluentinc/cp-kafka:3.1.0
+    image: confluentinc/cp-kafka:3.1.1
     network_mode: host
     depends_on:
       - zookeeper-1
@@ -79,13 +79,16 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:39092
 
-
+  #---------------------------------------------------------------------------#
+  # Kafka Connector                                                           #
+  #---------------------------------------------------------------------------#
+  
 
   #---------------------------------------------------------------------------#
   # Schema Registry                                                           #
   #---------------------------------------------------------------------------#
   schema-registry-1:
-    image: confluentinc/cp-schema-registry:3.1.0
+    image: confluentinc/cp-schema-registry:3.1.1
     network_mode: host
     depends_on:
       - "zookeeper-1"
@@ -104,7 +107,7 @@ services:
   # REST proxy                                                                #
   #---------------------------------------------------------------------------#
   rest-proxy-1:
-    image: confluentinc/cp-kafka-rest:3.1.0
+    image: confluentinc/cp-kafka-rest:3.1.1
     network_mode: host
     depends_on:
       - "kafka-1"
@@ -120,5 +123,38 @@ services:
       KAFKA_REST_LISTENERS: "http://localhost:8082"
       KAFKA_REST_SCHEMA_REGISTRY_URL: "http://localhost:8081"
       KAFKA_REST_HOST_NAME: "localhost"
+
+
+
+
+  #---------------------------------------------------------------------------#
+  # RADRA Storage                                                             #
+  #---------------------------------------------------------------------------#
+  mongo:
+    image: mongo:3.2.10
+    ports:
+      - "27017:27017"
+
+  #---------------------------------------------------------------------------#
+  # RADAR REST API                                                            #
+  #---------------------------------------------------------------------------#
+  tomcat:
+    image: tomcat:8.0.37
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+
+  #---------------------------------------------------------------------------#
+  # RADRA Dashboard                                                           #
+  #---------------------------------------------------------------------------#
+#  nodejs:
+#    image: node:7.0.0
+#    ports:
+#      - "80:8888"
+#    depends_on:
+#      - tomcat
+
+
 
 
