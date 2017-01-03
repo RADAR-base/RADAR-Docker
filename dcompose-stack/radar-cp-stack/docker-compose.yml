@@ -86,9 +86,9 @@ services:
     image: confluentinc/cp-schema-registry:3.1.1
     network_mode: host
     depends_on:
-      - "zookeeper-1"
-      - "zookeeper-2"
-      - "zookeeper-3"
+      - "kafka-1"
+      - "kafka-2"
+      - "kafka-3"
     restart: always
     ports:
       - "8081:8081"
