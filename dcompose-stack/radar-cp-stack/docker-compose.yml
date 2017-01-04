@@ -39,7 +39,6 @@ services:
       ZOOKEEPER_SERVERS: localhost:22888:23888;localhost:32888:33888;localhost:42888:43888
     network_mode: host
 
-
   #---------------------------------------------------------------------------#
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
@@ -59,9 +58,7 @@ services:
     image: confluentinc/cp-kafka:3.1.1
     network_mode: host
     depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
+      - kafka-1
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
@@ -71,9 +68,7 @@ services:
     image: confluentinc/cp-kafka:3.1.1
     network_mode: host
     depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
+      - kafka-2
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
@@ -86,50 +81,49 @@ services:
     image: confluentinc/cp-schema-registry:3.1.1
     network_mode: host
     depends_on:
-      - "kafka-1"
-      - "kafka-2"
-      - "kafka-3"
+      - kafka-1
+      - kafka-2
+      - kafka-3
     restart: always
     ports:
       - "8081:8081"
     environment:
       #SR_KAFKASTORE_CONNECTION_URL: "zookeeper-sasl-1:2181"
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "localhost:32181"
-      SCHEMA_REGISTRY_HOST_NAME: "localhost"
-      SCHEMA_REGISTRY_LISTENERS: "http://localhost:8081"
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: localhost:32181
+      SCHEMA_REGISTRY_HOST_NAME: localhost
+      SCHEMA_REGISTRY_LISTENERS: http://localhost:8081
 
   #---------------------------------------------------------------------------#
   # Kafka Connector                                                           #
   #---------------------------------------------------------------------------#
-  connect:
-    image: confluentinc/cp-kafka-connect:3.1.1
-    network_mode: host
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
-      - kafka-1
-      - kafka-2
-      - kafka-3
-      - schema-registry-1
-    ports:
-      - "8083:8083"
-    environment:
-      CONNECT_BOOTSTRAP_SERVERS: 'localhost:19092'
-      CONNECT_REST_ADVERTISED_HOST_NAME: connect
-      CONNECT_REST_PORT: 8083
-      CONNECT_GROUP_ID: compose-connect-group
-      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
-      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
-      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
-      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://localhost:8081'
-      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://localhost:8081'
-      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_ZOOKEEPER_CONNECT: 'zookeeper-1:2181'  
-
+#  connect:
+#    image: confluentinc/cp-kafka-connect:3.1.1
+#    network_mode: host
+#    depends_on:
+#      - zookeeper-1
+#      - zookeeper-2
+#      - zookeeper-3
+#      - kafka-1
+#      - kafka-2
+#      - kafka-3
+#      - schema-registry-1
+#    ports:
+#      - "8083:8083"
+#    environment:
+#      CONNECT_BOOTSTRAP_SERVERS: localhost:19092,localhost:29092,localhost:39092
+#      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+#      CONNECT_REST_PORT: 8083
+#      CONNECT_GROUP_ID: compose-connect-group
+#      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+#      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+#      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+#      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+#      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://localhost:8081'
+#      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+#      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://localhost:8081'
+#      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+#      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+#      CONNECT_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181 
 
   #---------------------------------------------------------------------------#
   # REST proxy                                                                #
@@ -138,40 +132,37 @@ services:
     image: confluentinc/cp-kafka-rest:3.1.1
     network_mode: host
     depends_on:
-      - "kafka-1"
-      - "kafka-2"
-      - "kafka-3"
-      - "schema-registry-1"
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
     ports:
       - "8082:8082"
     environment:
       #RP_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       #RP_ZOOKEEPER_CONNECT: "zookeeper-sasl-1:2181"
-      KAFKA_REST_ZOOKEEPER_CONNECT: "localhost:32181"
-      KAFKA_REST_LISTENERS: "http://localhost:8082"
-      KAFKA_REST_SCHEMA_REGISTRY_URL: "http://localhost:8081"
-      KAFKA_REST_HOST_NAME: "localhost"
-
-
-
+      KAFKA_REST_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
+      KAFKA_REST_LISTENERS: http://localhost:8082
+      KAFKA_REST_SCHEMA_REGISTRY_URL: http://localhost:8081
+      KAFKA_REST_HOST_NAME: localhost
 
   #---------------------------------------------------------------------------#
   # RADRA Storage                                                             #
   #---------------------------------------------------------------------------#
-  mongo:
-    image: mongo:3.2.10
-    ports:
-      - "27017:27017"
+#  mongo:
+#    image: mongo:3.2.10
+#    ports:
+#      - "27017:27017"
 
   #---------------------------------------------------------------------------#
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
-  tomcat:
-    image: tomcat:8.0.37
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mongo
+#  tomcat:
+#    image: tomcat:8.0.37
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - mongo
 
   #---------------------------------------------------------------------------#
   # RADRA Dashboard                                                           #
@@ -182,7 +173,3 @@ services:
 #      - "80:8888"
 #    depends_on:
 #      - tomcat
-
-
-
-
