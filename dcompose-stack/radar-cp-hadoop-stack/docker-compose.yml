@@ -1,7 +1,107 @@
 version: '2'
 
 services:
-  datanode1:
+
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:3.1.1
+    domainname: zookeeper
+    container_name: zookeeper-1
+    networks:
+      - kafka
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 22181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:22888:23888
+
+  #---------------------------------------------------------------------------#
+  # Kafka Cluster                                                             #
+  #---------------------------------------------------------------------------#
+  kafka-1:
+    image: confluentinc/cp-kafka:3.1.1
+    domainname: kafka
+    container_name: kafka-1
+    networks:
+      - kafka
+    depends_on:
+      - zookeeper-1
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:19092
+
+  kafka-2:
+    image: confluentinc/cp-kafka:3.1.1
+    domainname: kafka
+    container_name: kafka-2
+    networks:
+      - kafka
+    depends_on:
+      - zookeeper-1
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:19092
+
+  kafka-3:
+    image: confluentinc/cp-kafka:3.1.1
+    domainname: kafka
+    container_name: kafka-3
+    networks:
+      - kafka
+    depends_on:
+      - zookeeper-1
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:19092
+
+  #---------------------------------------------------------------------------#
+  # Schema Registry                                                           #
+  #---------------------------------------------------------------------------#
+  schema-registry-1:
+    image: confluentinc/cp-schema-registry:3.1.1
+    container_name: schema-registry-1
+    domainname: kafka
+    networks:
+      - kafka
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper-1:22181
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
+      SCHEMA_REGISTRY_LISTENERS: http://schema-registry-1:8081
+
+  #---------------------------------------------------------------------------#
+  # REST proxy                                                                #
+  #---------------------------------------------------------------------------#
+  rest-proxy-1:
+    image: confluentinc/cp-kafka-rest:3.1.1
+    domainname: kafka
+    container_name: rest-proxy-1
+    networks:
+      - kafka
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+    ports:
+      - "8082:8082"
+    environment:
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:22181
+      KAFKA_REST_LISTENERS: http://rest-proxy-1:8082
+      KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      KAFKA_REST_HOST_NAME: rest-proxy-1
+
+  datanode-1:
     image: uhopper/hadoop-datanode
     domainname: hadoop
     networks:
@@ -11,7 +111,7 @@ services:
     environment:
       - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
       - HDFS_CONF_dfs_replication=2
-  datanode2:
+  datanode-2:
     image: uhopper/hadoop-datanode
     domainname: hadoop
     networks:
@@ -36,3 +136,7 @@ services:
 networks:
   hadoop:
     external: true
+  zookeeper:
+    driver: bridge
+  kafka:
+    driver: bridge
