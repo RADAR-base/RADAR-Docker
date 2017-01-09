@@ -8,6 +8,8 @@ networks:
     driver: bridge
   api:
     driver: bridge
+  hadoop:
+    external: true
 
 services:
 
@@ -24,31 +26,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
-
-  zookeeper-2:
-    image: confluentinc/cp-zookeeper:3.1.1
-    networks:
-      - zookeeper
-    environment:
-      ZOOKEEPER_SERVER_ID: 2
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
-
-  zookeeper-3:
-    image: confluentinc/cp-zookeeper:3.1.1
-    networks:
-      - zookeeper
-    environment:
-      ZOOKEEPER_SERVER_ID: 3
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888
 
   #---------------------------------------------------------------------------#
   # Kafka Cluster                                                             #
@@ -60,11 +38,9 @@ services:
       - zookeeper
     depends_on:
       - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
 
   kafka-2:
@@ -76,7 +52,7 @@ services:
       - kafka-1
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
 
   kafka-3:
@@ -88,7 +64,7 @@ services:
       - kafka-2
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
 
   #---------------------------------------------------------------------------#
@@ -112,40 +88,6 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://schema-registry-1:8081
 
   #---------------------------------------------------------------------------#
-  # Kafka Connector                                                           #
-  #---------------------------------------------------------------------------#
-  connect:
-    image: confluentinc/cp-kafka-connect:3.1.1
-    networks:
-      - kafka
-      - zookeeper
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
-      - kafka-1
-      - kafka-2
-      - kafka-3
-      - schema-registry-1
-    ports:
-      - "8083:8083"
-    environment:
-      CONNECT_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
-      CONNECT_REST_ADVERTISED_HOST_NAME: connect
-      CONNECT_REST_PORT: 8083
-      CONNECT_GROUP_ID: compose-connect-group
-      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
-      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
-      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
-      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry-1:8081'
-      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry-1:8081'
-      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
-
-  #---------------------------------------------------------------------------#
   # REST proxy                                                                #
   #---------------------------------------------------------------------------#
   rest-proxy-1:
@@ -161,7 +103,7 @@ services:
     ports:
       - "8082:8082"
     environment:
-      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_REST_LISTENERS: http://rest-proxy-1:8082
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
       KAFKA_REST_HOST_NAME: rest-proxy-1
@@ -170,33 +112,70 @@ services:
   #---------------------------------------------------------------------------#
   # RADAR Hot Storage                                                         #
   #---------------------------------------------------------------------------#
-#  mongo:
-#    image: mongo:3.2.10
-#    networks:
-#      - api
-#    ports:
-#      - "27017:27017"
+  mongo:
+    image: mongo:3.2.10
+    networks:
+      - api
+    ports:
+      - "27017:27017"
 
   #---------------------------------------------------------------------------#
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
-#  tomcat:
-#    image: tomcat:8.0.37
-#    networks:
-#      - api
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - mongo
+  tomcat:
+    image: tomcat:8.0.37
+    networks:
+      - api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
 
   #---------------------------------------------------------------------------#
   # RADAR Dashboard                                                           #
   #---------------------------------------------------------------------------#
-#  nodejs:
-#    image: node:7.0.0
-#    networks:
-#      - api
-#    ports:
-#      - "80:8888"
-#    depends_on:
-#      - tomcat
+  nodejs:
+    image: node:7.0.0
+    networks:
+      - api
+    ports:
+      - "80:8888"
+    depends_on:
+      - tomcat
+
+
+  #---------------------------------------------------------------------------#
+  # RADAR Cold Storage                                                        #
+  #---------------------------------------------------------------------------#
+  datanode-1:
+    image: uhopper/hadoop-datanode:2.7.2
+    domainname: hadoop
+    networks:
+      - hadoop
+    volumes:
+      - /usr/local/var/lib/docker/hadoop-data1:/hadoop/dfs/data
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+      - HDFS_CONF_dfs_replication=2
+  datanode-2:
+    image: uhopper/hadoop-datanode:2.7.2
+    domainname: hadoop
+    networks:
+      - hadoop
+    volumes:
+      - /usr/local/var/lib/docker/hadoop-data2:/hadoop/dfs/data
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+      - HDFS_CONF_dfs_replication=2
+  namenode:
+    image: uhopper/hadoop-namenode:2.7.2
+    hostname: namenode
+    container_name: namenode
+    domainname: hadoop
+    networks:
+      - hadoop
+    volumes:
+      - /usr/local/var/lib/docker/hadoop-name:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=radar-cns
+
