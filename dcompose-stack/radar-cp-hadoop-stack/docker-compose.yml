@@ -135,11 +135,11 @@ services:
   # RADAR Dashboard                                                           #
   #---------------------------------------------------------------------------#
   nodejs:
-    image: node:7.0.0
+    image: radarcns/radar-dashboard:latest
     networks:
       - api
     ports:
-      - "80:8888"
+      - "3000:3000"
     depends_on:
       - tomcat
 
