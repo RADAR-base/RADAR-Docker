@@ -1,13 +1,26 @@
 version: '2'
 
+networks:
+  hadoop:
+    external: true
+  zookeeper:
+    driver: bridge
+  api:
+    driver: bridge
+  kafka:
+    driver: bridge
+
 services:
 
+  #---------------------------------------------------------------------------#
+  # Zookeeper Cluster
+  #---------------------------------------------------------------------------#
   zookeeper-1:
     image: confluentinc/cp-zookeeper:3.1.1
     domainname: zookeeper
     container_name: zookeeper-1
     networks:
-      - kafka
+      - zookeeper
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 22181
@@ -25,6 +38,7 @@ services:
     container_name: kafka-1
     networks:
       - kafka
+      - zookeeper
     depends_on:
       - zookeeper-1
     environment:
@@ -38,6 +52,7 @@ services:
     container_name: kafka-2
     networks:
       - kafka
+      - zookeeper
     depends_on:
       - zookeeper-1
     environment:
@@ -51,6 +66,7 @@ services:
     container_name: kafka-3
     networks:
       - kafka
+      - zookeeper
     depends_on:
       - zookeeper-1
     environment:
@@ -67,6 +83,7 @@ services:
     domainname: kafka
     networks:
       - kafka
+      - zookeeper
     depends_on:
       - kafka-1
       - kafka-2
@@ -88,6 +105,7 @@ services:
     container_name: rest-proxy-1
     networks:
       - kafka
+      - zookeeper
     depends_on:
       - kafka-1
       - kafka-2
@@ -101,8 +119,41 @@ services:
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
       KAFKA_REST_HOST_NAME: rest-proxy-1
 
+
+  #---------------------------------------------------------------------------#
+  # RADAR Hot-Storage                                                         #
+  #---------------------------------------------------------------------------#
+  mongo:
+    image: mongo:3.2.10
+    ports:
+      - "27017:27017"
+
+  #---------------------------------------------------------------------------#
+  # RADAR REST API                                                            #
+  #---------------------------------------------------------------------------#
+  tomcat:
+    image: tomcat:8.0.37
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+
+  #---------------------------------------------------------------------------#
+  # RADAR Dashboard                                                           #
+  #---------------------------------------------------------------------------#
+  nodejs:
+    image: node:7.0.0
+    ports:
+      - "80:8888"
+    depends_on:
+      - tomcat
+
+
+  #---------------------------------------------------------------------------#
+  # RADAR Cold Storage                                                        #
+  #---------------------------------------------------------------------------#
   datanode-1:
-    image: uhopper/hadoop-datanode
+    image: uhopper/hadoop-datanode:2.7.2
     domainname: hadoop
     networks:
       - hadoop
@@ -112,7 +163,7 @@ services:
       - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
       - HDFS_CONF_dfs_replication=2
   datanode-2:
-    image: uhopper/hadoop-datanode
+    image: uhopper/hadoop-datanode:2.7.2
     domainname: hadoop
     networks:
       - hadoop
@@ -122,7 +173,7 @@ services:
       - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
       - HDFS_CONF_dfs_replication=2
   namenode:
-    image: uhopper/hadoop-namenode
+    image: uhopper/hadoop-namenode:2.7.2
     hostname: namenode
     container_name: namenode
     domainname: hadoop
@@ -133,10 +184,3 @@ services:
     environment:
       - CLUSTER_NAME=radar-cns
 
-networks:
-  hadoop:
-    external: true
-  zookeeper:
-    driver: bridge
-  kafka:
-    driver: bridge
