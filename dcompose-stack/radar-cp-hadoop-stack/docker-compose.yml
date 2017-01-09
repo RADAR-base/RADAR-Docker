@@ -1,0 +1,37 @@
+datanode1:
+  image: uhopper/hadoop-datanode
+  domainname: hadoop
+  net: hadoop
+  volumes:
+    - /usr/local/var/lib/docker/hadoop-data1:/hadoop/dfs/data
+  environment:
+    - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    - HDFS_CONF_dfs_replication=3
+datanode2:
+  image: uhopper/hadoop-datanode
+  domainname: hadoop
+  net: hadoop
+  volumes:
+    - /usr/local/var/lib/docker/hadoop-data2:/hadoop/dfs/data
+  environment:
+    - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    - HDFS_CONF_dfs_replication=3
+datanode3:
+  image: uhopper/hadoop-datanode
+  domainname: hadoop
+  net: hadoop
+  volumes:
+    - /usr/local/var/lib/docker/hadoop-data3:/hadoop/dfs/data
+  environment:
+    - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    - HDFS_CONF_dfs_replication=3
+namenode:
+  image: uhopper/hadoop-namenode
+  hostname: namenode
+  container_name: namenode
+  domainname: hadoop
+  net: hadoop
+  volumes:
+    - /usr/local/var/lib/docker/hadoop-name:/hadoop/dfs/name
+  environment:
+    - CLUSTER_NAME=radar-cns
