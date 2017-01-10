@@ -8,6 +8,11 @@ mkdir -p "$DATA_DIR/hadoop-data1" "$DATA_DIR/hadoop-data2" "$DATA_DIR/hadoop-nam
 docker network create hadoop
 ``` 
 
+Run the setup with
+```shell
+sudo docker-compose up -d
+```
+
 Data can be extracted from this setup by running:
 
 ```shell
