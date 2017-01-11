@@ -10,6 +10,8 @@ networks:
     driver: bridge
   hadoop:
     external: true
+  mail:
+    driver: bridge
 
 services:
 
@@ -179,3 +181,14 @@ services:
     environment:
       - CLUSTER_NAME=radar-cns
 
+  #---------------------------------------------------------------------------#
+  # Email server                                                              #
+  #---------------------------------------------------------------------------#
+  smtp:
+    image: namshi/smtp:latest
+    networks:
+      - mail
+    volumes:
+      - smtp_queue:/var/spool/exim
+    env_file:
+      - smtp.env

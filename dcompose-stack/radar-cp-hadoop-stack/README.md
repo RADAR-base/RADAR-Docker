@@ -8,6 +8,8 @@ mkdir -p "$DATA_DIR/hadoop-data1" "$DATA_DIR/hadoop-data2" "$DATA_DIR/hadoop-nam
 docker network create hadoop
 ``` 
 
+Modify `mail.env.template` to set a SMTP host to send emails with, and move it to `mail.env`. The configuration settings are passed to a [namshi/smtp](https://hub.docker.com/r/namshi/smtp/) Docker container.
+
 Run the setup with
 ```shell
 sudo docker-compose up -d
