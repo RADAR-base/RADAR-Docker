@@ -7,8 +7,9 @@ fi
 
 # HDFS filename to get
 HDFS_FILE=$1
-# Directory to write output to
-OUTPUT_DIR=${2:-$PWD/output}
+# Absolute directory to write output to
+OUTPUT_DIR=${2:-output}
+OUTPUT_DIR="$(cd "$(dirname "$OUTPUT_DIR")"; pwd)/$(basename "$OUTPUT_DIR")"
 # Internal docker directory to write output to
 HDFS_OUTPUT_DIR=/home/output
 # HDFS command to run
