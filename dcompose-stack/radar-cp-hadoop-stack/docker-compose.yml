@@ -136,7 +136,7 @@ services:
   #---------------------------------------------------------------------------#
   # RADAR Dashboard                                                           #
   #---------------------------------------------------------------------------#
-  nodejs:
+  dashboard:
     image: radarcns/radar-dashboard:latest
     networks:
       - api
@@ -149,37 +149,34 @@ services:
   #---------------------------------------------------------------------------#
   # RADAR Cold Storage                                                        #
   #---------------------------------------------------------------------------#
-  datanode-1:
+  hdfs-datanode-1:
     image: uhopper/hadoop-datanode:2.7.2
-    domainname: hadoop
     networks:
       - hadoop
     volumes:
-      - /usr/local/var/lib/docker/hadoop-data1:/hadoop/dfs/data
+      - /usr/local/var/lib/docker/hdfs-data1:/hadoop/dfs/data
     environment:
-      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
-      - HDFS_CONF_dfs_replication=2
-  datanode-2:
+      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
+      HDFS_CONF_dfs_replication: 2
+
+  hdfs-datanode-2:
     image: uhopper/hadoop-datanode:2.7.2
-    domainname: hadoop
     networks:
       - hadoop
     volumes:
-      - /usr/local/var/lib/docker/hadoop-data2:/hadoop/dfs/data
+      - /usr/local/var/lib/docker/hdfs-data2:/hadoop/dfs/data
     environment:
-      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
-      - HDFS_CONF_dfs_replication=2
-  namenode:
+      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
+      HDFS_CONF_dfs_replication: 2
+
+  hdfs-namenode:
     image: uhopper/hadoop-namenode:2.7.2
-    hostname: namenode
-    container_name: namenode
-    domainname: hadoop
     networks:
       - hadoop
     volumes:
-      - /usr/local/var/lib/docker/hadoop-name:/hadoop/dfs/name
+      - /usr/local/var/lib/docker/hdfs-name:/hadoop/dfs/name
     environment:
-      - CLUSTER_NAME=radar-cns
+      CLUSTER_NAME: radar-cns
 
   #---------------------------------------------------------------------------#
   # Email server                                                              #
@@ -189,6 +186,6 @@ services:
     networks:
       - mail
     volumes:
-      - smtp_queue:/var/spool/exim
+      - /var/spool/exim
     env_file:
       - smtp.env
