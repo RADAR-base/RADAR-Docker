@@ -1,17 +1,15 @@
 ---
-version: '2'
+version: '3'
 
 networks:
   zookeeper:
-    driver: bridge
+    driver: overlay
   kafka:
-    driver: bridge
+    driver: overlay
   api:
-    driver: bridge
-  hadoop:
-    external: true
-  mail:
-    driver: bridge
+    driver: overlay
+  #hadoop:
+  #  external: true
 
 services:
 
@@ -136,7 +134,7 @@ services:
   #---------------------------------------------------------------------------#
   # RADAR Dashboard                                                           #
   #---------------------------------------------------------------------------#
-  dashboard:
+  nodejs:
     image: radarcns/radar-dashboard:latest
     networks:
       - api
@@ -149,43 +147,35 @@ services:
   #---------------------------------------------------------------------------#
   # RADAR Cold Storage                                                        #
   #---------------------------------------------------------------------------#
-  hdfs-datanode-1:
-    image: uhopper/hadoop-datanode:2.7.2
-    networks:
-      - hadoop
-    volumes:
-      - /usr/local/var/lib/docker/hdfs-data1:/hadoop/dfs/data
-    environment:
-      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
-      HDFS_CONF_dfs_replication: 2
+  #datanode-1:
+  #  image: uhopper/hadoop-datanode:2.7.2
+  #  domainname: hadoop
+  #  networks:
+  #    - hadoop
+  #  volumes:
+  #    - /usr/local/var/lib/docker/hadoop-data1:/hadoop/dfs/data
+  #  environment:
+  #    - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+  #    - HDFS_CONF_dfs_replication=2
+  #datanode-2:
+  #  image: uhopper/hadoop-datanode:2.7.2
+  #  domainname: hadoop
+  #  networks:
+  #    - hadoop
+  #  volumes:
+  #    - /usr/local/var/lib/docker/hadoop-data2:/hadoop/dfs/data
+  #  environment:
+  #    - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+  #    - HDFS_CONF_dfs_replication=2
+  #namenode:
+  #  image: uhopper/hadoop-namenode:2.7.2
+  #  hostname: namenode
+  #  container_name: namenode
+  #  domainname: hadoop
+  #  networks:
+  #    - hadoop
+  #  volumes:
+  #    - /usr/local/var/lib/docker/hadoop-name:/hadoop/dfs/name
+  #  environment:
+  #    - CLUSTER_NAME=radar-cns
 
-  hdfs-datanode-2:
-    image: uhopper/hadoop-datanode:2.7.2
-    networks:
-      - hadoop
-    volumes:
-      - /usr/local/var/lib/docker/hdfs-data2:/hadoop/dfs/data
-    environment:
-      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
-      HDFS_CONF_dfs_replication: 2
-
-  hdfs-namenode:
-    image: uhopper/hadoop-namenode:2.7.2
-    networks:
-      - hadoop
-    volumes:
-      - /usr/local/var/lib/docker/hdfs-name:/hadoop/dfs/name
-    environment:
-      CLUSTER_NAME: radar-cns
-
-  #---------------------------------------------------------------------------#
-  # Email server                                                              #
-  #---------------------------------------------------------------------------#
-  smtp:
-    image: namshi/smtp:latest
-    networks:
-      - mail
-    volumes:
-      - /var/spool/exim
-    env_file:
-      - smtp.env
