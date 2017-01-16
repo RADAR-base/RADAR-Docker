@@ -14,9 +14,12 @@ For a redundant data storage, instead of the directories created in `$DOCKER_DAT
 DOCKER_DATA=/usr/local/var/lib/docker
 VOLUME_1=/volume1
 VOLUME_2=/volume1
-mkdir -p $VOLUME_1/hdfs-data $VOLUME_2/hdfs-data
-ln -s $VOLUME_1/hdfs-data $DOCKER_DATA/hdfs-data1
-ln -s $VOLUME_2/hdfs-data $DOCKER_DATA/hdfs-data2
+mkdir -p "$VOLUME_1/hdfs-data" "$VOLUME_1/hdfs-name"
+mkdir -p "$VOLUME_2/hdfs-data" "$VOLUME_2/hdfs-name"
+ln -s "$VOLUME_1/hdfs-data" "$DOCKER_DATA/hdfs-data1"
+ln -s "$VOLUME_2/hdfs-data" "$DOCKER_DATA/hdfs-data2"
+ln -s "$VOLUME_1/hdfs-name" "$DOCKER_DATA/hdfs-name1"
+ln -s "$VOLUME_2/hdfs-name" "$DOCKER_DATA/hdfs-name2"
 ```
 
 Modify `mail.env.template` to set a SMTP host to send emails with, and move it to `mail.env`. The configuration settings are passed to a [namshi/smtp](https://hub.docker.com/r/namshi/smtp/) Docker container.
