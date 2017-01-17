@@ -1,0 +1,27 @@
+sudo: required
+services:
+  - docker
+env:
+  DOCKER_COMPOSE_VERSION: 1.5.0
+
+before_install:
+  - mkdir -p "$HOME/bin";
+  - export PATH="$PATH:$HOME/bin";
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > "$HOME/bin/docker-compose";
+  - chmod +x "$HOME/bin/docker-compose";
+script:
+  - cd dcompose-stack/radar-cp-stack
+  - sudo docker-compose up -d build
+  - sudo docker-compose down
+  - cd ../radar-cp-sasl-stack
+  - sudo docker-compose up -d build
+  - sudo docker-compose down
+  - cd ../radar-cp-hadoop-stack
+  - sudo docker network create hadoop
+  - export HDFS_DATA_DIR_1=$PWD/hdfs-data1
+  - export HDFS_DATA_DIR_2=$PWD/hdfs-data2
+  - export HDFS_NAME_DIR_1=$PWD/hdfs-name1
+  - export HDFS_NAME_DIR_2=$PWD/hdfs-name2
+  - sudo docker-compose up -d build
+  - sudo docker-compose down
+
