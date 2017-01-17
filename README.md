@@ -8,11 +8,11 @@ First install Docker and `docker-compose` for your respective platform. Docker h
 
 ## Usage
 
-We currently have two stacks available to run, one just for Kafka, and another for the complete RADAR-CNS platform.
+We currently have two stacks available to run, one for the community parts of the Confluent Kafka Platform and another for the complete RADAR-CNS platform.
 
-### Kafka platform
+### Confluent Kafka platform
 
-In this stack, only the Confluent platform is set up
+In this stack, only the Confluent Kafka Platform is set up.
 
 ```shell
 $ cd dcompose-stack/radar-cp-stack/
@@ -21,7 +21,7 @@ $ docker-compose up
 
 ### RADAR-CNS platform
 
-In this stack, the Confluent platform is set up with a Hadoop data storage, email server, dashboard, MongoDB, and a REST API. See the README for the platform, in the `dcompose-stack/radar-hadoop-cp-stack` directory for more information on how to run it.
+In this stack, the Confluent platform is set up with a Hadoop data storage, email server, RADAR-Dashboard, RADAR-HotStorage, and a REST API. See the README in the `dcompose-stack/radar-hadoop-cp-stack` directory for more information on how to run it.
 
 ## Work in progress
 
@@ -34,6 +34,6 @@ $ cd wip/radar-cp-sasl-stack/
 $ docker-compose up
 ```
 
-## Multi-host setup
+### Multi-host setup
 
 In the end, we aim to deploy the platform in a multi-host environment. We are currently aiming for a deployment with Docker Swarm. This setup uses features that are not yet released in the stable Docker Engine. Once they are, this stack may become the main Docker stack. See the `wip/radar-swarm-cp-stack/` directory for more information.
