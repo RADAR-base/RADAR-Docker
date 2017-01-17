@@ -154,7 +154,7 @@ services:
     networks:
       - hadoop
     volumes:
-      - /usr/local/var/lib/docker/hdfs-data1:/hadoop/dfs/data
+      - "${HDFS_DATA_DIR_1}:/hadoop/dfs/data"
     environment:
       CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
       HDFS_CONF_dfs_replication: 2
@@ -164,7 +164,7 @@ services:
     networks:
       - hadoop
     volumes:
-      - /usr/local/var/lib/docker/hdfs-data2:/hadoop/dfs/data
+      - "${HDFS_DATA_DIR_2}:/hadoop/dfs/data"
     environment:
       CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
       HDFS_CONF_dfs_replication: 2
@@ -175,8 +175,8 @@ services:
     networks:
       - hadoop
     volumes:
-      - /usr/local/var/lib/docker/hdfs-name1:/hadoop/dfs/name/1
-      - /usr/local/var/lib/docker/hdfs-name2:/hadoop/dfs/name/2
+      - "${HDFS_NAME_DIR_1}:/hadoop/dfs/name/1"
+      - "${HDFS_NAME_DIR_2}:/hadoop/dfs/name/2"
     environment:
       CLUSTER_NAME: radar-cns
       HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
