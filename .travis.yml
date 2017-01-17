@@ -3,7 +3,7 @@ sudo: required
 services:
   - docker
 env:
-  DOCKER_COMPOSE_VERSION: 1.5.0
+  DOCKER_COMPOSE_VERSION: 1.9.0
 
 before_install:
   - mkdir -p "$HOME/bin";
@@ -11,12 +11,17 @@ before_install:
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > "$HOME/bin/docker-compose";
   - chmod +x "$HOME/bin/docker-compose";
 script:
+  # Standard stack
   - cd dcompose-stack/radar-cp-stack
   - sudo docker-compose up -d --build && sleep 15 && [ -z "$(docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo docker-compose down
+
+  # With kerberos support
   - cd ../radar-cp-sasl-stack
   - sudo docker-compose up -d --build && sleep 15 && [ -z "$(docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo docker-compose down
+
+  # With email and HDFS support
   - cd ../radar-cp-hadoop-stack
   - sudo docker network create hadoop
   - export HDFS_DATA_DIR_1=$PWD/hdfs-data1
