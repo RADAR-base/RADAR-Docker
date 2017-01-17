@@ -170,13 +170,16 @@ services:
       HDFS_CONF_dfs_replication: 2
 
   hdfs-namenode:
-    image: uhopper/hadoop-namenode:2.7.2
+    build: hdfs-namenode
+    image: radarcns/hdfs-namenode:2.7.2
     networks:
       - hadoop
     volumes:
-      - /usr/local/var/lib/docker/hdfs-name:/hadoop/dfs/name
+      - /usr/local/var/lib/docker/hdfs-name1:/hadoop/dfs/name/1
+      - /usr/local/var/lib/docker/hdfs-name2:/hadoop/dfs/name/2
     environment:
       CLUSTER_NAME: radar-cns
+      HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
 
   #---------------------------------------------------------------------------#
   # Email server                                                              #
