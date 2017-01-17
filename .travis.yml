@@ -17,9 +17,10 @@ script:
   - sudo docker-compose down
 
   # With kerberos support
-  - cd ../radar-cp-sasl-stack
-  - sudo docker-compose up -d --build && sleep 15 && [ -z "$(docker-compose ps | tail -n +3 | grep " Exit ")" ]
-  - sudo docker-compose down
+  # NOT SUPPORTED: kerberos image cannot be found
+  #- cd ../radar-cp-sasl-stack
+  #- sudo docker-compose up -d --build && sleep 15 && [ -z "$(docker-compose ps | tail -n +3 | grep " Exit ")" ]
+  #- sudo docker-compose down
 
   # With email and HDFS support
   - cd ../radar-cp-hadoop-stack
@@ -31,4 +32,11 @@ script:
   - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > smtp.env
   - sudo docker-compose up -d --build && sleep 15 && [ -z "$(docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo docker-compose down
+  - sudo docker network rm hadoop
 
+  # With Docker Swarm support
+  # NOT SUPPORTED: docker swarm and docker beta features are not available in Travis
+  #- cd ../radar-cp-swarm-stack
+  #- sudo docker network create --attachable hadoop
+  #- sudo docker-compose up -d --build && sleep 15 && [ -z "$(docker-compose ps | tail -n +3 | grep " Exit ")" ]
+  #- sudo docker-compose down
