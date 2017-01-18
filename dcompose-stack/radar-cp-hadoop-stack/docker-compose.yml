@@ -192,3 +192,120 @@ services:
       - /var/spool/exim
     env_file:
       - smtp.env
+
+  #---------------------------------------------------------------------------#
+  # RADAR mongo connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-mongodb-connector:
+    image: radarcns/radar-mongodb-connector:0.1
+    restart: on-failure:3
+    volumes:
+      - ./sink-radar.properties:/etc/kafka-connect/sink.properties
+    networks:
+      - zookeeper
+      - kafka
+      - api
+    depends_on:
+      - mongo
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - rest-proxy-1
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8082
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-mongodb-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  #---------------------------------------------------------------------------#
+  # RADAR HDFS connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-hdfs-connector:
+    image: radarcns/radar-hdfs-connector:0.1
+    restart: on-failure:3
+    volumes:
+      - ./sink-hdfs.properties:/etc/kafka-connect/sink.properties
+    networks:
+      - zookeeper
+      - kafka
+      - api
+      - hadoop
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - rest-proxy-1
+      - hdfs-datanode-1
+      - hdfs-datanode-2
+      - hdfs-namenode
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8082
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  #---------------------------------------------------------------------------#
+  # RADAR backend streams                                                     #
+  #---------------------------------------------------------------------------#
+  radar-backend-stream:
+    image: radarcns/radar-backend-kafka:0.1
+    command:
+      - stream
+    networks:
+      - zookeeper
+      - kafka
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+    volumes:
+      - ./radar.yml:/etc/radar.yml
+
+  #---------------------------------------------------------------------------#
+  # RADAR backend monitor                                                     #
+  #---------------------------------------------------------------------------#
+  radar-backend-monitor:
+    image: radarcns/radar-backend-kafka:0.1
+    command:
+      - monitor
+    networks:
+      - zookeeper
+      - kafka
+      - mail
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - smtp
+    volumes:
+      - ./radar.yml:/etc/radar.yml
