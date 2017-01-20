@@ -97,9 +97,9 @@ To run RADAR-CNS stack on a single node setup:
     # Topics that will be consumed
     topics=
     # MongoDB configuration
-    mongo.username=
-    mongo.password=
-    mongo.database=
+    mongo.username=<mongodb-user>
+    mongo.password=XXXXXXXX
+    mongo.database=<mongodb-database>
     ```
     > **Note**: The MongoDB configuration must mirror `.env` file parameters configurated at point 6
  8. Start the stack 
