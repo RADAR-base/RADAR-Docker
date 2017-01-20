@@ -114,24 +114,34 @@ services:
   #---------------------------------------------------------------------------#
   # RADAR Hot Storage                                                         #
   #---------------------------------------------------------------------------#
-  mongo:
-    image: mongo:3.2.10
+  hotstorage:
+    image: radarcns/radar-hotstorage:0.1
     networks:
       - api
     ports:
       - "27017:27017"
+      - "28017:28017"
+    environment:
+      RADAR_USER: 
+      RADAR_PWD: 
+      RADAR_DB: 
 
   #---------------------------------------------------------------------------#
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
-  tomcat:
-    image: tomcat:8.0.37
+  rest-api:
+    image: radarcns/radar-restapi:0.1
     networks:
       - api
     ports:
       - "8080:8080"
     depends_on:
-      - mongo
+      - hotstorage
+    environment:
+      MONGODB_USER: 
+      MONGODB_PASS: 
+      MONGODB_DATABASE: 
+      MONGODB_HOST: hotstorage:27017
 
   #---------------------------------------------------------------------------#
   # RADAR Dashboard                                                           #
@@ -143,7 +153,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - tomcat
+      - rest-api
 
 
   #---------------------------------------------------------------------------#
@@ -200,13 +210,13 @@ services:
     image: radarcns/radar-mongodb-connector:0.1
     restart: on-failure:3
     volumes:
-      - ./sink-radar.properties:/etc/kafka-connect/sink.properties
+      - ./sink-mongo.properties:/etc/kafka-connect/sink.properties
     networks:
       - zookeeper
       - kafka
       - api
     depends_on:
-      - mongo
+      - hotstorage
       - zookeeper-1
       - kafka-1
       - kafka-2
