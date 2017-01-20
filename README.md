@@ -1,13 +1,13 @@
 # RADAR-Docker
 
-The dockerized RADAR stack or deploying the RADAR-CNS platform. Component repositories can be found here [RADAR-CNS DockerHub org](https://hub.docker.com/u/radarcns/dashboard/)
+The dockerized RADAR stack for deploying the RADAR-CNS platform. Component repositories can be found here [RADAR-CNS DockerHub org](https://hub.docker.com/u/radarcns/dashboard/)
 
 ## Installation instructions 
 To install RADAR-CNS stack, do the following: 
 
 1. Install Docker Engine and verify your installation.
   * Installation for macOS (Follow [installer](https://docs.docker.com/engine/installation/mac/) from Docker)
-  * Installation for Windows ( Follow [installer](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu) from Docker)
+  * Installation for Windows ( Follow [installer](https://docs.docker.com/docker-for-windows/ from Docker)
   * Installation for Ubuntu (Follow our [wiki](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu) page)
   * For other Linux distributions, see [the list by Docker](https://docs.docker.com/engine/installation/).
 2. Install `docker-compose` using the [installation guide](https://docs.docker.com/compose/install/) or by following the [wiki](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu#install-docker-compose).
