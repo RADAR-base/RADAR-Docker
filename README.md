@@ -83,23 +83,15 @@ To run RADAR-CNS stack on a single node setup:
     flush.size=
     topics.dir=
     ```
- 6. Configure the Hot Storage settings in `docker-compose.yml`
+ 6. Configure Hot Storage settings in `.env` file
  
     ```
-    RADAR_USER: <your-mongodb-user>
-    RADAR_PWD: <your-mongodb-password>
-    RADAR_DB: <your-mongodb-db-name>
+    HOTSTORAGE_USERNAME=<mongodb-user>
+    HOTSTORAGE_PASSWORD=XXXXXXXX
+    HOTSTORAGE_NAME=<mongodb-database>
     ```
-    > **Note**: These properties are used to initialise a MongoDb database from scratch 
- 7. Configure the Rest-API settings in `docker-compose.yml` to connect to Hot Storage
- 
-    ```
-    MONGODB_USER: <your-mongodb-user>
-    MONGODB_PASS: <your-mongodb-password>
-    MONGODB_DATABASE: <your-mongodb-db-name>
-    ```
-    > **Note**: These properties must have the same values stated at point 6    
- 8. Modify topics and mongo db configuration  for Cold storage in `sink-mongo.properties`
+    > **Note**: These properties are used to initialise a MongoDB database from scratch and to establish a connection for Rest-API   
+ 7. Modify topics and MongoDB configuration for Hot storage in `sink-mongo.properties`
  
     ```
     # Topics that will be consumed
@@ -109,8 +101,8 @@ To run RADAR-CNS stack on a single node setup:
     mongo.password=
     mongo.database=
     ```
-    > **Note**: These properties must have the same values stated at point 6
- 7. Start the stack 
+    > **Note**: The MongoDB configuration must mirror `.env` file parameters stated at point 6
+ 8. Start the stack 
  
     ```
     $ sudo docker-compose up -d

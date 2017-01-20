@@ -122,9 +122,9 @@ services:
       - "27017:27017"
       - "28017:28017"
     environment:
-      RADAR_USER: 
-      RADAR_PWD: 
-      RADAR_DB: 
+      RADAR_USER: ${HOTSTORAGE_USERNAME}
+      RADAR_PWD: ${HOTSTORAGE_PASSWORD}
+      RADAR_DB: ${HOTSTORAGE_NAME}
 
   #---------------------------------------------------------------------------#
   # RADAR REST API                                                            #
@@ -138,9 +138,9 @@ services:
     depends_on:
       - hotstorage
     environment:
-      MONGODB_USER: 
-      MONGODB_PASS: 
-      MONGODB_DATABASE: 
+      MONGODB_USER: ${HOTSTORAGE_USERNAME}
+      MONGODB_PASS: ${HOTSTORAGE_PASSWORD}
+      MONGODB_DATABASE: ${HOTSTORAGE_NAME} 
       MONGODB_HOST: hotstorage:27017
 
   #---------------------------------------------------------------------------#
