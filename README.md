@@ -90,7 +90,7 @@ To run RADAR-CNS stack on a single node setup:
     HOTSTORAGE_PASSWORD=XXXXXXXX
     HOTSTORAGE_NAME=<mongodb-database>
     ```
-    > **Note**: These properties are used to initialise a MongoDB database from scratch and to establish a connection for Rest-API   
+    > **Note**: These properties are used to initialise a MongoDB database from scratch and to establish a connection between MongoDB and Rest-API   
  7. Modify topics and MongoDB configuration for Hot storage in `sink-mongo.properties`
  
     ```
@@ -101,7 +101,7 @@ To run RADAR-CNS stack on a single node setup:
     mongo.password=
     mongo.database=
     ```
-    > **Note**: The MongoDB configuration must mirror `.env` file parameters stated at point 6
+    > **Note**: The MongoDB configuration must mirror `.env` file parameters configurated at point 6
  8. Start the stack 
  
     ```
