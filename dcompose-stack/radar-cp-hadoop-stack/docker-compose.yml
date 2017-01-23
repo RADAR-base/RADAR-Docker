@@ -123,6 +123,9 @@ services:
       - kafka
       - zookeeper
     depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
       - rest-proxy-1
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
@@ -238,13 +241,14 @@ services:
       - kafka
       - api
     depends_on:
-      - hotstorage
       - zookeeper-1
       - kafka-1
       - kafka-2
       - kafka-3
       - schema-registry-1
       - rest-proxy-1
+      - kafka-init
+      - hotstorage
     environment:
       CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
       CONNECT_REST_PORT: 8082
@@ -282,6 +286,7 @@ services:
       - kafka-3
       - schema-registry-1
       - rest-proxy-1
+      - kafka-init
       - hdfs-datanode-1
       - hdfs-datanode-2
       - hdfs-namenode
@@ -318,6 +323,7 @@ services:
       - kafka-2
       - kafka-3
       - schema-registry-1
+      - kafka-init
     volumes:
       - ./radar.yml:/etc/radar.yml
 
@@ -338,6 +344,7 @@ services:
       - kafka-2
       - kafka-3
       - schema-registry-1
+      - kafka-init
       - smtp
     volumes:
       - ./radar.yml:/etc/radar.yml
@@ -354,6 +361,7 @@ services:
       - "/var/run:/var/run:rw"
       - "/sys:/sys:ro"
       - "/var/lib/docker/:/var/lib/docker:ro"
+      
   portainer:
     image: portainer/portainer:1.11.1
     ports:
