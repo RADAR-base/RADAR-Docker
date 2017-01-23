@@ -76,7 +76,7 @@ To run RADAR-CNS stack in a single node setup:
     ```shell
     sudo docker network create hadoop
     ```
-3. Configure monitor settings in radar.yml
+3. Configure monitor settings in `radar.yml`:
  
     ```yaml
     battery_monitor:
@@ -87,6 +87,17 @@ To run RADAR-CNS stack in a single node setup:
       email_user: user@example.com
       topics:
         - android_empatica_e4_battery_level
+    disconnect_monitor:
+      # timeout in milliseconds -> 5 minutes
+      timeout: 300000
+      email_address: notify-me@example.com
+      email_host: smtp
+      email_port: 25
+      email_user: user@example.com
+      # temperature readings are sent very regularly, but
+      # not too often.
+      topics:
+        - android_empatica_e4_temperature
      ```
 4. Create `smtp.env` and configure your email settings following `smtp.env.template`. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
 5. (Optional) Modify topics, flush.size and HDFS direcotory for Cold storage in `sink-hdfs.properties`
