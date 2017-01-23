@@ -133,7 +133,7 @@ To run RADAR-CNS stack in a single node setup:
     ```
     > **Note**: In order to support Empatica E4 integration `RADAR_TOPIC_LIST` has to be set to
     ```ini
-    RADAR_TOPICS: android_empatica_e4_acceleration, android_empatica_e4_acceleration_output, android_empatica_e4_battery_level, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature, android_empatica_e4_temperature_output
+    RADAR_TOPIC_LIST=android_empatica_e4_acceleration, android_empatica_e4_acceleration_output, android_empatica_e4_battery_level, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature, android_empatica_e4_temperature_output
     ```
 9. Start the stack
  
