@@ -131,7 +131,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
       KAFKA_BROKERS: 3
-      RADAR_TOPICS: "android_empatica_e4_acceleration, android_empatica_e4_acceleration_output, android_empatica_e4_battery_level, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature, android_empatica_e4_temperature_output"
+      RADAR_TOPICS: ${RADAR_TOPIC_LIST}
       RADAR_PARTITIONS: 3
       RADAR_REPLICATION_FACTOR: 3
 
@@ -361,7 +361,7 @@ services:
       - "/var/run:/var/run:rw"
       - "/sys:/sys:ro"
       - "/var/lib/docker/:/var/lib/docker:ro"
-      
+
   portainer:
     image: portainer/portainer:1.11.1
     ports:
