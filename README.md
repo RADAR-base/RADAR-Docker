@@ -78,7 +78,7 @@ To run RADAR-CNS stack in a single node setup:
     ```
 3. Configure monitor settings in radar.yml
  
-    ```
+    ```yaml
     battery_monitor:
       level: CRITICAL
       email_address: notify-me@example.com
