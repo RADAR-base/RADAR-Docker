@@ -44,6 +44,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
   kafka-2:
     image: confluentinc/cp-kafka:3.1.1
@@ -56,6 +57,7 @@ services:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
   kafka-3:
     image: confluentinc/cp-kafka:3.1.1
@@ -68,6 +70,7 @@ services:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
   #---------------------------------------------------------------------------#
   # Schema Registry                                                           #
@@ -109,6 +112,25 @@ services:
       KAFKA_REST_LISTENERS: http://rest-proxy-1:8082
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
       KAFKA_REST_HOST_NAME: rest-proxy-1
+
+  #---------------------------------------------------------------------------#
+  # Kafka Init                                                                #
+  #---------------------------------------------------------------------------#
+  kafka-init:
+    build: kafka-radarinit
+    image: radarcns/kafka-init:3.1.1
+    networks:
+      - kafka
+      - zookeeper
+    depends_on:
+      - rest-proxy-1
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      KAFKA_BROKERS: 3
+      RADAR_TOPICS: "android_empatica_e4_acceleration, android_empatica_e4_acceleration_output, android_empatica_e4_battery_level, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature, android_empatica_e4_temperature_output"
+      RADAR_PARTITIONS: 3
+      RADAR_REPLICATION_FACTOR: 3
 
 
   #---------------------------------------------------------------------------#

@@ -8,6 +8,20 @@ if [ -f /home/.radar_topic_set ]; then
     exit 0
 fi
 
+# Wait untill all brokers are up & running
+while [ "$LENGTH" != "$KAFKA_BROKERS" ]; do
+    BROKERS=$(curl -sS $KAFKA_REST_PROXY/brokers | jq '.brokers')
+    BROKERS="$(echo -e "${BROKERS}" | tr -d '[:space:]')"
+    BROKERS="${BROKERS:1}"
+
+    LENGTH=0
+    IFS=',' read -r -a array <<< $BROKERS
+    for element in "${array[@]}"
+    do
+        LENGTH=${#array[@]}
+    done
+done
+
 # Check if variables exist
 if [ -z "$RADAR_TOPICS" ]; then
 	echo "$RADAR_TOPICS is not defined"
@@ -20,17 +34,17 @@ if [ -z "$KAFKA_ZOOKEEPER_CONNECT" ]; then
 fi
 
 if [ -z "$RADAR_PARTITIONS" ]; then
-        echo "$PARTITIONS is not defined"
+        echo "$RADAR_PARTITIONS is not defined"
         exit 126
 fi
 
 if [ -z "$RADAR_REPLICATION_FACTOR" ]; then
-        echo "$PARTITIONS is not defined"
+        echo "$RADAR_REPLICATION_FACTOR is not defined"
         exit 126
 fi
 
 # Create topics
-echo "Creating RADAR-CNS topicsi..."
+echo "Creating RADAR-CNS topics..."
 IFS=', ' read -r -a array <<< "$RADAR_TOPICS"
 
 for element in "${array[@]}"
