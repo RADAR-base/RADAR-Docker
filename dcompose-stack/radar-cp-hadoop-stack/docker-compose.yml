@@ -251,7 +251,7 @@ services:
       - hotstorage
     environment:
       CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
-      CONNECT_REST_PORT: 8082
+      CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: "default"
       CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
       CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
@@ -265,6 +265,8 @@ services:
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-mongodb-connector"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
 
   #---------------------------------------------------------------------------#
   # RADAR HDFS connector                                                     #
@@ -292,7 +294,7 @@ services:
       - hdfs-namenode
     environment:
       CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
-      CONNECT_REST_PORT: 8082
+      CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: "default"
       CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
       CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
@@ -306,6 +308,8 @@ services:
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
 
   #---------------------------------------------------------------------------#
   # RADAR backend streams                                                     #
@@ -326,6 +330,9 @@ services:
       - kafka-init
     volumes:
       - ./radar.yml:/etc/radar.yml
+    environment:
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
 
   #---------------------------------------------------------------------------#
   # RADAR backend monitor                                                     #
@@ -348,6 +355,9 @@ services:
       - smtp
     volumes:
       - ./radar.yml:/etc/radar.yml
+    environment:
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}      
 
   #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #

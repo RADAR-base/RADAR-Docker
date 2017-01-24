@@ -126,15 +126,12 @@ To run RADAR-CNS stack in a single node setup:
     mongo.database=mongodb-database
     ```
     > **Note**: The MongoDB configuration must mirror `.env` file parameters configurated at point 6
-8. For secuirity reasons, the `auto.creation.topics.enable` has been set to `false`. To create the needed topic, modify the comma separated list parametern `RADAR_TOPIC_LIST` in `.env` file
+8. (Optional) For secuirity reasons, the `auto.creation.topics.enable` has been set to `false`. To create the required topics, modify the comma separated list parameter `RADAR_TOPIC_LIST` in `.env` file
  
     ```ini
     RADAR_TOPIC_LIST=topic1, topic2
     ```
-    > **Note**: In order to support Empatica E4 integration `RADAR_TOPIC_LIST` has to be set to
-    ```ini
-    RADAR_TOPIC_LIST=android_empatica_e4_acceleration, android_empatica_e4_acceleration_output, android_empatica_e4_battery_level, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature, android_empatica_e4_temperature_output
-    ```
+    > **Note**: The parameter has been already set up to support Empatica E4 integration.
 9. Start the stack
  
     ```shell
