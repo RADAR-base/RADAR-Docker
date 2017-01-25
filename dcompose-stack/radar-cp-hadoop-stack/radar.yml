@@ -39,9 +39,23 @@ schema_registry:
 #========================= Battery level monitor=========================#
 battery_monitor:
   level: CRITICAL
-  email_address: notifiersemail
+  email_address:
+    - notifiersemail
+    - notifier2@email
   email_host: smtp
   email_port: 25
   email_user: user@example.com
   topics:
     - android_empatica_e4_battery_level
+
+#========================= Battery level monitor=========================#
+disconnect-monitor:
+  email_address:
+    - notifier@email
+    - notifier2@email
+  email_host: smtp
+  email_port: 25
+  email_user: user@example.com
+  topics:
+    - android_empatica_e4_battery_level
+  timeout: 60000
