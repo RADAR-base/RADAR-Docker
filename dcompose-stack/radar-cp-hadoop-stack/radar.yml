@@ -49,7 +49,7 @@ battery_monitor:
     - android_empatica_e4_battery_level
 
 #========================= Battery level monitor=========================#
-disconnect-monitor:
+disconnect_monitor:
   email_address:
     - notifier@email
     - notifier2@email
