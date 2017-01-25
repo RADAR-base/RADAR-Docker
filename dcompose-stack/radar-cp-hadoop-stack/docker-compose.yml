@@ -232,7 +232,7 @@ services:
   # RADAR mongo connector                                                     #
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
-    image: radarcns/radar-mongodb-connector:0.1
+    image: radarcns/radar-mongodb-connector-auto:0.1
     restart: on-failure:3
     volumes:
       - ./sink-mongo.properties:/etc/kafka-connect/sink.properties
@@ -272,7 +272,7 @@ services:
   # RADAR HDFS connector                                                     #
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
-    image: radarcns/radar-hdfs-connector:0.1
+    image: radarcns/radar-hdfs-connector-auto:0.1
     restart: on-failure:3
     volumes:
       - ./sink-hdfs.properties:/etc/kafka-connect/sink.properties
@@ -315,7 +315,7 @@ services:
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-stream:
-    image: radarcns/radar-backend-kafka:0.1
+    image: radarcns/radar-backend-kafka-auto:0.1
     command:
       - stream
     networks:
@@ -338,7 +338,7 @@ services:
   # RADAR backend monitor                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
-    image: radarcns/radar-backend-kafka:0.1
+    image: radarcns/radar-backend-kafka-auto:0.1
     command:
       - monitor
     networks:
