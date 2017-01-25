@@ -9,26 +9,24 @@ if [ -f /home/.radar_topic_set ]; then
 fi
 
 # Wait untill all brokers are up & running
-INTERVAL=1
+interval=1
 while [ "$LENGTH" != "$KAFKA_BROKERS" ]; do
-    BROKERS=$(curl -sS $KAFKA_REST_PROXY/brokers | jq '.brokers')
-    BROKERS="$(echo -e "${BROKERS}" | tr -d '[:space:]')"
-    BROKERS="${BROKERS:1}"
+    BROKERS=$(curl -sS $KAFKA_REST_PROXY/brokers)
+    BROKERS="$(echo -e "${BROKERS:12}" | tr -d '[:space:]'  | tr -d '}'  | tr -d ']')"
 
-    LENGTH=0
     IFS=',' read -r -a array <<< $BROKERS
-    for element in "${array[@]}"
-    do
-        LENGTH=${#array[@]}
-    done
+    LENGTH=${#array[@]}
 
     if [ "$LENGTH" != "$KAFKA_BROKERS" ]; then
-         sleep $INTERVAL
-         if (( INTERVAL < 3 )); then
-             ((INTERVAL++))
-         fi
+        echo "Only $LENGTH over $KAFKA_BROKERS brokers are currently available"
+        echo "Waiting $interval second before retrying ..."         
+        sleep $interval
+        if (( interval < 30 )); then
+            ((interval=interval*2))
+        fi
     fi
 done
+
 
 # Check if variables exist
 if [ -z "$RADAR_TOPICS" ]; then
