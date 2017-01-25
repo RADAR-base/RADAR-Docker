@@ -8,22 +8,28 @@ To install RADAR-CNS stack, do the following:
 1. Install Docker Engine
 	  * Installation for macOS (Follow [installer](https://docs.docker.com/engine/installation/mac/) from Docker)
 	  * Installation for Windows ( Follow [installer](https://docs.docker.com/docker-for-windows/ from Docker)
-	  * Installation for Ubuntu (Follow our [wiki](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu) page)
+	  * Installation for Ubuntu (Follow [Docker instructions](https://docs.docker.com/engine/installation/linux/ubuntu/))
 	  * For other Linux distributions, install Docker engine from [the list by Docker](https://docs.docker.com/engine/installation/). Install `docker-compose` using the [installation guide](https://docs.docker.com/compose/install/) or by following the [wiki](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu#install-docker-compose).
-2. Verify the Docker installation by running on the command-line:
+2. Install `docker-compose` by following instructions [here](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu#install-docker-compose) 	  
+3. Verify the Docker installation by running on the command-line:
 
 	```shell
 	sudo docker --version
 	sudo docker-compose --version
 	```
 	This should show Docker version 1.12 or later and docker-compose version 1.9.0 or later.
-3. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for your platform.
-4. Clone [RADAR-Docker](https://github.com/RADAR-CNS/RADAR-Docker) repository from GitHub.
+4. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for your platform.
+	1. For Ubuntu
+	```shell
+	sudo apt-get install git
+	```
+	
+5. Clone [RADAR-Docker](https://github.com/RADAR-CNS/RADAR-Docker) repository from GitHub.
 
     ```shell
     git clone https://github.com/RADAR-CNS/RADAR-Docker.git
     ```
-5. Install required component stack following the instructions below.
+6. Install required component stack following the instructions below.
 
 ## Usage
 
