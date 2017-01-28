@@ -34,9 +34,13 @@ if [ "$KAFKA_JMX_PORT" ]; then
   export KAFKA_JMX_OPTS="$KAFKA_JMX_OPTS -Djava.rmi.server.hostname=$KAFKA_JMX_HOSTNAME -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=$JMX_PORT -Dcom.sun.management.jmxremote.port=$JMX_PORT"
 fi
 
-# Busy waiting loop that waits untill all topic are available 
-echo "===> Waiting RADAR-CNS topics ... "
+# Busy waiting loop that waits untill all topic are available
+echo "===> Wait for infrastructure ..."
 ./home/kafka_status.sh
+radar_check=$?
+if [ "$radar_check" -ne 0 ]; then
+    exit $radar_check
+fi
 
 echo "===> Launching ${COMPONENT} ... new"
 # Add external jars to the classpath

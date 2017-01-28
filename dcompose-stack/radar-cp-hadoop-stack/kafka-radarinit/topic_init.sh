@@ -18,8 +18,7 @@ while [ "$LENGTH" != "$KAFKA_BROKERS" ]; do
     LENGTH=${#array[@]}
 
     if [ "$LENGTH" != "$KAFKA_BROKERS" ]; then
-        echo "Only $LENGTH over $KAFKA_BROKERS brokers are currently available"
-        echo "Waiting $interval second before retrying ..."         
+        echo "Expected $KAFKA_BROKERS brokers but found only $LENGTH. Waiting $interval second before retrying ..."         
         sleep $interval
         if (( interval < 30 )); then
             ((interval=interval*2))

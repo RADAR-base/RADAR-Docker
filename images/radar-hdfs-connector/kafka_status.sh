@@ -17,7 +17,14 @@ IFS=', ' read -r -a needed <<< $TOPIC_LIST
 # Fetch env topic list
 count=0
 interval=1
+max_retryes=5
 while [ "$count" != "${#needed[@]}" ] ; do
+
+    if [ "$max_retryes" -eq "0" ] ; then
+        echo "Error connecting to Rest-Proxy ... "
+        echo "Rebooting  ... "
+        exit 126
+    fi
 
     echo "Waiting $interval second before retrying ..."
     sleep $interval
@@ -27,6 +34,7 @@ while [ "$count" != "${#needed[@]}" ] ; do
 
     count=0
     TOPICS=$(curl -sSX GET -H "Content-Type: application/json" "$KAFKA_REST_PROXY/topics")
+    curl_result=$?
     TOPICS="$(echo -e "${TOPICS}" | tr -d '"'  | tr -d '['  | tr -d ']' | tr -d '[:space:]' )"
 
     IFS=',' read -r -a array <<< $TOPICS
@@ -39,6 +47,10 @@ while [ "$count" != "${#needed[@]}" ] ; do
             fi
         done
     done
+
+    if [ "$curl_result" -ne "0" ] ; then
+         ((max_retryes--))
+    fi
 done
 
 echo "All topics are now available. Ready to go!"

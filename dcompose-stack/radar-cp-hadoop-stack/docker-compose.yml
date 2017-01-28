@@ -233,7 +233,7 @@ services:
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
     image: radarcns/radar-mongodb-connector-auto:0.1
-    restart: on-failure:3
+    restart: on-failure
     volumes:
       - ./sink-mongo.properties:/etc/kafka-connect/sink.properties
     networks:
@@ -273,7 +273,7 @@ services:
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
     image: radarcns/radar-hdfs-connector-auto:0.1
-    restart: on-failure:3
+    restart: on-failure
     volumes:
       - ./sink-hdfs.properties:/etc/kafka-connect/sink.properties
     networks:
@@ -294,7 +294,7 @@ services:
       - hdfs-namenode
     environment:
       CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
-      CONNECT_REST_PORT: 8084
+      CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: "default"
       CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
       CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
@@ -308,7 +308,7 @@ services:
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
-      KAFKA_REST_PROXY: "http://rest-proxy-1:8082"
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
 
   #---------------------------------------------------------------------------#

@@ -27,5 +27,8 @@ if [ ! -d /usr/local/var/lib/docker ]; then
     exit 1
 fi
 
+echo "==> Stopping RADAR-CNS Platform"
+sudo docker-compose down
+
 echo "==> Starting RADAR-CNS Platform"
 sudo docker-compose up -d
