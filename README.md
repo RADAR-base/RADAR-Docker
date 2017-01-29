@@ -1,6 +1,6 @@
 # RADAR-Docker
 
-The dockerized RADAR stack for deploying the RADAR-CNS platform. Component repositories can be found here [RADAR-CNS DockerHub org](https://hub.docker.com/u/radarcns/dashboard/)
+The dockerized RADAR stack for deploying the RADAR-CNS platform. Component repositories can be found at [RADAR-CNS DockerHub org](https://hub.docker.com/u/radarcns/dashboard/)
 
 ## Installation instructions 
 To install RADAR-CNS stack, do the following: 
@@ -77,12 +77,7 @@ To run RADAR-CNS stack in a single node setup:
     ```shell
     cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
     ```
-2. Hadoop requires an external network. Create a network named `hadoop`:
- 
-    ```shell
-    sudo docker network create hadoop
-    ```
-3. Configure monitor settings in `radar.yml`:
+2. Configure monitor settings in `radar.yml`:
  
     ```yaml
     battery_monitor:
@@ -93,6 +88,7 @@ To run RADAR-CNS stack in a single node setup:
       email_user: user@example.com
       topics:
         - android_empatica_e4_battery_level
+	
     disconnect_monitor:
       # timeout in milliseconds -> 5 minutes
       timeout: 300000
@@ -105,50 +101,43 @@ To run RADAR-CNS stack in a single node setup:
       topics:
         - android_empatica_e4_temperature
      ```
-4. Create `smtp.env` and configure your email settings following `smtp.env.template`. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
-5. (Optional) Modify topics, flush.size and HDFS direcotory for Cold storage in `sink-hdfs.properties`
+3. Create `smtp.env` and configure your email settings following `smtp.env.template`. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
+4. (Optional) Modify flush.size and HDFS direcotory for Cold storage in `sink-hdfs.properties`
  
     ```ini
-    topics=topic1,topic2
     flush.size=
     topics.dir=/path/to/data
     ```
-6. Configure Hot Storage settings in `.env` file
+5. Configure Hot Storage settings in `.env` file
  
     ```ini
     HOTSTORAGE_USERNAME=mongodb-user
     HOTSTORAGE_PASSWORD=XXXXXXXX
     HOTSTORAGE_NAME=mongodb-database
-    ```
-    > **Note**: These properties are used to initialise a MongoDB database from scratch and to establish a connection between MongoDB and Rest-API   
-7. Modify topics and MongoDB configuration for Hot storage in `sink-mongo.properties`
- 
-    ```ini
-    # Topics that will be consumed
-    topics=topic1,topic2
-    # MongoDB configuration
-    mongo.username=mongodb-user
-    mongo.password=XXXXXXXX
-    mongo.database=mongodb-database
-    ```
-    > **Note**: The MongoDB configuration must mirror `.env` file parameters configurated at point 6
-8. (Optional) For secuirity reasons, the `auto.creation.topics.enable` has been set to `false`. To create the required topics, modify the comma separated list parameter `RADAR_TOPIC_LIST` in `.env` file
- 
-    ```ini
-    RADAR_TOPIC_LIST=topic1, topic2
-    ```
-    > **Note**: The parameter has been already set up to support Empatica E4 integration.
-9. Start the stack
+    ```   
+6. To install the stack
  
     ```shell
-    sudo docker-compose up -d --build
+    sudo ./install-radar-stack.sh
     ```
 
 To stop RADAR-CNS stack on a single node setup, run
 
 ```shell
 cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
-sudo docker-compose down
+sudo ./stop-radar-stack.sh 
+```
+To reboot RADAR-CNS stack on a single node setup, run
+
+```shell
+cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
+sudo ./reboot-radar-stack.sh
+```
+To start RADAR-CNS stack on a single node setup after installing, run
+
+```shell
+cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
+sudo ./start-radar-stack.sh
 ```
 
 ## Work in progress
