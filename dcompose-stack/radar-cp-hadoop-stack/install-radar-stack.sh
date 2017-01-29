@@ -1,5 +1,8 @@
 #!/bin/bash
 
+RADAR_RAW_TOPIC_LIST="android_empatica_e4_acceleration, android_empatica_e4_battery_level, android_empatica_e4_blood_volume_pulse, android_empatica_e4_electrodermal_activity, android_empatica_e4_inter_beat_interval, android_empatica_e4_sensor_status, android_empatica_e4_temperature"
+RADAR_AGG_TOPIC_LIST="android_empatica_e4_acceleration_output, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature_output"
+
 command_exists() {
         command -v "$@" > /dev/null 2>&1
 }
@@ -43,14 +46,10 @@ sed -i '/mongo.username=/c\mongo.username='$username sink-mongo.properties
 sed -i '/mongo.password=/c\mongo.password='$password sink-mongo.properties
 sed -i '/mongo.database=/c\mongo.database='$database sink-mongo.properties
 # Set topics
-topic_list=$(cat .env | grep RADAR_TOPIC_LIST)
-topic_list="$(echo -e "${topic_list:17}")"
-sed -i '/topics=/c\topics='"$topic_list" sink-mongo.properties
+sed -i '/topics=/c\topics='"$$RADAR_AGG_TOPIC_LIST" sink-mongo.properties
 
 echo "==> Setting HDFS Connector"
-raw_topic=$(cat .env | grep RADAR_RAW_TOPIC_LIST)
-raw_topic="$(echo -e "${raw_topic:21}")"
-sed -i '/topics=/c\topics='"$raw_topic" sink-hdfs.properties
+sed -i '/topics=/c\topics='"$RADAR_RAW_TOPIC_LIST" sink-hdfs.properties
 
 echo "==> Starting RADAR-CNS Platform"
 sudo docker-compose up -d
