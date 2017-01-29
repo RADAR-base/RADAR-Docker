@@ -46,7 +46,7 @@ sed -i '/mongo.username=/c\mongo.username='$username sink-mongo.properties
 sed -i '/mongo.password=/c\mongo.password='$password sink-mongo.properties
 sed -i '/mongo.database=/c\mongo.database='$database sink-mongo.properties
 # Set topics
-sed -i '/topics=/c\topics='"$$RADAR_AGG_TOPIC_LIST" sink-mongo.properties
+sed -i '/topics=/c\topics='"$RADAR_AGG_TOPIC_LIST" sink-mongo.properties
 
 echo "==> Setting HDFS Connector"
 sed -i '/topics=/c\topics='"$RADAR_RAW_TOPIC_LIST" sink-hdfs.properties
