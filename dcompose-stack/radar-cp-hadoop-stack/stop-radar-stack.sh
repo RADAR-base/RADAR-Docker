@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo "==> Stopping RADAR-CNS Stack"
-sudo docker-compose down
+sudo docker-compose stop

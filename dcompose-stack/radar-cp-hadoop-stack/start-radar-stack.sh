@@ -28,4 +28,4 @@ if [ ! -d /usr/local/var/lib/docker ]; then
 fi
 
 echo "==> Starting RADAR-CNS Platform"
-sudo docker-compose up -d
+sudo docker-compose start
