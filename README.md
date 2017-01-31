@@ -82,7 +82,9 @@ To run RADAR-CNS stack in a single node setup:
     ```yaml
     battery_monitor:
       level: CRITICAL
-      email_address: notify-me@example.com
+      email_address:
+       - notify-1@example.com
+       - notify-2@example.com
       email_host: smtp
       email_port: 25
       email_user: user@example.com
@@ -92,7 +94,9 @@ To run RADAR-CNS stack in a single node setup:
     disconnect_monitor:
       # timeout in milliseconds -> 5 minutes
       timeout: 300000
-      email_address: notify-me@example.com
+      email_address:
+       - notify-1@example.com
+       - notify-2@example.com      
       email_host: smtp
       email_port: 25
       email_user: user@example.com
