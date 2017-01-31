@@ -143,6 +143,9 @@ services:
     image: radarcns/radar-hotstorage:0.1
     networks:
       - api
+    volumes:
+      - "${MONGODB_DIR}/db:/data/db"
+      - "${MONGODB_DIR}/configdb:/data/configdb"
     ports:
       - "27017:27017"
       - "28017:28017"
