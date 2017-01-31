@@ -17,17 +17,17 @@ fi
 
 if [ -z "$RADAR_USER" ]; then
 	echo "$RADAR_USER is not defined"
-	exit 126
+	exit 2
 fi
 
 if [ -z "$RADAR_PWD" ]; then
 	echo "$RADAR_PWD is not defined"
-	exit 126
+	exit 2
 fi
 
 if [ -z "$RADAR_DB" ]; then
 	echo "$RADAR_DB is not defined"
-	exit 126
+	exit 2
 fi
 
 echo "=> MongoDB is ready"

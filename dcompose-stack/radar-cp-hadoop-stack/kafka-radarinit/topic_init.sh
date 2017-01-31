@@ -30,22 +30,22 @@ done
 # Check if variables exist
 if [ -z "$RADAR_TOPICS" ]; then
 	echo "RADAR_TOPICS is not defined"
-	exit 126
+	exit 2
 fi
 
 if [ -z "$KAFKA_ZOOKEEPER_CONNECT" ]; then
         echo "KAFKA_ZOOKEEPER_CONNECT is not defined"
-        exit 126
+        exit 2
 fi
 
 if [ -z "$RADAR_PARTITIONS" ]; then
         echo "RADAR_PARTITIONS is not defined"
-        exit 126
+        exit 2
 fi
 
 if [ -z "$RADAR_REPLICATION_FACTOR" ]; then
         echo "RADAR_REPLICATION_FACTOR is not defined"
-        exit 126
+        exit 2
 fi
 
 # Create topics

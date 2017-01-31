@@ -3,12 +3,12 @@
 # Check if variables exist
 if [ -z "$KAFKA_REST_PROXY" ]; then
         echo "KAFKA_REST_PROXY is not defined"
-        exit 126
+        exit 2
 fi
 
 if [ -z "$TOPIC_LIST" ]; then
         echo "TOPIC_LIST is not defined"
-        exit 126
+        exit 2
 fi
 
 # Fetch env topic list
@@ -23,7 +23,7 @@ while [ "$count" != "${#needed[@]}" ] ; do
     if [ "$max_retryes" -eq "0" ] ; then
         echo "Error connecting to Rest-Proxy ... "
         echo "Rebooting  ... "
-        exit 126
+        exit 2
     fi
 
     echo "Waiting $interval second before retrying ..."
