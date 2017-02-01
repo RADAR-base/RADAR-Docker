@@ -48,4 +48,6 @@ echo "===> Launching ${COMPONENT} ... new"
 # because this causes the plugin scanner to scan the entire disk.
 export CLASSPATH="/etc/${COMPONENT}/jars/*"
 echo $CLASSPATH
-exec connect-standalone /etc/"${COMPONENT}"/"${COMPONENT}".properties /etc/"${COMPONENT}"/sink.properties
+
+# execute connector in standalone mode
+exec connect-standalone /etc/"${COMPONENT}"/"${COMPONENT}".properties $(find /etc/"${COMPONENT}"/ -type f -name "${CONNECTOR_PROPERTY_FILE_PREFIX}*.properties")

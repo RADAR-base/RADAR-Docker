@@ -11,6 +11,10 @@ if [ -z "$TOPIC_LIST" ]; then
         exit 2
 fi
 
+if [ -z "$CONNECTOR_PROPERTY_FILE_PREFIX" ]; then
+        echo "CONNECTOR_PROPERTY_FILE_PREFIX is not defined"
+        exit 2
+fi
 # Fetch env topic list
 IFS=', ' read -r -a needed <<< $TOPIC_LIST
 
