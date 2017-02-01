@@ -278,7 +278,7 @@ services:
     image: radarcns/radar-hdfs-connector-auto:0.1
     restart: on-failure
     volumes:
-      - ./sink-hdfs.properties:/etc/kafka-connect/sink.properties
+      - ./sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
     networks:
       - zookeeper
       - kafka
@@ -313,6 +313,7 @@ services:
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
+      CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
 
   #---------------------------------------------------------------------------#
   # RADAR backend streams                                                     #
