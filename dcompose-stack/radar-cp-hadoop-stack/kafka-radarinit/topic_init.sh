@@ -50,7 +50,7 @@ fi
 
 # Create topics
 echo "Creating RADAR-CNS topics..."
-IFS=', ' read -r -a array <<< "$RADAR_TOPICS"
+IFS=',' read -r -a array <<< "$RADAR_TOPICS"
 
 for element in "${array[@]}"
 do

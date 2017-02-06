@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RADAR_RAW_TOPIC_LIST="android_empatica_e4_acceleration, android_empatica_e4_battery_level, android_empatica_e4_blood_volume_pulse, android_empatica_e4_electrodermal_activity, android_empatica_e4_inter_beat_interval, android_empatica_e4_sensor_status, android_empatica_e4_temperature"
+RADAR_RAW_TOPIC_LIST="android_empatica_e4_acceleration,android_empatica_e4_battery_level,android_empatica_e4_blood_volume_pulse,android_empatica_e4_electrodermal_activity,android_empatica_e4_inter_beat_interval,android_empatica_e4_sensor_status,android_empatica_e4_temperature"
 RADAR_AGG_TOPIC_LIST="android_empatica_e4_acceleration_output, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature_output"
 
 command_exists() {
@@ -35,9 +35,9 @@ sudo docker network create hadoop
 
 echo "==> Setting MongoDB Connector"
 # Extract credentials from .env file
-username=$(cat .env | grep HOTSTORAGE_USERNAME=radar)
-password=$(cat .env | grep HOTSTORAGE_PASSWORD=radar)
-database=$(cat .env | grep HOTSTORAGE_NAME=hotstorage)
+username=$(cat .env | grep HOTSTORAGE_USERNAME)
+password=$(cat .env | grep HOTSTORAGE_PASSWORD)
+database=$(cat .env | grep HOTSTORAGE_NAME)
 username="$(echo -e "${username:20}" | tr -d '[:space:]' )"
 password="$(echo -e "${password:20}" | tr -d '[:space:]' )"
 database="$(echo -e "${database:16}" | tr -d '[:space:]' )"
