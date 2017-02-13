@@ -143,6 +143,13 @@ To start RADAR-CNS stack on a single node setup after installing, run
 cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
 sudo ./start-radar-stack.sh
 ```
+#### cAdvisor 
+cAdvisor (Container Advisor) provides container users an understanding of the resource usage and performance characteristics of their running containers.
+
+To view current resource performance,if running locally, try [http://localhost:8181](http://localhost:8181). This will bring up the built-in Web UI. Clicking on `/docker` in `Subcontainers` takes you to a new window with all of the Docker containers listed individually.
+
+#### Portainer
+Portainer provides simple interactive UI-based docker management. If running locally, try [http://localhost:8182](http://localhost:8182) for portainer's UI. To set-up portainer follow this [link](https://www.ostechnix.com/portainer-an-easiest-way-to-manage-docker/).
 
 ## Work in progress
 
