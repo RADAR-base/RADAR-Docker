@@ -48,7 +48,7 @@ battery_monitor:
   topics:
     - android_empatica_e4_battery_level
 
-#========================= Battery level monitor=========================#
+#======================= Disconnection monitor==========================#
 disconnect_monitor:
   email_address:
     - notifier@email
@@ -58,4 +58,4 @@ disconnect_monitor:
   email_user: user@example.com
   topics:
     - android_empatica_e4_battery_level
-  timeout: 60000
+  timeout: 300000
