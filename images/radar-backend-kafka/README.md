@@ -1,6 +1,6 @@
 # Dockerised RADAR-Backend-Kafka
 
-It runs the RADAR-CNS Backend Kafka solution based on Kafka Streams 3.1.1, for more details about Kafka Streams click [here](http://docs.confluent.io/3.1.1/streams/index.html).
+It runs the RADAR-CNS Backend Kafka solution based on Kafka Streams 3.1.2, for more details about Kafka Streams click [here](http://docs.confluent.io/3.1.2/streams/index.html).
 
 Create the docker image:
 ```

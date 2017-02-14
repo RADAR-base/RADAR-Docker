@@ -1,6 +1,6 @@
 # Dockerised RADAR-HDFS-Connector
 
-It runs the Confluent HDFS Connector 3.1.1 using a custom [RecordWriterProvider](https://github.com/RADAR-CNS/RADAR-Backend/blob/dev/src/main/java/org/radarcns/sink/hdfs/AvroRecordWriterProviderRadar.java) to support RADAR-CNS Avro schemas. For more details about Confluent HDFS Connector click [here](http://docs.confluent.io/3.1.1/connect/connect-hdfs/docs/index.html).
+It runs the Confluent HDFS Connector 3.1.2 using a custom [RecordWriterProvider](https://github.com/RADAR-CNS/RADAR-Backend/blob/dev/src/main/java/org/radarcns/sink/hdfs/AvroRecordWriterProviderRadar.java) to support RADAR-CNS Avro schemas. For more details about Confluent HDFS Connector click [here](http://docs.confluent.io/3.1.2/connect/connect-hdfs/docs/index.html).
 
 Create the docker image:
 ```
