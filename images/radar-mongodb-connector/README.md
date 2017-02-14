@@ -1,6 +1,6 @@
 # Dockerised RADAR-MongoDB-Connector
 
-It runs the RADAR-CNS MongoDB Connector project based on Confluent Platform 3.1.1, for more details check the [repository](https://github.com/RADAR-CNS/RADAR-MongoDbConnector).
+It runs the RADAR-CNS MongoDB Connector project based on Confluent Platform 3.1.2, for more details check the [repository](https://github.com/RADAR-CNS/RADAR-MongoDbConnector).
 
 Create the docker image:
 ```
