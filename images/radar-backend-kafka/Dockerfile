@@ -18,12 +18,12 @@ MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl> , Fra
 LABEL description="RADAR-CNS Backend streams and monitor"
 
 # Install RADAR-Backend
-RUN echo && echo "==> Installing Components" \
+RUN echo "==> Installing Components" \
     # Download Git RADAR-Backend release
     && echo "==> Downloading RADAR-CNS/RADAR-Backend v0.1-beta.1 release from GitHub" \
     && cd /usr/local && mkdir RADAR-Backend
 
-ADD https://github.com/RADAR-CNS/RADAR-Backend/releases/download/0.1-beta.1/radarbackend-0.1.jar /usr/share/java/
+ADD https://github.com/RADAR-CNS/RADAR-Backend/releases/download/0.1-alpha.2/radar-backend-0.1-alpha.2.jar /usr/share/java/
 
 # Load topics validator
 COPY ["./init.sh", "./kafka_status.sh", "/home/"]
