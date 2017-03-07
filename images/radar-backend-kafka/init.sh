@@ -6,4 +6,4 @@ echo "===> Waiting RADAR-CNS topics ... "
 
 # Start streams
 echo "===> Starting " $1 "...."
-./usr/bin/java -jar /usr/share/java/radarbackend-0.1.jar -c /etc/radar.yml $1
+./usr/bin/java -jar /usr/share/java/radar-backend-*.jar -c /etc/radar.yml $1
