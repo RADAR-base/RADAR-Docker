@@ -19,7 +19,7 @@ services:
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:3.1.1
+    image: confluentinc/cp-zookeeper:3.1.2-1
     networks:
       - zookeeper
     environment:
@@ -34,7 +34,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:3.1.1
+    image: confluentinc/cp-kafka:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -44,9 +44,10 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
   kafka-2:
-    image: confluentinc/cp-kafka:3.1.1
+    image: confluentinc/cp-kafka:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -56,9 +57,10 @@ services:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
   kafka-3:
-    image: confluentinc/cp-kafka:3.1.1
+    image: confluentinc/cp-kafka:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -68,12 +70,13 @@ services:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
   #---------------------------------------------------------------------------#
   # Schema Registry                                                           #
   #---------------------------------------------------------------------------#
   schema-registry-1:
-    image: confluentinc/cp-schema-registry:3.1.1
+    image: confluentinc/cp-schema-registry:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -93,7 +96,7 @@ services:
   # REST proxy                                                                #
   #---------------------------------------------------------------------------#
   rest-proxy-1:
-    image: confluentinc/cp-kafka-rest:3.1.1
+    image: confluentinc/cp-kafka-rest:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -110,28 +113,63 @@ services:
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
       KAFKA_REST_HOST_NAME: rest-proxy-1
 
+  #---------------------------------------------------------------------------#
+  # Kafka Init                                                                #
+  #---------------------------------------------------------------------------#
+  kafka-init:
+    build: kafka-radarinit
+    image: radarcns/kafka-init:3.1.2-1
+    networks:
+      - kafka
+      - zookeeper
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - rest-proxy-1
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      KAFKA_BROKERS: 3
+      RADAR_TOPICS: ${RADAR_TOPIC_LIST}
+      RADAR_PARTITIONS: 3
+      RADAR_REPLICATION_FACTOR: 3
+
 
   #---------------------------------------------------------------------------#
   # RADAR Hot Storage                                                         #
   #---------------------------------------------------------------------------#
-  mongo:
-    image: mongo:3.2.10
+  hotstorage:
+    image: radarcns/radar-hotstorage:0.1
     networks:
       - api
+    volumes:
+      - "${MONGODB_DIR}/db:/data/db"
+      - "${MONGODB_DIR}/configdb:/data/configdb"
     ports:
       - "27017:27017"
+      - "28017:28017"
+    environment:
+      RADAR_USER: ${HOTSTORAGE_USERNAME}
+      RADAR_PWD: ${HOTSTORAGE_PASSWORD}
+      RADAR_DB: ${HOTSTORAGE_NAME}
 
   #---------------------------------------------------------------------------#
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
-  tomcat:
-    image: tomcat:8.0.37
+  rest-api:
+    image: radarcns/radar-restapi:0.1
     networks:
       - api
     ports:
       - "8080:8080"
     depends_on:
-      - mongo
+      - hotstorage
+    environment:
+      MONGODB_USER: ${HOTSTORAGE_USERNAME}
+      MONGODB_PASS: ${HOTSTORAGE_PASSWORD}
+      MONGODB_DATABASE: ${HOTSTORAGE_NAME} 
+      MONGODB_HOST: hotstorage:27017
 
   #---------------------------------------------------------------------------#
   # RADAR Dashboard                                                           #
@@ -143,7 +181,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - tomcat
+      - rest-api
 
 
   #---------------------------------------------------------------------------#
@@ -194,7 +232,143 @@ services:
       - smtp.env
 
   #---------------------------------------------------------------------------#
-  # Monitoring                                                                #
+  # RADAR mongo connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-mongodb-connector:
+    image: radarcns/radar-mongodb-connector-auto:0.1
+    restart: on-failure
+    volumes:
+      - ./sink-mongo.properties:/etc/kafka-connect/sink.properties
+    networks:
+      - zookeeper
+      - kafka
+      - api
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - rest-proxy-1
+      - kafka-init
+      - hotstorage
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-mongodb-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      CONNECT_CONSUMER_MAX_POLL_RECORDS: 500
+      CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS: 300000
+      CONNECT_CONSUMER_SESSION_TIMEOUT_MS: 10000
+      CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
+
+  #---------------------------------------------------------------------------#
+  # RADAR HDFS connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-hdfs-connector:
+    image: radarcns/radar-hdfs-connector-auto:0.1
+    restart: on-failure
+    volumes:
+      - ./sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
+    networks:
+      - zookeeper
+      - kafka
+      - api
+      - hadoop
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - rest-proxy-1
+      - kafka-init
+      - hdfs-datanode-1
+      - hdfs-datanode-2
+      - hdfs-namenode
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
+      CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
+
+  #---------------------------------------------------------------------------#
+  # RADAR backend streams                                                     #
+  #---------------------------------------------------------------------------#
+  radar-backend-stream:
+    image: radarcns/radar-backend-kafka-auto:0.1
+    command:
+      - stream
+    networks:
+      - zookeeper
+      - kafka
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - kafka-init
+    volumes:
+      - ./radar.yml:/etc/radar.yml
+    environment:
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
+
+  #---------------------------------------------------------------------------#
+  # RADAR backend monitor                                                     #
+  #---------------------------------------------------------------------------#
+  radar-backend-monitor:
+    image: radarcns/radar-backend-kafka-auto:0.1
+    command:
+      - monitor
+    networks:
+      - zookeeper
+      - kafka
+      - mail
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - kafka-init
+      - smtp
+    volumes:
+      - ./radar.yml:/etc/radar.yml
+    environment:
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}      
+
+  #---------------------------------------------------------------------------#
+  # Docker Monitoring                                                         #
   #---------------------------------------------------------------------------#
   cadvisor:
     image: google/cadvisor:v0.24.1
@@ -205,6 +379,7 @@ services:
       - "/var/run:/var/run:rw"
       - "/sys:/sys:ro"
       - "/var/lib/docker/:/var/lib/docker:ro"
+
   portainer:
     image: portainer/portainer:1.11.1
     ports:

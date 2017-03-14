@@ -15,7 +15,7 @@ services:
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:3.1.1
+    image: confluentinc/cp-zookeeper:3.1.2-1
     networks:
       - zookeeper
     environment:
@@ -27,7 +27,7 @@ services:
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
 
   zookeeper-2:
-    image: confluentinc/cp-zookeeper:3.1.1
+    image: confluentinc/cp-zookeeper:3.1.2-1
     networks:
       - zookeeper
     environment:
@@ -39,7 +39,7 @@ services:
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
 
   zookeeper-3:
-    image: confluentinc/cp-zookeeper:3.1.1
+    image: confluentinc/cp-zookeeper:3.1.2-1
     networks:
       - zookeeper
     environment:
@@ -54,7 +54,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:3.1.1
+    image: confluentinc/cp-kafka:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -68,7 +68,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
 
   kafka-2:
-    image: confluentinc/cp-kafka:3.1.1
+    image: confluentinc/cp-kafka:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -80,7 +80,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
 
   kafka-3:
-    image: confluentinc/cp-kafka:3.1.1
+    image: confluentinc/cp-kafka:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -95,7 +95,7 @@ services:
   # Schema Registry                                                           #
   #---------------------------------------------------------------------------#
   schema-registry-1:
-    image: confluentinc/cp-schema-registry:3.1.1
+    image: confluentinc/cp-schema-registry:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -115,7 +115,7 @@ services:
   # Kafka Connector                                                           #
   #---------------------------------------------------------------------------#
   connect:
-    image: confluentinc/cp-kafka-connect:3.1.1
+    image: confluentinc/cp-kafka-connect:3.1.2-1
     networks:
       - kafka
       - zookeeper
@@ -149,7 +149,7 @@ services:
   # REST proxy                                                                #
   #---------------------------------------------------------------------------#
   rest-proxy-1:
-    image: confluentinc/cp-kafka-rest:3.1.1
+    image: confluentinc/cp-kafka-rest:3.1.2-1
     networks:
       - kafka
       - zookeeper
