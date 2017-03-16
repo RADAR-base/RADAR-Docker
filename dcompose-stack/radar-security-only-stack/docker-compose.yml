@@ -1,0 +1,63 @@
+---
+version: '2'
+
+networks:
+  api:
+    driver: bridge
+
+services:
+
+  #---------------------------------------------------------------------------#
+  # RADAR Hot Storage                                                         #
+  #---------------------------------------------------------------------------#
+  hotstorage:
+    image: radarcns/radar-hotstorage:0.1
+    networks:
+      - api
+    volumes:
+      - "${MONGODB_DIR}/db:/data/db"
+      - "${MONGODB_DIR}/configdb:/data/configdb"
+    ports:
+      - "27017:27017"
+      - "28017:28017"
+    environment:
+      RADAR_USER: ${HOTSTORAGE_USERNAME}
+      RADAR_PWD: ${HOTSTORAGE_PASSWORD}
+      RADAR_DB: ${HOTSTORAGE_NAME}
+
+  #---------------------------------------------------------------------------#
+  # RADAR REST API                                                            #
+  #---------------------------------------------------------------------------#
+  rest-api:
+    image: radarcns/radar-restapi:0.1
+    networks:
+      - api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - hotstorage
+    environment:
+      MONGODB_USER: ${HOTSTORAGE_USERNAME}
+      MONGODB_PASS: ${HOTSTORAGE_PASSWORD}
+      MONGODB_DATABASE: ${HOTSTORAGE_NAME} 
+      MONGODB_HOST: hotstorage:27017
+
+
+  #---------------------------------------------------------------------------#
+  # WSO2 Identity Server                                                      #
+  #---------------------------------------------------------------------------#
+  is:
+    image: isim/wso2is:5.0.0
+    networks:
+      - api
+    hostname: localhost
+    ports:
+    - "9443:9443"
+    - "9763:9763"
+    volumes:
+    - ./wso2is/master-datasources.xml:/opt/wso2is-$IS_VERSION/repository/conf/datasources/master-datasources.xml
+    - ./wso2is/carbon.xml:/opt/wso2is-$IS_VERSION/repository/conf/carbon.xml
+    - ./wso2is/registry.xml:/opt/wso2is-$IS_VERSION/repository/conf/registry.xml
+    - ./wso2is/user-mgt.xml:/opt/wso2is-$IS_VERSION/repository/conf/user-mgt.xml
+    - ./wso2is/sso-idp-config.xml:/opt/wso2is-$IS_VERSION/repository/conf/security/sso-idp-config.xml
+
