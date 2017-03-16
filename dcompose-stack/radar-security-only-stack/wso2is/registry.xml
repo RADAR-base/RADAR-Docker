@@ -76,14 +76,14 @@
       <dataSource>jdbc/WSO2CarbonDB_GREG</dataSource>
     </dbConfig>
 
-    <remoteInstance url="$GREG_REMOTE_URL">
+    <!--remoteInstance url="$GREG_REMOTE_URL">
       <id>instanceid</id>
       <dbConfig>remote_registry</dbConfig>
       <cacheId>root@jdbc:mysql://wso2_mysql_1:3306/registrydb</cacheId>
       <readOnly>false</readOnly>
       <enableCache>false</enableCache>
       <registryRoot>/</registryRoot>
-    </remoteInstance>
+    </remoteInstance-->
 
     <mount path="/_system/governance" overwrite="true">
       <instanceId>instanceid</instanceId>

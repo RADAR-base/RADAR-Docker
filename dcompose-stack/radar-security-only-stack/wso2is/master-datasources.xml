@@ -27,7 +27,7 @@
       </definition>
     </datasource>
 
-    <datasource>
+    <!--datasource>
       <name>WSO2_CARBON_DB_GREG</name>
       <description>The datasource used for registry and user manager</description>
       <jndiConfig>
@@ -46,9 +46,9 @@
           <validationInterval>30000</validationInterval>
         </configuration>
       </definition>
-    </datasource>
+    </datasource-->
 
-    <datasource>
+    <!--datasource>
       <name>WSO2_CARBON_DB_IDENTITY</name>
       <description>The datasource used for IAM</description>
       <jndiConfig>
@@ -67,7 +67,7 @@
           <validationInterval>30000</validationInterval>
         </configuration>
       </definition>
-    </datasource>
+    </datasource-->
 
     <!-- For an explanation of the properties, see: http://people.apache.org/~fhanik/jdbc-pool/jdbc-pool.html -->
     <!--datasource>

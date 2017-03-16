@@ -47,7 +47,7 @@ services:
   # WSO2 Identity Server                                                      #
   #---------------------------------------------------------------------------#
   is:
-    image: isim/wso2is:5.0.0
+    image: isim/wso2is:$IS_VERSION
     networks:
       - api
     hostname: localhost
