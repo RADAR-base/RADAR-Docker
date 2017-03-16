@@ -1,0 +1,589 @@
+Attaching to radarcphadoopstack_radar-mongodb-connector_1
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m . /etc/confluent/docker/apply-mesos-overrides
+[36mradar-mongodb-connector_1  |[0m + . /etc/confluent/docker/apply-mesos-overrides
+[36mradar-mongodb-connector_1  |[0m #!/usr/bin/env bash
+[36mradar-mongodb-connector_1  |[0m #
+[36mradar-mongodb-connector_1  |[0m # Copyright 2016 Confluent Inc.
+[36mradar-mongodb-connector_1  |[0m #
+[36mradar-mongodb-connector_1  |[0m # Licensed under the Apache License, Version 2.0 (the "License");
+[36mradar-mongodb-connector_1  |[0m # you may not use this file except in compliance with the License.
+[36mradar-mongodb-connector_1  |[0m # You may obtain a copy of the License at
+[36mradar-mongodb-connector_1  |[0m #
+[36mradar-mongodb-connector_1  |[0m # http://www.apache.org/licenses/LICENSE-2.0
+[36mradar-mongodb-connector_1  |[0m #
+[36mradar-mongodb-connector_1  |[0m # Unless required by applicable law or agreed to in writing, software
+[36mradar-mongodb-connector_1  |[0m # distributed under the License is distributed on an "AS IS" BASIS,
+[36mradar-mongodb-connector_1  |[0m # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+[36mradar-mongodb-connector_1  |[0m # See the License for the specific language governing permissions and
+[36mradar-mongodb-connector_1  |[0m # limitations under the License.
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m # Mesos DC/OS docker deployments will have HOST and PORT0 
+[36mradar-mongodb-connector_1  |[0m # set for the proxying of the service.
+[36mradar-mongodb-connector_1  |[0m # 
+[36mradar-mongodb-connector_1  |[0m # Use those values provide things we know we'll need.
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m [ -n "${HOST:-}" ] && [ -z "${CONNECT_REST_ADVERTISED_HOST_NAME:-}" ] && \
+[36mradar-mongodb-connector_1  |[0m 	export CONNECT_REST_ADVERTISED_HOST_NAME=$HOST || true
+[36mradar-mongodb-connector_1  |[0m ++ '[' -n '' ']'
+[36mradar-mongodb-connector_1  |[0m ++ true
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m [ -n "${PORT0:-}" ] && [ -z "${CONNECT_REST_ADVERTISED_PORT:-}" ] && \
+[36mradar-mongodb-connector_1  |[0m 	export CONNECT_REST_ADVERTISED_PORT=$PORT0 || true
+[36mradar-mongodb-connector_1  |[0m ++ '[' -n '' ']'
+[36mradar-mongodb-connector_1  |[0m ++ true
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m # And default to 8083, which MUST match the containerPort specification
+[36mradar-mongodb-connector_1  |[0m # in the Mesos package for this service.
+[36mradar-mongodb-connector_1  |[0m [ -z "${CONNECT_REST_PORT:-}" ] && \
+[36mradar-mongodb-connector_1  |[0m 	export CONNECT_REST_PORT=8083 || true
+[36mradar-mongodb-connector_1  |[0m ++ '[' -z 8083 ']'
+[36mradar-mongodb-connector_1  |[0m ++ true
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m echo "===> ENV Variables ..."
+[36mradar-mongodb-connector_1  |[0m + echo '===> ENV Variables ...'
+[36mradar-mongodb-connector_1  |[0m env | sort
+[36mradar-mongodb-connector_1  |[0m ===> ENV Variables ...
+[36mradar-mongodb-connector_1  |[0m + sort
+[36mradar-mongodb-connector_1  |[0m + env
+[36mradar-mongodb-connector_1  |[0m COMPONENT=kafka-connect
+[36mradar-mongodb-connector_1  |[0m CONFLUENT_DEB_REPO=http://packages.confluent.io
+[36mradar-mongodb-connector_1  |[0m CONFLUENT_DEB_VERSION=1
+[36mradar-mongodb-connector_1  |[0m CONFLUENT_MAJOR_VERSION=3
+[36mradar-mongodb-connector_1  |[0m CONFLUENT_MINOR_VERSION=1
+[36mradar-mongodb-connector_1  |[0m CONFLUENT_PATCH_VERSION=1
+[36mradar-mongodb-connector_1  |[0m CONFLUENT_VERSION=3.1.1
+[36mradar-mongodb-connector_1  |[0m CONNECT_BOOTSTRAP_SERVERS=PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+[36mradar-mongodb-connector_1  |[0m CONNECT_CONFIG_STORAGE_TOPIC=default.config
+[36mradar-mongodb-connector_1  |[0m CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS=3000
+[36mradar-mongodb-connector_1  |[0m CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS=300000
+[36mradar-mongodb-connector_1  |[0m CONNECT_CONSUMER_MAX_POLL_RECORDS=500
+[36mradar-mongodb-connector_1  |[0m CONNECT_CONSUMER_SESSION_TIMEOUT_MS=10000
+[36mradar-mongodb-connector_1  |[0m CONNECT_GROUP_ID=default
+[36mradar-mongodb-connector_1  |[0m CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+[36mradar-mongodb-connector_1  |[0m CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+[36mradar-mongodb-connector_1  |[0m CONNECT_KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
+[36mradar-mongodb-connector_1  |[0m CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry-1:8081
+[36mradar-mongodb-connector_1  |[0m CONNECT_OFFSET_STORAGE_FILE_FILENAME=/tmp/connect2.offset
+[36mradar-mongodb-connector_1  |[0m CONNECT_OFFSET_STORAGE_TOPIC=default.offsets
+[36mradar-mongodb-connector_1  |[0m CONNECT_REST_ADVERTISED_HOST_NAME=radar-mongodb-connector
+[36mradar-mongodb-connector_1  |[0m CONNECT_REST_PORT=8083
+[36mradar-mongodb-connector_1  |[0m CONNECT_STATUS_STORAGE_TOPIC=default.status
+[36mradar-mongodb-connector_1  |[0m CONNECT_VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
+[36mradar-mongodb-connector_1  |[0m CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry-1:8081
+[36mradar-mongodb-connector_1  |[0m CONNECT_ZOOKEEPER_CONNECT=zookeeper-1:2181
+[36mradar-mongodb-connector_1  |[0m HOME=/root
+[36mradar-mongodb-connector_1  |[0m HOSTNAME=bd01f640bf9a
+[36mradar-mongodb-connector_1  |[0m KAFKA_REST_PROXY=http://rest-proxy-1:8082
+[36mradar-mongodb-connector_1  |[0m KAFKA_VERSION=0.10.1.0
+[36mradar-mongodb-connector_1  |[0m LANG=C.UTF-8
+[36mradar-mongodb-connector_1  |[0m PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+[36mradar-mongodb-connector_1  |[0m PWD=/
+[36mradar-mongodb-connector_1  |[0m PYTHON_PIP_VERSION=8.1.2
+[36mradar-mongodb-connector_1  |[0m PYTHON_VERSION=2.7.9-1
+[36mradar-mongodb-connector_1  |[0m SCALA_VERSION=2.11
+[36mradar-mongodb-connector_1  |[0m SHLVL=1
+[36mradar-mongodb-connector_1  |[0m TOPIC_LIST=android_empatica_e4_acceleration,android_empatica_e4_acceleration_output,android_empatica_e4_battery_level,android_empatica_e4_battery_level_output,android_empatica_e4_blood_volume_pulse,android_empatica_e4_blood_volume_pulse_output,android_empatica_e4_electrodermal_activity,android_empatica_e4_electrodermal_activity_output,android_empatica_e4_heartrate_output,android_empatica_e4_inter_beat_interval,android_empatica_e4_inter_beat_interval_output,android_empatica_e4_sensor_status,android_empatica_e4_sensor_status_output,android_empatica_e4_temperature,android_empatica_e4_temperature_output
+[36mradar-mongodb-connector_1  |[0m ZULU_OPENJDK_VERSION=8=8.17.0.3
+[36mradar-mongodb-connector_1  |[0m _=/usr/bin/env
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m ===> User
+[36mradar-mongodb-connector_1  |[0m echo "===> User"
+[36mradar-mongodb-connector_1  |[0m + echo '===> User'
+[36mradar-mongodb-connector_1  |[0m id
+[36mradar-mongodb-connector_1  |[0m + id
+[36mradar-mongodb-connector_1  |[0m uid=0(root) gid=0(root) groups=0(root)
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m echo "===> Configuring ..."
+[36mradar-mongodb-connector_1  |[0m + echo '===> Configuring ...'
+[36mradar-mongodb-connector_1  |[0m /etc/confluent/docker/configure
+[36mradar-mongodb-connector_1  |[0m + /etc/confluent/docker/configure
+[36mradar-mongodb-connector_1  |[0m ===> Configuring ...
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_BOOTSTRAP_SERVERS
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_BOOTSTRAP_SERVERS
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_GROUP_ID
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_GROUP_ID
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_CONFIG_STORAGE_TOPIC
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_CONFIG_STORAGE_TOPIC
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_OFFSET_STORAGE_TOPIC
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_OFFSET_STORAGE_TOPIC
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_STATUS_STORAGE_TOPIC
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_STATUS_STORAGE_TOPIC
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_KEY_CONVERTER
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_KEY_CONVERTER
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_VALUE_CONVERTER
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_VALUE_CONVERTER
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_INTERNAL_KEY_CONVERTER
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_INTERNAL_KEY_CONVERTER
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_INTERNAL_VALUE_CONVERTER
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_INTERNAL_VALUE_CONVERTER
+[36mradar-mongodb-connector_1  |[0m # This is required to avoid config bugs. You should set this to a value that is
+[36mradar-mongodb-connector_1  |[0m # resolvable by all containers.
+[36mradar-mongodb-connector_1  |[0m dub ensure CONNECT_REST_ADVERTISED_HOST_NAME
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_REST_ADVERTISED_HOST_NAME
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m # Default to 8083, which matches the mesos-overrides. This is here in case we extend the containers to remove the mesos overrides.
+[36mradar-mongodb-connector_1  |[0m if [ -z "$CONNECT_REST_PORT" ]; then
+[36mradar-mongodb-connector_1  |[0m   export CONNECT_REST_PORT=8083
+[36mradar-mongodb-connector_1  |[0m fi
+[36mradar-mongodb-connector_1  |[0m + '[' -z 8083 ']'
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m # Fix for https://issues.apache.org/jira/browse/KAFKA-3988
+[36mradar-mongodb-connector_1  |[0m if [[ $CONNECT_INTERNAL_KEY_CONVERTER == "org.apache.kafka.connect.json.JsonConverter" ]] || [[ $CONNECT_INTERNAL_VALUE_CONVERTER == "org.apache.kafka.connect.json.JsonConverter" ]]
+[36mradar-mongodb-connector_1  |[0m then
+[36mradar-mongodb-connector_1  |[0m   export CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-mongodb-connector_1  |[0m   export CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-mongodb-connector_1  |[0m fi
+[36mradar-mongodb-connector_1  |[0m + [[ org.apache.kafka.connect.json.JsonConverter == \o\r\g\.\a\p\a\c\h\e\.\k\a\f\k\a\.\c\o\n\n\e\c\t\.\j\s\o\n\.\J\s\o\n\C\o\n\v\e\r\t\e\r ]]
+[36mradar-mongodb-connector_1  |[0m + export CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-mongodb-connector_1  |[0m + CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-mongodb-connector_1  |[0m + export CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-mongodb-connector_1  |[0m + CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m if [[ $CONNECT_KEY_CONVERTER == "io.confluent.connect.avro.AvroConverter" ]]
+[36mradar-mongodb-connector_1  |[0m then
+[36mradar-mongodb-connector_1  |[0m   dub ensure CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
+[36mradar-mongodb-connector_1  |[0m fi
+[36mradar-mongodb-connector_1  |[0m + [[ io.confluent.connect.avro.AvroConverter == \i\o\.\c\o\n\f\l\u\e\n\t\.\c\o\n\n\e\c\t\.\a\v\r\o\.\A\v\r\o\C\o\n\v\e\r\t\e\r ]]
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m if [[ $CONNECT_VALUE_CONVERTER == "io.confluent.connect.avro.AvroConverter" ]]
+[36mradar-mongodb-connector_1  |[0m then
+[36mradar-mongodb-connector_1  |[0m   dub ensure CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+[36mradar-mongodb-connector_1  |[0m fi
+[36mradar-mongodb-connector_1  |[0m + [[ io.confluent.connect.avro.AvroConverter == \i\o\.\c\o\n\f\l\u\e\n\t\.\c\o\n\n\e\c\t\.\a\v\r\o\.\A\v\r\o\C\o\n\v\e\r\t\e\r ]]
+[36mradar-mongodb-connector_1  |[0m + dub ensure CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m dub path /etc/"${COMPONENT}"/ writable
+[36mradar-mongodb-connector_1  |[0m + dub path /etc/kafka-connect/ writable
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m dub template "/etc/confluent/docker/${COMPONENT}.properties.template" "/etc/${COMPONENT}/${COMPONENT}.properties"
+[36mradar-mongodb-connector_1  |[0m + dub template /etc/confluent/docker/kafka-connect.properties.template /etc/kafka-connect/kafka-connect.properties
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m # The connect-distributed script expects the log4j config at /etc/kafka/connect-log4j.properties.
+[36mradar-mongodb-connector_1  |[0m dub template "/etc/confluent/docker/log4j.properties.template" "/etc/kafka/connect-log4j.properties"
+[36mradar-mongodb-connector_1  |[0m + dub template /etc/confluent/docker/log4j.properties.template /etc/kafka/connect-log4j.properties
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m echo "===> Running preflight checks ... "
+[36mradar-mongodb-connector_1  |[0m + echo '===> Running preflight checks ... '
+[36mradar-mongodb-connector_1  |[0m /etc/confluent/docker/ensure
+[36mradar-mongodb-connector_1  |[0m ===> Running preflight checks ... 
+[36mradar-mongodb-connector_1  |[0m + /etc/confluent/docker/ensure
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m echo "===> Check if Kafka is healthy ..."
+[36mradar-mongodb-connector_1  |[0m + echo '===> Check if Kafka is healthy ...'
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m cub kafka-ready \
+[36mradar-mongodb-connector_1  |[0m     "${CONNECT_CUB_KAFKA_MIN_BROKERS:-1}" \
+[36mradar-mongodb-connector_1  |[0m ===> Check if Kafka is healthy ...
+[36mradar-mongodb-connector_1  |[0m     "${CONNECT_CUB_KAFKA_TIMEOUT:-40}" \
+[36mradar-mongodb-connector_1  |[0m     -b "$CONNECT_BOOTSTRAP_SERVERS"
+[36mradar-mongodb-connector_1  |[0m + cub kafka-ready 1 40 -b PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+[36mradar-mongodb-connector_1  |[0m MetadataClientConfig values: 
+[36mradar-mongodb-connector_1  |[0m 	ssl.protocol = TLS
+[36mradar-mongodb-connector_1  |[0m 	ssl.provider = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.location = null
+[36mradar-mongodb-connector_1  |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-mongodb-connector_1  |[0m 	ssl.cipher.suites = null
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.type = JKS
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.service.name = null
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-mongodb-connector_1  |[0m 	security.protocol = PLAINTEXT
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.type = JKS
+[36mradar-mongodb-connector_1  |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.location = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.password = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-mongodb-connector_1  |[0m 	sasl.mechanism = GSSAPI
+[36mradar-mongodb-connector_1  |[0m 	ssl.key.password = null
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.password = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m echo "===> Launching ... "
+[36mradar-mongodb-connector_1  |[0m + echo '===> Launching ... '
+[36mradar-mongodb-connector_1  |[0m exec /etc/confluent/docker/launch
+[36mradar-mongodb-connector_1  |[0m ===> Launching ... 
+[36mradar-mongodb-connector_1  |[0m + exec /etc/confluent/docker/launch
+[36mradar-mongodb-connector_1  |[0m ===> Wait for infrastructure ...
+[36mradar-mongodb-connector_1  |[0m Waiting 1 second before retrying ...
+[36mradar-mongodb-connector_1  |[0m curl: (7) Failed to connect to rest-proxy-1 port 8082: Connection refused
+[36mradar-mongodb-connector_1  |[0m Waiting 2 second before retrying ...
+[36mradar-mongodb-connector_1  |[0m curl: (7) Failed to connect to rest-proxy-1 port 8082: Connection refused
+[36mradar-mongodb-connector_1  |[0m Waiting 4 second before retrying ...
+[36mradar-mongodb-connector_1  |[0m Waiting 8 second before retrying ...
+[36mradar-mongodb-connector_1  |[0m Waiting 16 second before retrying ...
+[36mradar-mongodb-connector_1  |[0m All topics are now available. Ready to go!
+[36mradar-mongodb-connector_1  |[0m ===> Launching kafka-connect ... new
+[36mradar-mongodb-connector_1  |[0m /etc/kafka-connect/jars/radar-mongodb-connector-0.1.jar
+[36mradar-mongodb-connector_1  |[0m SLF4J: Class path contains multiple SLF4J bindings.
+[36mradar-mongodb-connector_1  |[0m SLF4J: Found binding in [jar:file:/usr/share/java/kafka-serde-tools/slf4j-log4j12-1.7.6.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[36mradar-mongodb-connector_1  |[0m SLF4J: Found binding in [jar:file:/usr/share/java/kafka-connect-elasticsearch/slf4j-simple-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[36mradar-mongodb-connector_1  |[0m SLF4J: Found binding in [jar:file:/usr/share/java/kafka-connect-hdfs/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[36mradar-mongodb-connector_1  |[0m SLF4J: Found binding in [jar:file:/usr/share/java/kafka/slf4j-log4j12-1.7.21.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[36mradar-mongodb-connector_1  |[0m SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+[36mradar-mongodb-connector_1  |[0m SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:49,580] INFO StandaloneConfig values: 
+[36mradar-mongodb-connector_1  |[0m 	access.control.allow.methods = 
+[36mradar-mongodb-connector_1  |[0m 	access.control.allow.origin = 
+[36mradar-mongodb-connector_1  |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-mongodb-connector_1  |[0m 	internal.key.converter = class org.apache.kafka.connect.json.JsonConverter
+[36mradar-mongodb-connector_1  |[0m 	internal.value.converter = class org.apache.kafka.connect.json.JsonConverter
+[36mradar-mongodb-connector_1  |[0m 	key.converter = class io.confluent.connect.avro.AvroConverter
+[36mradar-mongodb-connector_1  |[0m 	offset.flush.interval.ms = 60000
+[36mradar-mongodb-connector_1  |[0m 	offset.flush.timeout.ms = 5000
+[36mradar-mongodb-connector_1  |[0m 	offset.storage.file.filename = /tmp/connect2.offset
+[36mradar-mongodb-connector_1  |[0m 	rest.advertised.host.name = radar-mongodb-connector
+[36mradar-mongodb-connector_1  |[0m 	rest.advertised.port = null
+[36mradar-mongodb-connector_1  |[0m 	rest.host.name = null
+[36mradar-mongodb-connector_1  |[0m 	rest.port = 8083
+[36mradar-mongodb-connector_1  |[0m 	task.shutdown.graceful.timeout.ms = 5000
+[36mradar-mongodb-connector_1  |[0m 	value.converter = class io.confluent.connect.avro.AvroConverter
+[36mradar-mongodb-connector_1  |[0m  (org.apache.kafka.connect.runtime.standalone.StandaloneConfig)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:49,714] INFO Logging initialized @505ms (org.eclipse.jetty.util.log)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:50,111] INFO Kafka Connect starting (org.apache.kafka.connect.runtime.Connect)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:50,111] INFO Herder starting (org.apache.kafka.connect.runtime.standalone.StandaloneHerder)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:50,111] INFO Worker starting (org.apache.kafka.connect.runtime.Worker)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:50,112] INFO Starting FileOffsetBackingStore with file /tmp/connect2.offset (org.apache.kafka.connect.storage.FileOffsetBackingStore)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:50,197] INFO Worker started (org.apache.kafka.connect.runtime.Worker)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:50,198] INFO Herder started (org.apache.kafka.connect.runtime.standalone.StandaloneHerder)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:50,199] INFO Starting REST server (org.apache.kafka.connect.runtime.rest.RestServer)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:50,405] INFO jetty-9.2.15.v20160210 (org.eclipse.jetty.server.Server)
+[36mradar-mongodb-connector_1  |[0m Feb 06, 2017 2:57:52 PM org.glassfish.jersey.internal.Errors logErrors
+[36mradar-mongodb-connector_1  |[0m WARNING: The following warnings have been detected: WARNING: The (sub)resource method listConnectors in org.apache.kafka.connect.runtime.rest.resources.ConnectorsResource contains empty path annotation.
+[36mradar-mongodb-connector_1  |[0m WARNING: The (sub)resource method createConnector in org.apache.kafka.connect.runtime.rest.resources.ConnectorsResource contains empty path annotation.
+[36mradar-mongodb-connector_1  |[0m WARNING: The (sub)resource method listConnectorPlugins in org.apache.kafka.connect.runtime.rest.resources.ConnectorPluginsResource contains empty path annotation.
+[36mradar-mongodb-connector_1  |[0m WARNING: The (sub)resource method serverInfo in org.apache.kafka.connect.runtime.rest.resources.RootResource contains empty path annotation.
+[36mradar-mongodb-connector_1  |[0m 
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,219] INFO Started o.e.j.s.ServletContextHandler@6928f576{/,null,AVAILABLE} (org.eclipse.jetty.server.handler.ContextHandler)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,242] INFO Started ServerConnector@67427b69{HTTP/1.1}{0.0.0.0:8083} (org.eclipse.jetty.server.ServerConnector)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,242] INFO Started @3035ms (org.eclipse.jetty.server.Server)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,243] INFO REST server listening at http://172.22.0.6:8083/, advertising URL http://radar-mongodb-connector:8083/ (org.apache.kafka.connect.runtime.rest.RestServer)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,243] INFO Kafka Connect started (org.apache.kafka.connect.runtime.Connect)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,249] INFO ConnectorConfig values: 
+[36mradar-mongodb-connector_1  |[0m 	connector.class = org.radarcns.mongodb.MongoDbSinkConnector
+[36mradar-mongodb-connector_1  |[0m 	key.converter = null
+[36mradar-mongodb-connector_1  |[0m 	name = radar-connector-mongodb-sink
+[36mradar-mongodb-connector_1  |[0m 	tasks.max = 1
+[36mradar-mongodb-connector_1  |[0m 	value.converter = null
+[36mradar-mongodb-connector_1  |[0m  (org.apache.kafka.connect.runtime.ConnectorConfig)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,249] INFO Creating connector radar-connector-mongodb-sink of type org.radarcns.mongodb.MongoDbSinkConnector (org.apache.kafka.connect.runtime.Worker)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,253] INFO Instantiated connector radar-connector-mongodb-sink with version 0.10.1.0-cp2 of type class org.radarcns.mongodb.MongoDbSinkConnector (org.apache.kafka.connect.runtime.Worker)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,263] INFO User configuration are: 
+[36mradar-mongodb-connector_1  |[0m 	mongo.port: 27017
+[36mradar-mongodb-connector_1  |[0m 	connector.class: org.radarcns.mongodb.MongoDbSinkConnector
+[36mradar-mongodb-connector_1  |[0m 	mongo.password: mongodb
+[36mradar-mongodb-connector_1  |[0m 	mongo.database: radarcns
+[36mradar-mongodb-connector_1  |[0m 	record.converter.class: org.radarcns.sink.mongodb.RecordConverterFactoryRadar
+[36mradar-mongodb-connector_1  |[0m 	mongo.username: mongodb
+[36mradar-mongodb-connector_1  |[0m 	mongo.host: hotstorage
+[36mradar-mongodb-connector_1  |[0m 	topics: android_empatica_e4_acceleration_output, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature_output
+[36mradar-mongodb-connector_1  |[0m 	tasks.max: 1
+[36mradar-mongodb-connector_1  |[0m 	name: radar-connector-mongodb-sink (org.radarcns.mongodb.MongoDbSinkConnector)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,265] INFO Finished creating connector radar-connector-mongodb-sink (org.apache.kafka.connect.runtime.Worker)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,266] INFO SinkConnectorConfig values: 
+[36mradar-mongodb-connector_1  |[0m 	connector.class = org.radarcns.mongodb.MongoDbSinkConnector
+[36mradar-mongodb-connector_1  |[0m 	key.converter = null
+[36mradar-mongodb-connector_1  |[0m 	name = radar-connector-mongodb-sink
+[36mradar-mongodb-connector_1  |[0m 	tasks.max = 1
+[36mradar-mongodb-connector_1  |[0m 	topics = [android_empatica_e4_acceleration_output, android_empatica_e4_battery_level_output, android_empatica_e4_blood_volume_pulse_output, android_empatica_e4_electrodermal_activity_output, android_empatica_e4_heartrate_output, android_empatica_e4_inter_beat_interval_output, android_empatica_e4_sensor_status_output, android_empatica_e4_temperature_output]
+[36mradar-mongodb-connector_1  |[0m 	value.converter = null
+[36mradar-mongodb-connector_1  |[0m  (org.apache.kafka.connect.runtime.SinkConnectorConfig)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,267] INFO At most 1 will be started (org.radarcns.mongodb.MongoDbSinkConnector)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,268] INFO Creating task radar-connector-mongodb-sink-0 (org.apache.kafka.connect.runtime.Worker)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,268] INFO ConnectorConfig values: 
+[36mradar-mongodb-connector_1  |[0m 	connector.class = org.radarcns.mongodb.MongoDbSinkConnector
+[36mradar-mongodb-connector_1  |[0m 	key.converter = null
+[36mradar-mongodb-connector_1  |[0m 	name = radar-connector-mongodb-sink
+[36mradar-mongodb-connector_1  |[0m 	tasks.max = 1
+[36mradar-mongodb-connector_1  |[0m 	value.converter = null
+[36mradar-mongodb-connector_1  |[0m  (org.apache.kafka.connect.runtime.ConnectorConfig)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,270] INFO TaskConfig values: 
+[36mradar-mongodb-connector_1  |[0m 	task.class = class org.radarcns.mongodb.MongoDbSinkTask
+[36mradar-mongodb-connector_1  |[0m  (org.apache.kafka.connect.runtime.TaskConfig)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,270] INFO Instantiated task radar-connector-mongodb-sink-0 with version 0.10.1.0-cp2 of type org.radarcns.mongodb.MongoDbSinkTask (org.apache.kafka.connect.runtime.Worker)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,311] INFO ConsumerConfig values: 
+[36mradar-mongodb-connector_1  |[0m 	auto.commit.interval.ms = 5000
+[36mradar-mongodb-connector_1  |[0m 	auto.offset.reset = earliest
+[36mradar-mongodb-connector_1  |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-mongodb-connector_1  |[0m 	check.crcs = true
+[36mradar-mongodb-connector_1  |[0m 	client.id = 
+[36mradar-mongodb-connector_1  |[0m 	connections.max.idle.ms = 540000
+[36mradar-mongodb-connector_1  |[0m 	enable.auto.commit = false
+[36mradar-mongodb-connector_1  |[0m 	exclude.internal.topics = true
+[36mradar-mongodb-connector_1  |[0m 	fetch.max.bytes = 52428800
+[36mradar-mongodb-connector_1  |[0m 	fetch.max.wait.ms = 500
+[36mradar-mongodb-connector_1  |[0m 	fetch.min.bytes = 1
+[36mradar-mongodb-connector_1  |[0m 	group.id = connect-radar-connector-mongodb-sink
+[36mradar-mongodb-connector_1  |[0m 	heartbeat.interval.ms = 3000
+[36mradar-mongodb-connector_1  |[0m 	interceptor.classes = null
+[36mradar-mongodb-connector_1  |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-mongodb-connector_1  |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-mongodb-connector_1  |[0m 	max.poll.interval.ms = 300000
+[36mradar-mongodb-connector_1  |[0m 	max.poll.records = 500
+[36mradar-mongodb-connector_1  |[0m 	metadata.max.age.ms = 300000
+[36mradar-mongodb-connector_1  |[0m 	metric.reporters = []
+[36mradar-mongodb-connector_1  |[0m 	metrics.num.samples = 2
+[36mradar-mongodb-connector_1  |[0m 	metrics.sample.window.ms = 30000
+[36mradar-mongodb-connector_1  |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-mongodb-connector_1  |[0m 	receive.buffer.bytes = 65536
+[36mradar-mongodb-connector_1  |[0m 	reconnect.backoff.ms = 50
+[36mradar-mongodb-connector_1  |[0m 	request.timeout.ms = 305000
+[36mradar-mongodb-connector_1  |[0m 	retry.backoff.ms = 100
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.service.name = null
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-mongodb-connector_1  |[0m 	sasl.mechanism = GSSAPI
+[36mradar-mongodb-connector_1  |[0m 	security.protocol = PLAINTEXT
+[36mradar-mongodb-connector_1  |[0m 	send.buffer.bytes = 131072
+[36mradar-mongodb-connector_1  |[0m 	session.timeout.ms = 10000
+[36mradar-mongodb-connector_1  |[0m 	ssl.cipher.suites = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-mongodb-connector_1  |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.key.password = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.location = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.password = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.type = JKS
+[36mradar-mongodb-connector_1  |[0m 	ssl.protocol = TLS
+[36mradar-mongodb-connector_1  |[0m 	ssl.provider = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.secure.random.implementation = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.location = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.password = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.type = JKS
+[36mradar-mongodb-connector_1  |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-mongodb-connector_1  |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,333] INFO ConsumerConfig values: 
+[36mradar-mongodb-connector_1  |[0m 	auto.commit.interval.ms = 5000
+[36mradar-mongodb-connector_1  |[0m 	auto.offset.reset = earliest
+[36mradar-mongodb-connector_1  |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-mongodb-connector_1  |[0m 	check.crcs = true
+[36mradar-mongodb-connector_1  |[0m 	client.id = consumer-1
+[36mradar-mongodb-connector_1  |[0m 	connections.max.idle.ms = 540000
+[36mradar-mongodb-connector_1  |[0m 	enable.auto.commit = false
+[36mradar-mongodb-connector_1  |[0m 	exclude.internal.topics = true
+[36mradar-mongodb-connector_1  |[0m 	fetch.max.bytes = 52428800
+[36mradar-mongodb-connector_1  |[0m 	fetch.max.wait.ms = 500
+[36mradar-mongodb-connector_1  |[0m 	fetch.min.bytes = 1
+[36mradar-mongodb-connector_1  |[0m 	group.id = connect-radar-connector-mongodb-sink
+[36mradar-mongodb-connector_1  |[0m 	heartbeat.interval.ms = 3000
+[36mradar-mongodb-connector_1  |[0m 	interceptor.classes = null
+[36mradar-mongodb-connector_1  |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-mongodb-connector_1  |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-mongodb-connector_1  |[0m 	max.poll.interval.ms = 300000
+[36mradar-mongodb-connector_1  |[0m 	max.poll.records = 500
+[36mradar-mongodb-connector_1  |[0m 	metadata.max.age.ms = 300000
+[36mradar-mongodb-connector_1  |[0m 	metric.reporters = []
+[36mradar-mongodb-connector_1  |[0m 	metrics.num.samples = 2
+[36mradar-mongodb-connector_1  |[0m 	metrics.sample.window.ms = 30000
+[36mradar-mongodb-connector_1  |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-mongodb-connector_1  |[0m 	receive.buffer.bytes = 65536
+[36mradar-mongodb-connector_1  |[0m 	reconnect.backoff.ms = 50
+[36mradar-mongodb-connector_1  |[0m 	request.timeout.ms = 305000
+[36mradar-mongodb-connector_1  |[0m 	retry.backoff.ms = 100
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.service.name = null
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-mongodb-connector_1  |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-mongodb-connector_1  |[0m 	sasl.mechanism = GSSAPI
+[36mradar-mongodb-connector_1  |[0m 	security.protocol = PLAINTEXT
+[36mradar-mongodb-connector_1  |[0m 	send.buffer.bytes = 131072
+[36mradar-mongodb-connector_1  |[0m 	session.timeout.ms = 10000
+[36mradar-mongodb-connector_1  |[0m 	ssl.cipher.suites = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-mongodb-connector_1  |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.key.password = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.location = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.password = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.keystore.type = JKS
+[36mradar-mongodb-connector_1  |[0m 	ssl.protocol = TLS
+[36mradar-mongodb-connector_1  |[0m 	ssl.provider = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.secure.random.implementation = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.location = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.password = null
+[36mradar-mongodb-connector_1  |[0m 	ssl.truststore.type = JKS
+[36mradar-mongodb-connector_1  |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-mongodb-connector_1  |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,563] INFO Kafka version : 0.10.1.0-cp2 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,563] INFO Kafka commitId : beb290796c342e22 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,594] INFO Created connector radar-connector-mongodb-sink (org.apache.kafka.connect.cli.ConnectStandalone)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,805] INFO Cluster created with settings {hosts=[hotstorage:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500} (org.mongodb.driver.cluster)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,904] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:52,931] INFO No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, serverDescriptions=[ServerDescription{address=hotstorage:27017, type=UNKNOWN, state=CONNECTING}]}. Waiting for 30000 ms before timing out (org.mongodb.driver.cluster)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:53,321] INFO Opened connection [connectionId{localValue:1, serverValue:4}] to hotstorage:27017 (org.mongodb.driver.connection)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:53,330] INFO Monitor thread successfully connected to server with description ServerDescription{address=hotstorage:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 2, 10]}, minWireVersion=0, maxWireVersion=4, maxDocumentSize=16777216, roundTripTimeNanos=7718521} (org.mongodb.driver.cluster)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:53,448] INFO Opened connection [connectionId{localValue:2, serverValue:5}] to hotstorage:27017 (org.mongodb.driver.connection)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:53,718] INFO Sink task WorkerSinkTask{id=radar-connector-mongodb-sink-0} finished initialization and start (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:53,719] INFO Started MongoDbWriter (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:53,977] INFO Discovered coordinator kafka-1:9092 (id: 2147483646 rack: null) for group connect-radar-connector-mongodb-sink. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:53,986] INFO Revoking previously assigned partitions [] for group connect-radar-connector-mongodb-sink (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:53,986] INFO (Re-)joining group connect-radar-connector-mongodb-sink (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:54,015] INFO Successfully joined group connect-radar-connector-mongodb-sink with generation 1 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:57:54,016] INFO Setting newly assigned partitions [android_empatica_e4_electrodermal_activity_output-1, android_empatica_e4_acceleration_output-1, android_empatica_e4_battery_level_output-1, android_empatica_e4_temperature_output-1, android_empatica_e4_heartrate_output-2, android_empatica_e4_heartrate_output-0, android_empatica_e4_inter_beat_interval_output-2, android_empatica_e4_inter_beat_interval_output-0, android_empatica_e4_blood_volume_pulse_output-1, android_empatica_e4_sensor_status_output-1, android_empatica_e4_acceleration_output-0, android_empatica_e4_electrodermal_activity_output-0, android_empatica_e4_acceleration_output-2, android_empatica_e4_battery_level_output-0, android_empatica_e4_electrodermal_activity_output-2, android_empatica_e4_battery_level_output-2, android_empatica_e4_temperature_output-2, android_empatica_e4_temperature_output-0, android_empatica_e4_heartrate_output-1, android_empatica_e4_blood_volume_pulse_output-2, android_empatica_e4_sensor_status_output-2, android_empatica_e4_blood_volume_pulse_output-0, android_empatica_e4_sensor_status_output-0, android_empatica_e4_inter_beat_interval_output-1] for group connect-radar-connector-mongodb-sink (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:58:01,492] INFO Reflections took 11213 ms to scan 265 urls, producing 12891 keys and 84927 values  (org.reflections.Reflections)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:58:22,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:58:22,904] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:58:52,287] INFO [FLUSH-WRITER] Time-laps: 164843nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:58:52,287] INFO [FLUSH] Time-laps: 304104nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:58:52,287] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:58:52,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:58:52,905] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:59:22,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:59:22,904] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:59:52,287] INFO [FLUSH-WRITER] Time-laps: 74215nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:59:52,287] INFO [FLUSH] Time-laps: 194191nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:59:52,287] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:59:52,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 14:59:52,905] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:00:22,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:00:22,905] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:00:52,284] INFO [FLUSH-WRITER] Time-laps: 67009nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:00:52,284] INFO [FLUSH] Time-laps: 189128nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:00:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:00:52,608] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:00:52,905] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:01:22,607] INFO 12 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:01:22,906] INFO 12 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:01:52,284] INFO [FLUSH-WRITER] Time-laps: 130969nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:01:52,284] INFO [FLUSH] Time-laps: 237665nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:01:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:01:52,607] INFO 4 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:01:52,906] INFO 4 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:02:22,607] INFO 2 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:02:22,906] INFO 2 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:02:52,284] INFO [FLUSH-WRITER] Time-laps: 175470nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:02:52,284] INFO [FLUSH] Time-laps: 318682nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:02:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:02:52,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:02:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:03:22,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:03:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:03:52,284] INFO [FLUSH-WRITER] Time-laps: 80841nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:03:52,284] INFO [FLUSH] Time-laps: 251309nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:03:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:03:52,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:03:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:04:22,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:04:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:04:52,284] INFO [FLUSH-WRITER] Time-laps: 78820nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:04:52,284] INFO [FLUSH] Time-laps: 185360nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:04:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:04:52,607] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:04:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:05:22,608] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:05:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:05:52,283] INFO [FLUSH-WRITER] Time-laps: 104281nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:05:52,283] INFO [FLUSH] Time-laps: 265732nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:05:52,283] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:05:52,608] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:05:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:06:22,608] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:06:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:06:52,284] INFO [FLUSH-WRITER] Time-laps: 97582nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:06:52,284] INFO [FLUSH] Time-laps: 224807nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:06:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:06:52,609] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:06:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:07:22,609] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:07:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:07:52,283] INFO [FLUSH-WRITER] Time-laps: 82986nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:07:52,283] INFO [FLUSH] Time-laps: 187904nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:07:52,283] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:07:52,610] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:07:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:08:22,610] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:08:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:08:52,284] INFO [FLUSH-WRITER] Time-laps: 91198nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:08:52,284] INFO [FLUSH] Time-laps: 198713nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:08:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:08:52,611] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:08:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:09:22,610] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:09:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:09:52,283] INFO [FLUSH-WRITER] Time-laps: 86949nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:09:52,283] INFO [FLUSH] Time-laps: 208439nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:09:52,283] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:09:52,611] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:09:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:10:22,610] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:10:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:10:52,285] INFO [FLUSH-WRITER] Time-laps: 53849nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:10:52,285] INFO [FLUSH] Time-laps: 182176nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:10:52,285] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:10:52,611] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:10:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:11:22,610] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:11:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:11:52,284] INFO [FLUSH-WRITER] Time-laps: 95890nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:11:52,284] INFO [FLUSH] Time-laps: 200242nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:11:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:11:52,611] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:11:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:12:22,611] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:12:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:12:52,284] INFO [FLUSH-WRITER] Time-laps: 60443nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:12:52,284] INFO [FLUSH] Time-laps: 191647nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:12:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:12:52,612] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:12:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:13:22,611] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:13:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:13:52,284] INFO [FLUSH-WRITER] Time-laps: 73818nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:13:52,284] INFO [FLUSH] Time-laps: 194892nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:13:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:13:52,612] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:13:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:14:22,612] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:14:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:14:52,284] INFO [FLUSH-WRITER] Time-laps: 60746nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:14:52,284] INFO [FLUSH] Time-laps: 189408nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:14:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:14:52,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:14:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:15:22,612] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:15:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:15:52,284] INFO [FLUSH-WRITER] Time-laps: 59522nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:15:52,285] INFO [FLUSH] Time-laps: 194877nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:15:52,285] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:15:52,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:15:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:16:22,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:16:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:16:52,284] INFO [FLUSH-WRITER] Time-laps: 49205nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:16:52,284] INFO [FLUSH] Time-laps: 153768nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:16:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:16:52,614] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:16:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:17:22,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:17:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:17:52,284] INFO [FLUSH-WRITER] Time-laps: 48000nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:17:52,284] INFO [FLUSH] Time-laps: 153025nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:17:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:17:52,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:17:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:18:22,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:18:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:18:52,284] INFO [FLUSH-WRITER] Time-laps: 57138nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:18:52,284] INFO [FLUSH] Time-laps: 165795nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:18:52,284] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:18:52,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:18:52,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:19:22,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:19:22,906] INFO 0 have been written in MongoDB 0 records need to be processed. (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:19:52,285] INFO [FLUSH-WRITER] Time-laps: 49355nsec (org.radarcns.mongodb.MongoDbWriter)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:19:52,285] INFO [FLUSH] Time-laps: 158242nsec (org.radarcns.mongodb.MongoDbSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:19:52,285] INFO WorkerSinkTask{id=radar-connector-mongodb-sink-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-mongodb-connector_1  |[0m [2017-02-06 15:19:52,613] INFO 0 have been processed (org.radarcns.mongodb.MongoDbSinkTask)

@@ -1,0 +1,1096 @@
+Attaching to radarcphadoopstack_radar-hdfs-connector_1
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m . /etc/confluent/docker/apply-mesos-overrides
+[36mradar-hdfs-connector_1     |[0m + . /etc/confluent/docker/apply-mesos-overrides
+[36mradar-hdfs-connector_1     |[0m #!/usr/bin/env bash
+[36mradar-hdfs-connector_1     |[0m #
+[36mradar-hdfs-connector_1     |[0m # Copyright 2016 Confluent Inc.
+[36mradar-hdfs-connector_1     |[0m #
+[36mradar-hdfs-connector_1     |[0m # Licensed under the Apache License, Version 2.0 (the "License");
+[36mradar-hdfs-connector_1     |[0m # you may not use this file except in compliance with the License.
+[36mradar-hdfs-connector_1     |[0m # You may obtain a copy of the License at
+[36mradar-hdfs-connector_1     |[0m #
+[36mradar-hdfs-connector_1     |[0m # http://www.apache.org/licenses/LICENSE-2.0
+[36mradar-hdfs-connector_1     |[0m #
+[36mradar-hdfs-connector_1     |[0m # Unless required by applicable law or agreed to in writing, software
+[36mradar-hdfs-connector_1     |[0m # distributed under the License is distributed on an "AS IS" BASIS,
+[36mradar-hdfs-connector_1     |[0m # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+[36mradar-hdfs-connector_1     |[0m # See the License for the specific language governing permissions and
+[36mradar-hdfs-connector_1     |[0m # limitations under the License.
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m # Mesos DC/OS docker deployments will have HOST and PORT0 
+[36mradar-hdfs-connector_1     |[0m # set for the proxying of the service.
+[36mradar-hdfs-connector_1     |[0m # 
+[36mradar-hdfs-connector_1     |[0m # Use those values provide things we know we'll need.
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m [ -n "${HOST:-}" ] && [ -z "${CONNECT_REST_ADVERTISED_HOST_NAME:-}" ] && \
+[36mradar-hdfs-connector_1     |[0m 	export CONNECT_REST_ADVERTISED_HOST_NAME=$HOST || true
+[36mradar-hdfs-connector_1     |[0m ++ '[' -n '' ']'
+[36mradar-hdfs-connector_1     |[0m ++ true
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m [ -n "${PORT0:-}" ] && [ -z "${CONNECT_REST_ADVERTISED_PORT:-}" ] && \
+[36mradar-hdfs-connector_1     |[0m 	export CONNECT_REST_ADVERTISED_PORT=$PORT0 || true
+[36mradar-hdfs-connector_1     |[0m ++ '[' -n '' ']'
+[36mradar-hdfs-connector_1     |[0m ++ true
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m # And default to 8083, which MUST match the containerPort specification
+[36mradar-hdfs-connector_1     |[0m # in the Mesos package for this service.
+[36mradar-hdfs-connector_1     |[0m [ -z "${CONNECT_REST_PORT:-}" ] && \
+[36mradar-hdfs-connector_1     |[0m 	export CONNECT_REST_PORT=8083 || true
+[36mradar-hdfs-connector_1     |[0m ++ '[' -z 8083 ']'
+[36mradar-hdfs-connector_1     |[0m ++ true
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m echo "===> ENV Variables ..."
+[36mradar-hdfs-connector_1     |[0m + echo '===> ENV Variables ...'
+[36mradar-hdfs-connector_1     |[0m env | sort
+[36mradar-hdfs-connector_1     |[0m ===> ENV Variables ...
+[36mradar-hdfs-connector_1     |[0m + env
+[36mradar-hdfs-connector_1     |[0m + sort
+[36mradar-hdfs-connector_1     |[0m COMPONENT=kafka-connect
+[36mradar-hdfs-connector_1     |[0m CONFLUENT_DEB_REPO=http://packages.confluent.io
+[36mradar-hdfs-connector_1     |[0m CONFLUENT_DEB_VERSION=1
+[36mradar-hdfs-connector_1     |[0m CONFLUENT_MAJOR_VERSION=3
+[36mradar-hdfs-connector_1     |[0m CONFLUENT_MINOR_VERSION=1
+[36mradar-hdfs-connector_1     |[0m CONFLUENT_PATCH_VERSION=1
+[36mradar-hdfs-connector_1     |[0m CONFLUENT_VERSION=3.1.1
+[36mradar-hdfs-connector_1     |[0m CONNECTOR_PROPERTY_FILE_PREFIX=sink-hdfs
+[36mradar-hdfs-connector_1     |[0m CONNECT_BOOTSTRAP_SERVERS=PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+[36mradar-hdfs-connector_1     |[0m CONNECT_CONFIG_STORAGE_TOPIC=default.config
+[36mradar-hdfs-connector_1     |[0m CONNECT_GROUP_ID=default
+[36mradar-hdfs-connector_1     |[0m CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+[36mradar-hdfs-connector_1     |[0m CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+[36mradar-hdfs-connector_1     |[0m CONNECT_KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
+[36mradar-hdfs-connector_1     |[0m CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry-1:8081
+[36mradar-hdfs-connector_1     |[0m CONNECT_OFFSET_STORAGE_FILE_FILENAME=/tmp/connect2.offset
+[36mradar-hdfs-connector_1     |[0m CONNECT_OFFSET_STORAGE_TOPIC=default.offsets
+[36mradar-hdfs-connector_1     |[0m CONNECT_REST_ADVERTISED_HOST_NAME=radar-hdfs-connector
+[36mradar-hdfs-connector_1     |[0m CONNECT_REST_PORT=8083
+[36mradar-hdfs-connector_1     |[0m CONNECT_STATUS_STORAGE_TOPIC=default.status
+[36mradar-hdfs-connector_1     |[0m CONNECT_VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
+[36mradar-hdfs-connector_1     |[0m CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry-1:8081
+[36mradar-hdfs-connector_1     |[0m CONNECT_ZOOKEEPER_CONNECT=zookeeper-1:2181
+[36mradar-hdfs-connector_1     |[0m HOME=/root
+[36mradar-hdfs-connector_1     |[0m HOSTNAME=4adbf2812fdb
+[36mradar-hdfs-connector_1     |[0m KAFKA_REST_PROXY=http://rest-proxy-1:8082
+[36mradar-hdfs-connector_1     |[0m KAFKA_VERSION=0.10.1.0
+[36mradar-hdfs-connector_1     |[0m LANG=C.UTF-8
+[36mradar-hdfs-connector_1     |[0m PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+[36mradar-hdfs-connector_1     |[0m PWD=/
+[36mradar-hdfs-connector_1     |[0m PYTHON_PIP_VERSION=8.1.2
+[36mradar-hdfs-connector_1     |[0m PYTHON_VERSION=2.7.9-1
+[36mradar-hdfs-connector_1     |[0m SCALA_VERSION=2.11
+[36mradar-hdfs-connector_1     |[0m SHLVL=1
+[36mradar-hdfs-connector_1     |[0m TOPIC_LIST=android_empatica_e4_acceleration,android_empatica_e4_acceleration_output,android_empatica_e4_battery_level,android_empatica_e4_battery_level_output,android_empatica_e4_blood_volume_pulse,android_empatica_e4_blood_volume_pulse_output,android_empatica_e4_electrodermal_activity,android_empatica_e4_electrodermal_activity_output,android_empatica_e4_heartrate_output,android_empatica_e4_inter_beat_interval,android_empatica_e4_inter_beat_interval_output,android_empatica_e4_sensor_status,android_empatica_e4_sensor_status_output,android_empatica_e4_temperature,android_empatica_e4_temperature_output
+[36mradar-hdfs-connector_1     |[0m ZULU_OPENJDK_VERSION=8=8.17.0.3
+[36mradar-hdfs-connector_1     |[0m _=/usr/bin/env
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m echo "===> User"
+[36mradar-hdfs-connector_1     |[0m + echo '===> User'
+[36mradar-hdfs-connector_1     |[0m id
+[36mradar-hdfs-connector_1     |[0m + id
+[36mradar-hdfs-connector_1     |[0m ===> User
+[36mradar-hdfs-connector_1     |[0m uid=0(root) gid=0(root) groups=0(root)
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m echo "===> Configuring ..."
+[36mradar-hdfs-connector_1     |[0m + echo '===> Configuring ...'
+[36mradar-hdfs-connector_1     |[0m /etc/confluent/docker/configure
+[36mradar-hdfs-connector_1     |[0m + /etc/confluent/docker/configure
+[36mradar-hdfs-connector_1     |[0m ===> Configuring ...
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_BOOTSTRAP_SERVERS
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_BOOTSTRAP_SERVERS
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_GROUP_ID
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_GROUP_ID
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_CONFIG_STORAGE_TOPIC
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_CONFIG_STORAGE_TOPIC
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_OFFSET_STORAGE_TOPIC
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_OFFSET_STORAGE_TOPIC
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_STATUS_STORAGE_TOPIC
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_STATUS_STORAGE_TOPIC
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_KEY_CONVERTER
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_KEY_CONVERTER
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_VALUE_CONVERTER
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_VALUE_CONVERTER
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_INTERNAL_KEY_CONVERTER
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_INTERNAL_KEY_CONVERTER
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_INTERNAL_VALUE_CONVERTER
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_INTERNAL_VALUE_CONVERTER
+[36mradar-hdfs-connector_1     |[0m # This is required to avoid config bugs. You should set this to a value that is
+[36mradar-hdfs-connector_1     |[0m # resolvable by all containers.
+[36mradar-hdfs-connector_1     |[0m dub ensure CONNECT_REST_ADVERTISED_HOST_NAME
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_REST_ADVERTISED_HOST_NAME
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m # Default to 8083, which matches the mesos-overrides. This is here in case we extend the containers to remove the mesos overrides.
+[36mradar-hdfs-connector_1     |[0m if [ -z "$CONNECT_REST_PORT" ]; then
+[36mradar-hdfs-connector_1     |[0m   export CONNECT_REST_PORT=8083
+[36mradar-hdfs-connector_1     |[0m fi
+[36mradar-hdfs-connector_1     |[0m + '[' -z 8083 ']'
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m # Fix for https://issues.apache.org/jira/browse/KAFKA-3988
+[36mradar-hdfs-connector_1     |[0m if [[ $CONNECT_INTERNAL_KEY_CONVERTER == "org.apache.kafka.connect.json.JsonConverter" ]] || [[ $CONNECT_INTERNAL_VALUE_CONVERTER == "org.apache.kafka.connect.json.JsonConverter" ]]
+[36mradar-hdfs-connector_1     |[0m then
+[36mradar-hdfs-connector_1     |[0m   export CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-hdfs-connector_1     |[0m   export CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-hdfs-connector_1     |[0m fi
+[36mradar-hdfs-connector_1     |[0m + [[ org.apache.kafka.connect.json.JsonConverter == \o\r\g\.\a\p\a\c\h\e\.\k\a\f\k\a\.\c\o\n\n\e\c\t\.\j\s\o\n\.\J\s\o\n\C\o\n\v\e\r\t\e\r ]]
+[36mradar-hdfs-connector_1     |[0m + export CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-hdfs-connector_1     |[0m + CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-hdfs-connector_1     |[0m + export CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-hdfs-connector_1     |[0m + CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m if [[ $CONNECT_KEY_CONVERTER == "io.confluent.connect.avro.AvroConverter" ]]
+[36mradar-hdfs-connector_1     |[0m then
+[36mradar-hdfs-connector_1     |[0m   dub ensure CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
+[36mradar-hdfs-connector_1     |[0m fi
+[36mradar-hdfs-connector_1     |[0m + [[ io.confluent.connect.avro.AvroConverter == \i\o\.\c\o\n\f\l\u\e\n\t\.\c\o\n\n\e\c\t\.\a\v\r\o\.\A\v\r\o\C\o\n\v\e\r\t\e\r ]]
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m if [[ $CONNECT_VALUE_CONVERTER == "io.confluent.connect.avro.AvroConverter" ]]
+[36mradar-hdfs-connector_1     |[0m then
+[36mradar-hdfs-connector_1     |[0m   dub ensure CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+[36mradar-hdfs-connector_1     |[0m fi
+[36mradar-hdfs-connector_1     |[0m + [[ io.confluent.connect.avro.AvroConverter == \i\o\.\c\o\n\f\l\u\e\n\t\.\c\o\n\n\e\c\t\.\a\v\r\o\.\A\v\r\o\C\o\n\v\e\r\t\e\r ]]
+[36mradar-hdfs-connector_1     |[0m + dub ensure CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m dub path /etc/"${COMPONENT}"/ writable
+[36mradar-hdfs-connector_1     |[0m + dub path /etc/kafka-connect/ writable
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m dub template "/etc/confluent/docker/${COMPONENT}.properties.template" "/etc/${COMPONENT}/${COMPONENT}.properties"
+[36mradar-hdfs-connector_1     |[0m + dub template /etc/confluent/docker/kafka-connect.properties.template /etc/kafka-connect/kafka-connect.properties
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m # The connect-distributed script expects the log4j config at /etc/kafka/connect-log4j.properties.
+[36mradar-hdfs-connector_1     |[0m dub template "/etc/confluent/docker/log4j.properties.template" "/etc/kafka/connect-log4j.properties"
+[36mradar-hdfs-connector_1     |[0m + dub template /etc/confluent/docker/log4j.properties.template /etc/kafka/connect-log4j.properties
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m echo "===> Running preflight checks ... "
+[36mradar-hdfs-connector_1     |[0m + echo '===> Running preflight checks ... '
+[36mradar-hdfs-connector_1     |[0m /etc/confluent/docker/ensure
+[36mradar-hdfs-connector_1     |[0m + /etc/confluent/docker/ensure
+[36mradar-hdfs-connector_1     |[0m ===> Running preflight checks ... 
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m echo "===> Check if Kafka is healthy ..."
+[36mradar-hdfs-connector_1     |[0m + echo '===> Check if Kafka is healthy ...'
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m cub kafka-ready \
+[36mradar-hdfs-connector_1     |[0m     "${CONNECT_CUB_KAFKA_MIN_BROKERS:-1}" \
+[36mradar-hdfs-connector_1     |[0m     "${CONNECT_CUB_KAFKA_TIMEOUT:-40}" \
+[36mradar-hdfs-connector_1     |[0m ===> Check if Kafka is healthy ...
+[36mradar-hdfs-connector_1     |[0m     -b "$CONNECT_BOOTSTRAP_SERVERS"
+[36mradar-hdfs-connector_1     |[0m + cub kafka-ready 1 40 -b PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+[36mradar-hdfs-connector_1     |[0m MetadataClientConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m echo "===> Launching ... "
+[36mradar-hdfs-connector_1     |[0m + echo '===> Launching ... '
+[36mradar-hdfs-connector_1     |[0m exec /etc/confluent/docker/launch
+[36mradar-hdfs-connector_1     |[0m ===> Launching ... 
+[36mradar-hdfs-connector_1     |[0m + exec /etc/confluent/docker/launch
+[36mradar-hdfs-connector_1     |[0m ===> Wait for infrastructure ...
+[36mradar-hdfs-connector_1     |[0m Waiting 1 second before retrying ...
+[36mradar-hdfs-connector_1     |[0m curl: (7) Failed to connect to rest-proxy-1 port 8082: Connection refused
+[36mradar-hdfs-connector_1     |[0m Waiting 2 second before retrying ...
+[36mradar-hdfs-connector_1     |[0m curl: (7) Failed to connect to rest-proxy-1 port 8082: Connection refused
+[36mradar-hdfs-connector_1     |[0m Waiting 4 second before retrying ...
+[36mradar-hdfs-connector_1     |[0m Waiting 8 second before retrying ...
+[36mradar-hdfs-connector_1     |[0m Waiting 16 second before retrying ...
+[36mradar-hdfs-connector_1     |[0m All topics are now available. Ready to go!
+[36mradar-hdfs-connector_1     |[0m ===> Launching kafka-connect ... new
+[36mradar-hdfs-connector_1     |[0m /etc/kafka-connect/jars/radar-hdfs-connector-0.1.jar
+[36mradar-hdfs-connector_1     |[0m SLF4J: Class path contains multiple SLF4J bindings.
+[36mradar-hdfs-connector_1     |[0m SLF4J: Found binding in [jar:file:/usr/share/java/kafka-serde-tools/slf4j-log4j12-1.7.6.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[36mradar-hdfs-connector_1     |[0m SLF4J: Found binding in [jar:file:/usr/share/java/kafka-connect-elasticsearch/slf4j-simple-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[36mradar-hdfs-connector_1     |[0m SLF4J: Found binding in [jar:file:/usr/share/java/kafka-connect-hdfs/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[36mradar-hdfs-connector_1     |[0m SLF4J: Found binding in [jar:file:/usr/share/java/kafka/slf4j-log4j12-1.7.21.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[36mradar-hdfs-connector_1     |[0m SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+[36mradar-hdfs-connector_1     |[0m SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:50,501] INFO StandaloneConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	access.control.allow.methods = 
+[36mradar-hdfs-connector_1     |[0m 	access.control.allow.origin = 
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	internal.key.converter = class org.apache.kafka.connect.json.JsonConverter
+[36mradar-hdfs-connector_1     |[0m 	internal.value.converter = class org.apache.kafka.connect.json.JsonConverter
+[36mradar-hdfs-connector_1     |[0m 	key.converter = class io.confluent.connect.avro.AvroConverter
+[36mradar-hdfs-connector_1     |[0m 	offset.flush.interval.ms = 60000
+[36mradar-hdfs-connector_1     |[0m 	offset.flush.timeout.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	offset.storage.file.filename = /tmp/connect2.offset
+[36mradar-hdfs-connector_1     |[0m 	rest.advertised.host.name = radar-hdfs-connector
+[36mradar-hdfs-connector_1     |[0m 	rest.advertised.port = null
+[36mradar-hdfs-connector_1     |[0m 	rest.host.name = null
+[36mradar-hdfs-connector_1     |[0m 	rest.port = 8083
+[36mradar-hdfs-connector_1     |[0m 	task.shutdown.graceful.timeout.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	value.converter = class io.confluent.connect.avro.AvroConverter
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.standalone.StandaloneConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:50,741] INFO Logging initialized @806ms (org.eclipse.jetty.util.log)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:51,569] INFO Kafka Connect starting (org.apache.kafka.connect.runtime.Connect)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:51,569] INFO Herder starting (org.apache.kafka.connect.runtime.standalone.StandaloneHerder)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:51,570] INFO Worker starting (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:51,570] INFO Starting FileOffsetBackingStore with file /tmp/connect2.offset (org.apache.kafka.connect.storage.FileOffsetBackingStore)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:51,639] INFO Worker started (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:51,639] INFO Herder started (org.apache.kafka.connect.runtime.standalone.StandaloneHerder)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:51,640] INFO Starting REST server (org.apache.kafka.connect.runtime.rest.RestServer)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:51,876] INFO jetty-9.2.15.v20160210 (org.eclipse.jetty.server.Server)
+[36mradar-hdfs-connector_1     |[0m Feb 06, 2017 2:57:54 PM org.glassfish.jersey.internal.Errors logErrors
+[36mradar-hdfs-connector_1     |[0m WARNING: The following warnings have been detected: WARNING: The (sub)resource method listConnectors in org.apache.kafka.connect.runtime.rest.resources.ConnectorsResource contains empty path annotation.
+[36mradar-hdfs-connector_1     |[0m WARNING: The (sub)resource method createConnector in org.apache.kafka.connect.runtime.rest.resources.ConnectorsResource contains empty path annotation.
+[36mradar-hdfs-connector_1     |[0m WARNING: The (sub)resource method listConnectorPlugins in org.apache.kafka.connect.runtime.rest.resources.ConnectorPluginsResource contains empty path annotation.
+[36mradar-hdfs-connector_1     |[0m WARNING: The (sub)resource method serverInfo in org.apache.kafka.connect.runtime.rest.resources.RootResource contains empty path annotation.
+[36mradar-hdfs-connector_1     |[0m 
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,409] INFO Started o.e.j.s.ServletContextHandler@6928f576{/,null,AVAILABLE} (org.eclipse.jetty.server.handler.ContextHandler)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,461] INFO Started ServerConnector@67427b69{HTTP/1.1}{0.0.0.0:8083} (org.eclipse.jetty.server.ServerConnector)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,461] INFO Started @4529ms (org.eclipse.jetty.server.Server)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,462] INFO REST server listening at http://172.22.0.5:8083/, advertising URL http://radar-hdfs-connector:8083/ (org.apache.kafka.connect.runtime.rest.RestServer)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,462] INFO Kafka Connect started (org.apache.kafka.connect.runtime.Connect)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,466] INFO ConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connector.class = io.confluent.connect.hdfs.HdfsSinkConnector
+[36mradar-hdfs-connector_1     |[0m 	key.converter = null
+[36mradar-hdfs-connector_1     |[0m 	name = radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	tasks.max = 4
+[36mradar-hdfs-connector_1     |[0m 	value.converter = null
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.ConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,466] INFO Creating connector radar-hdfs-sink-android-15000 of type io.confluent.connect.hdfs.HdfsSinkConnector (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,471] INFO Instantiated connector radar-hdfs-sink-android-15000 with version 3.1.1 of type class io.confluent.connect.hdfs.HdfsSinkConnector (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,480] INFO HdfsSinkConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.keytab = 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.principal = 
+[36mradar-hdfs-connector_1     |[0m 	filename.offset.zero.pad.width = 10
+[36mradar-hdfs-connector_1     |[0m 	flush.size = 150
+[36mradar-hdfs-connector_1     |[0m 	format.class = org.radarcns.sink.hdfs.AvroFormatRadar
+[36mradar-hdfs-connector_1     |[0m 	hadoop.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hadoop.home = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.authentication.kerberos = false
+[36mradar-hdfs-connector_1     |[0m 	hdfs.namenode.principal = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.url = hdfs://hdfs-namenode:8020
+[36mradar-hdfs-connector_1     |[0m 	hive.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hive.database = default
+[36mradar-hdfs-connector_1     |[0m 	hive.home = 
+[36mradar-hdfs-connector_1     |[0m 	hive.integration = false
+[36mradar-hdfs-connector_1     |[0m 	hive.metastore.uris = 
+[36mradar-hdfs-connector_1     |[0m 	kerberos.ticket.renew.period.ms = 3600000
+[36mradar-hdfs-connector_1     |[0m 	locale = 
+[36mradar-hdfs-connector_1     |[0m 	logs.dir = logs
+[36mradar-hdfs-connector_1     |[0m 	partition.duration.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	partition.field.name = 
+[36mradar-hdfs-connector_1     |[0m 	partitioner.class = io.confluent.connect.hdfs.partitioner.DefaultPartitioner
+[36mradar-hdfs-connector_1     |[0m 	path.format = 
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	rotate.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	rotate.schedule.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	schema.cache.size = 1000
+[36mradar-hdfs-connector_1     |[0m 	schema.compatibility = NONE
+[36mradar-hdfs-connector_1     |[0m 	shutdown.timeout.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	storage.class = io.confluent.connect.hdfs.storage.HdfsStorage
+[36mradar-hdfs-connector_1     |[0m 	timezone = 
+[36mradar-hdfs-connector_1     |[0m 	topics.dir = topicAndroidNew
+[36mradar-hdfs-connector_1     |[0m  (io.confluent.connect.hdfs.HdfsSinkConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,482] INFO Finished creating connector radar-hdfs-sink-android-15000 (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,486] INFO SourceConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connector.class = io.confluent.connect.hdfs.HdfsSinkConnector
+[36mradar-hdfs-connector_1     |[0m 	key.converter = null
+[36mradar-hdfs-connector_1     |[0m 	name = radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	tasks.max = 4
+[36mradar-hdfs-connector_1     |[0m 	value.converter = null
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.SourceConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,489] INFO Creating task radar-hdfs-sink-android-15000-0 (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,489] INFO ConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connector.class = io.confluent.connect.hdfs.HdfsSinkConnector
+[36mradar-hdfs-connector_1     |[0m 	key.converter = null
+[36mradar-hdfs-connector_1     |[0m 	name = radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	tasks.max = 4
+[36mradar-hdfs-connector_1     |[0m 	value.converter = null
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.ConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,490] INFO TaskConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	task.class = class io.confluent.connect.hdfs.HdfsSinkTask
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.TaskConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,491] INFO Instantiated task radar-hdfs-sink-android-15000-0 with version 3.1.1 of type io.confluent.connect.hdfs.HdfsSinkTask (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,535] INFO ConsumerConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	auto.commit.interval.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	auto.offset.reset = earliest
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	check.crcs = true
+[36mradar-hdfs-connector_1     |[0m 	client.id = 
+[36mradar-hdfs-connector_1     |[0m 	connections.max.idle.ms = 540000
+[36mradar-hdfs-connector_1     |[0m 	enable.auto.commit = false
+[36mradar-hdfs-connector_1     |[0m 	exclude.internal.topics = true
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.bytes = 52428800
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.wait.ms = 500
+[36mradar-hdfs-connector_1     |[0m 	fetch.min.bytes = 1
+[36mradar-hdfs-connector_1     |[0m 	group.id = connect-radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	heartbeat.interval.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	interceptor.classes = null
+[36mradar-hdfs-connector_1     |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-hdfs-connector_1     |[0m 	max.poll.interval.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	max.poll.records = 500
+[36mradar-hdfs-connector_1     |[0m 	metadata.max.age.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	metric.reporters = []
+[36mradar-hdfs-connector_1     |[0m 	metrics.num.samples = 2
+[36mradar-hdfs-connector_1     |[0m 	metrics.sample.window.ms = 30000
+[36mradar-hdfs-connector_1     |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-hdfs-connector_1     |[0m 	receive.buffer.bytes = 65536
+[36mradar-hdfs-connector_1     |[0m 	reconnect.backoff.ms = 50
+[36mradar-hdfs-connector_1     |[0m 	request.timeout.ms = 305000
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 100
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	send.buffer.bytes = 131072
+[36mradar-hdfs-connector_1     |[0m 	session.timeout.ms = 10000
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.secure.random.implementation = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,553] INFO ConsumerConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	auto.commit.interval.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	auto.offset.reset = earliest
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	check.crcs = true
+[36mradar-hdfs-connector_1     |[0m 	client.id = consumer-1
+[36mradar-hdfs-connector_1     |[0m 	connections.max.idle.ms = 540000
+[36mradar-hdfs-connector_1     |[0m 	enable.auto.commit = false
+[36mradar-hdfs-connector_1     |[0m 	exclude.internal.topics = true
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.bytes = 52428800
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.wait.ms = 500
+[36mradar-hdfs-connector_1     |[0m 	fetch.min.bytes = 1
+[36mradar-hdfs-connector_1     |[0m 	group.id = connect-radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	heartbeat.interval.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	interceptor.classes = null
+[36mradar-hdfs-connector_1     |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-hdfs-connector_1     |[0m 	max.poll.interval.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	max.poll.records = 500
+[36mradar-hdfs-connector_1     |[0m 	metadata.max.age.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	metric.reporters = []
+[36mradar-hdfs-connector_1     |[0m 	metrics.num.samples = 2
+[36mradar-hdfs-connector_1     |[0m 	metrics.sample.window.ms = 30000
+[36mradar-hdfs-connector_1     |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-hdfs-connector_1     |[0m 	receive.buffer.bytes = 65536
+[36mradar-hdfs-connector_1     |[0m 	reconnect.backoff.ms = 50
+[36mradar-hdfs-connector_1     |[0m 	request.timeout.ms = 305000
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 100
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	send.buffer.bytes = 131072
+[36mradar-hdfs-connector_1     |[0m 	session.timeout.ms = 10000
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.secure.random.implementation = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,746] INFO Kafka version : 0.10.1.0-cp2 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,746] INFO Kafka commitId : beb290796c342e22 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,752] INFO Creating task radar-hdfs-sink-android-15000-1 (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,753] INFO ConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connector.class = io.confluent.connect.hdfs.HdfsSinkConnector
+[36mradar-hdfs-connector_1     |[0m 	key.converter = null
+[36mradar-hdfs-connector_1     |[0m 	name = radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	tasks.max = 4
+[36mradar-hdfs-connector_1     |[0m 	value.converter = null
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.ConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,753] INFO TaskConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	task.class = class io.confluent.connect.hdfs.HdfsSinkTask
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.TaskConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,754] INFO Instantiated task radar-hdfs-sink-android-15000-1 with version 3.1.1 of type io.confluent.connect.hdfs.HdfsSinkTask (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,755] INFO ConsumerConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	auto.commit.interval.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	auto.offset.reset = earliest
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	check.crcs = true
+[36mradar-hdfs-connector_1     |[0m 	client.id = 
+[36mradar-hdfs-connector_1     |[0m 	connections.max.idle.ms = 540000
+[36mradar-hdfs-connector_1     |[0m 	enable.auto.commit = false
+[36mradar-hdfs-connector_1     |[0m 	exclude.internal.topics = true
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.bytes = 52428800
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.wait.ms = 500
+[36mradar-hdfs-connector_1     |[0m 	fetch.min.bytes = 1
+[36mradar-hdfs-connector_1     |[0m 	group.id = connect-radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	heartbeat.interval.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	interceptor.classes = null
+[36mradar-hdfs-connector_1     |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-hdfs-connector_1     |[0m 	max.poll.interval.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	max.poll.records = 500
+[36mradar-hdfs-connector_1     |[0m 	metadata.max.age.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	metric.reporters = []
+[36mradar-hdfs-connector_1     |[0m 	metrics.num.samples = 2
+[36mradar-hdfs-connector_1     |[0m 	metrics.sample.window.ms = 30000
+[36mradar-hdfs-connector_1     |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-hdfs-connector_1     |[0m 	receive.buffer.bytes = 65536
+[36mradar-hdfs-connector_1     |[0m 	reconnect.backoff.ms = 50
+[36mradar-hdfs-connector_1     |[0m 	request.timeout.ms = 305000
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 100
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	send.buffer.bytes = 131072
+[36mradar-hdfs-connector_1     |[0m 	session.timeout.ms = 10000
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.secure.random.implementation = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,771] INFO ConsumerConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	auto.commit.interval.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	auto.offset.reset = earliest
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	check.crcs = true
+[36mradar-hdfs-connector_1     |[0m 	client.id = consumer-2
+[36mradar-hdfs-connector_1     |[0m 	connections.max.idle.ms = 540000
+[36mradar-hdfs-connector_1     |[0m 	enable.auto.commit = false
+[36mradar-hdfs-connector_1     |[0m 	exclude.internal.topics = true
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.bytes = 52428800
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.wait.ms = 500
+[36mradar-hdfs-connector_1     |[0m 	fetch.min.bytes = 1
+[36mradar-hdfs-connector_1     |[0m 	group.id = connect-radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	heartbeat.interval.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	interceptor.classes = null
+[36mradar-hdfs-connector_1     |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-hdfs-connector_1     |[0m 	max.poll.interval.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	max.poll.records = 500
+[36mradar-hdfs-connector_1     |[0m 	metadata.max.age.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	metric.reporters = []
+[36mradar-hdfs-connector_1     |[0m 	metrics.num.samples = 2
+[36mradar-hdfs-connector_1     |[0m 	metrics.sample.window.ms = 30000
+[36mradar-hdfs-connector_1     |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-hdfs-connector_1     |[0m 	receive.buffer.bytes = 65536
+[36mradar-hdfs-connector_1     |[0m 	reconnect.backoff.ms = 50
+[36mradar-hdfs-connector_1     |[0m 	request.timeout.ms = 305000
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 100
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	send.buffer.bytes = 131072
+[36mradar-hdfs-connector_1     |[0m 	session.timeout.ms = 10000
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.secure.random.implementation = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,813] INFO Kafka version : 0.10.1.0-cp2 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,814] INFO Kafka commitId : beb290796c342e22 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,819] INFO Creating task radar-hdfs-sink-android-15000-2 (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,832] INFO ConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connector.class = io.confluent.connect.hdfs.HdfsSinkConnector
+[36mradar-hdfs-connector_1     |[0m 	key.converter = null
+[36mradar-hdfs-connector_1     |[0m 	name = radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	tasks.max = 4
+[36mradar-hdfs-connector_1     |[0m 	value.converter = null
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.ConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,833] INFO TaskConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	task.class = class io.confluent.connect.hdfs.HdfsSinkTask
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.TaskConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,833] INFO Instantiated task radar-hdfs-sink-android-15000-2 with version 3.1.1 of type io.confluent.connect.hdfs.HdfsSinkTask (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,833] INFO ConsumerConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	auto.commit.interval.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	auto.offset.reset = earliest
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	check.crcs = true
+[36mradar-hdfs-connector_1     |[0m 	client.id = 
+[36mradar-hdfs-connector_1     |[0m 	connections.max.idle.ms = 540000
+[36mradar-hdfs-connector_1     |[0m 	enable.auto.commit = false
+[36mradar-hdfs-connector_1     |[0m 	exclude.internal.topics = true
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.bytes = 52428800
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.wait.ms = 500
+[36mradar-hdfs-connector_1     |[0m 	fetch.min.bytes = 1
+[36mradar-hdfs-connector_1     |[0m 	group.id = connect-radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	heartbeat.interval.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	interceptor.classes = null
+[36mradar-hdfs-connector_1     |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-hdfs-connector_1     |[0m 	max.poll.interval.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	max.poll.records = 500
+[36mradar-hdfs-connector_1     |[0m 	metadata.max.age.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	metric.reporters = []
+[36mradar-hdfs-connector_1     |[0m 	metrics.num.samples = 2
+[36mradar-hdfs-connector_1     |[0m 	metrics.sample.window.ms = 30000
+[36mradar-hdfs-connector_1     |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-hdfs-connector_1     |[0m 	receive.buffer.bytes = 65536
+[36mradar-hdfs-connector_1     |[0m 	reconnect.backoff.ms = 50
+[36mradar-hdfs-connector_1     |[0m 	request.timeout.ms = 305000
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 100
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	send.buffer.bytes = 131072
+[36mradar-hdfs-connector_1     |[0m 	session.timeout.ms = 10000
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.secure.random.implementation = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,835] INFO ConsumerConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	auto.commit.interval.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	auto.offset.reset = earliest
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	check.crcs = true
+[36mradar-hdfs-connector_1     |[0m 	client.id = consumer-3
+[36mradar-hdfs-connector_1     |[0m 	connections.max.idle.ms = 540000
+[36mradar-hdfs-connector_1     |[0m 	enable.auto.commit = false
+[36mradar-hdfs-connector_1     |[0m 	exclude.internal.topics = true
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.bytes = 52428800
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.wait.ms = 500
+[36mradar-hdfs-connector_1     |[0m 	fetch.min.bytes = 1
+[36mradar-hdfs-connector_1     |[0m 	group.id = connect-radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	heartbeat.interval.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	interceptor.classes = null
+[36mradar-hdfs-connector_1     |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-hdfs-connector_1     |[0m 	max.poll.interval.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	max.poll.records = 500
+[36mradar-hdfs-connector_1     |[0m 	metadata.max.age.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	metric.reporters = []
+[36mradar-hdfs-connector_1     |[0m 	metrics.num.samples = 2
+[36mradar-hdfs-connector_1     |[0m 	metrics.sample.window.ms = 30000
+[36mradar-hdfs-connector_1     |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-hdfs-connector_1     |[0m 	receive.buffer.bytes = 65536
+[36mradar-hdfs-connector_1     |[0m 	reconnect.backoff.ms = 50
+[36mradar-hdfs-connector_1     |[0m 	request.timeout.ms = 305000
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 100
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	send.buffer.bytes = 131072
+[36mradar-hdfs-connector_1     |[0m 	session.timeout.ms = 10000
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.secure.random.implementation = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,807] INFO HdfsSinkConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.keytab = 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.principal = 
+[36mradar-hdfs-connector_1     |[0m 	filename.offset.zero.pad.width = 10
+[36mradar-hdfs-connector_1     |[0m 	flush.size = 150
+[36mradar-hdfs-connector_1     |[0m 	format.class = org.radarcns.sink.hdfs.AvroFormatRadar
+[36mradar-hdfs-connector_1     |[0m 	hadoop.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hadoop.home = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.authentication.kerberos = false
+[36mradar-hdfs-connector_1     |[0m 	hdfs.namenode.principal = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.url = hdfs://hdfs-namenode:8020
+[36mradar-hdfs-connector_1     |[0m 	hive.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hive.database = default
+[36mradar-hdfs-connector_1     |[0m 	hive.home = 
+[36mradar-hdfs-connector_1     |[0m 	hive.integration = false
+[36mradar-hdfs-connector_1     |[0m 	hive.metastore.uris = 
+[36mradar-hdfs-connector_1     |[0m 	kerberos.ticket.renew.period.ms = 3600000
+[36mradar-hdfs-connector_1     |[0m 	locale = 
+[36mradar-hdfs-connector_1     |[0m 	logs.dir = logs
+[36mradar-hdfs-connector_1     |[0m 	partition.duration.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	partition.field.name = 
+[36mradar-hdfs-connector_1     |[0m 	partitioner.class = io.confluent.connect.hdfs.partitioner.DefaultPartitioner
+[36mradar-hdfs-connector_1     |[0m 	path.format = 
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	rotate.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	rotate.schedule.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	schema.cache.size = 1000
+[36mradar-hdfs-connector_1     |[0m 	schema.compatibility = NONE
+[36mradar-hdfs-connector_1     |[0m 	shutdown.timeout.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	storage.class = io.confluent.connect.hdfs.storage.HdfsStorage
+[36mradar-hdfs-connector_1     |[0m 	timezone = 
+[36mradar-hdfs-connector_1     |[0m 	topics.dir = topicAndroidNew
+[36mradar-hdfs-connector_1     |[0m  (io.confluent.connect.hdfs.HdfsSinkConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,843] INFO HdfsSinkConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.keytab = 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.principal = 
+[36mradar-hdfs-connector_1     |[0m 	filename.offset.zero.pad.width = 10
+[36mradar-hdfs-connector_1     |[0m 	flush.size = 150
+[36mradar-hdfs-connector_1     |[0m 	format.class = org.radarcns.sink.hdfs.AvroFormatRadar
+[36mradar-hdfs-connector_1     |[0m 	hadoop.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hadoop.home = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.authentication.kerberos = false
+[36mradar-hdfs-connector_1     |[0m 	hdfs.namenode.principal = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.url = hdfs://hdfs-namenode:8020
+[36mradar-hdfs-connector_1     |[0m 	hive.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hive.database = default
+[36mradar-hdfs-connector_1     |[0m 	hive.home = 
+[36mradar-hdfs-connector_1     |[0m 	hive.integration = false
+[36mradar-hdfs-connector_1     |[0m 	hive.metastore.uris = 
+[36mradar-hdfs-connector_1     |[0m 	kerberos.ticket.renew.period.ms = 3600000
+[36mradar-hdfs-connector_1     |[0m 	locale = 
+[36mradar-hdfs-connector_1     |[0m 	logs.dir = logs
+[36mradar-hdfs-connector_1     |[0m 	partition.duration.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	partition.field.name = 
+[36mradar-hdfs-connector_1     |[0m 	partitioner.class = io.confluent.connect.hdfs.partitioner.DefaultPartitioner
+[36mradar-hdfs-connector_1     |[0m 	path.format = 
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	rotate.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	rotate.schedule.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	schema.cache.size = 1000
+[36mradar-hdfs-connector_1     |[0m 	schema.compatibility = NONE
+[36mradar-hdfs-connector_1     |[0m 	shutdown.timeout.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	storage.class = io.confluent.connect.hdfs.storage.HdfsStorage
+[36mradar-hdfs-connector_1     |[0m 	timezone = 
+[36mradar-hdfs-connector_1     |[0m 	topics.dir = topicAndroidNew
+[36mradar-hdfs-connector_1     |[0m  (io.confluent.connect.hdfs.HdfsSinkConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,848] INFO Kafka version : 0.10.1.0-cp2 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,853] INFO Kafka commitId : beb290796c342e22 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,859] INFO Creating task radar-hdfs-sink-android-15000-3 (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,859] INFO ConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connector.class = io.confluent.connect.hdfs.HdfsSinkConnector
+[36mradar-hdfs-connector_1     |[0m 	key.converter = null
+[36mradar-hdfs-connector_1     |[0m 	name = radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	tasks.max = 4
+[36mradar-hdfs-connector_1     |[0m 	value.converter = null
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.ConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,859] INFO TaskConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	task.class = class io.confluent.connect.hdfs.HdfsSinkTask
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.connect.runtime.TaskConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,862] INFO Instantiated task radar-hdfs-sink-android-15000-3 with version 3.1.1 of type io.confluent.connect.hdfs.HdfsSinkTask (org.apache.kafka.connect.runtime.Worker)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,862] INFO ConsumerConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	auto.commit.interval.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	auto.offset.reset = earliest
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	check.crcs = true
+[36mradar-hdfs-connector_1     |[0m 	client.id = 
+[36mradar-hdfs-connector_1     |[0m 	connections.max.idle.ms = 540000
+[36mradar-hdfs-connector_1     |[0m 	enable.auto.commit = false
+[36mradar-hdfs-connector_1     |[0m 	exclude.internal.topics = true
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.bytes = 52428800
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.wait.ms = 500
+[36mradar-hdfs-connector_1     |[0m 	fetch.min.bytes = 1
+[36mradar-hdfs-connector_1     |[0m 	group.id = connect-radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	heartbeat.interval.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	interceptor.classes = null
+[36mradar-hdfs-connector_1     |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-hdfs-connector_1     |[0m 	max.poll.interval.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	max.poll.records = 500
+[36mradar-hdfs-connector_1     |[0m 	metadata.max.age.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	metric.reporters = []
+[36mradar-hdfs-connector_1     |[0m 	metrics.num.samples = 2
+[36mradar-hdfs-connector_1     |[0m 	metrics.sample.window.ms = 30000
+[36mradar-hdfs-connector_1     |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-hdfs-connector_1     |[0m 	receive.buffer.bytes = 65536
+[36mradar-hdfs-connector_1     |[0m 	reconnect.backoff.ms = 50
+[36mradar-hdfs-connector_1     |[0m 	request.timeout.ms = 305000
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 100
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	send.buffer.bytes = 131072
+[36mradar-hdfs-connector_1     |[0m 	session.timeout.ms = 10000
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.secure.random.implementation = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,863] INFO ConsumerConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	auto.commit.interval.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	auto.offset.reset = earliest
+[36mradar-hdfs-connector_1     |[0m 	bootstrap.servers = [PLAINTEXT://kafka-1:9092, PLAINTEXT://kafka-2:9092, PLAINTEXT://kafka-3:9092]
+[36mradar-hdfs-connector_1     |[0m 	check.crcs = true
+[36mradar-hdfs-connector_1     |[0m 	client.id = consumer-4
+[36mradar-hdfs-connector_1     |[0m 	connections.max.idle.ms = 540000
+[36mradar-hdfs-connector_1     |[0m 	enable.auto.commit = false
+[36mradar-hdfs-connector_1     |[0m 	exclude.internal.topics = true
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.bytes = 52428800
+[36mradar-hdfs-connector_1     |[0m 	fetch.max.wait.ms = 500
+[36mradar-hdfs-connector_1     |[0m 	fetch.min.bytes = 1
+[36mradar-hdfs-connector_1     |[0m 	group.id = connect-radar-hdfs-sink-android-15000
+[36mradar-hdfs-connector_1     |[0m 	heartbeat.interval.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	interceptor.classes = null
+[36mradar-hdfs-connector_1     |[0m 	key.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-hdfs-connector_1     |[0m 	max.poll.interval.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	max.poll.records = 500
+[36mradar-hdfs-connector_1     |[0m 	metadata.max.age.ms = 300000
+[36mradar-hdfs-connector_1     |[0m 	metric.reporters = []
+[36mradar-hdfs-connector_1     |[0m 	metrics.num.samples = 2
+[36mradar-hdfs-connector_1     |[0m 	metrics.sample.window.ms = 30000
+[36mradar-hdfs-connector_1     |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-hdfs-connector_1     |[0m 	receive.buffer.bytes = 65536
+[36mradar-hdfs-connector_1     |[0m 	reconnect.backoff.ms = 50
+[36mradar-hdfs-connector_1     |[0m 	request.timeout.ms = 305000
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 100
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.service.name = null
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-hdfs-connector_1     |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-hdfs-connector_1     |[0m 	sasl.mechanism = GSSAPI
+[36mradar-hdfs-connector_1     |[0m 	security.protocol = PLAINTEXT
+[36mradar-hdfs-connector_1     |[0m 	send.buffer.bytes = 131072
+[36mradar-hdfs-connector_1     |[0m 	session.timeout.ms = 10000
+[36mradar-hdfs-connector_1     |[0m 	ssl.cipher.suites = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-hdfs-connector_1     |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.key.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.keystore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	ssl.protocol = TLS
+[36mradar-hdfs-connector_1     |[0m 	ssl.provider = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.secure.random.implementation = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.location = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.password = null
+[36mradar-hdfs-connector_1     |[0m 	ssl.truststore.type = JKS
+[36mradar-hdfs-connector_1     |[0m 	value.deserializer = class org.apache.kafka.common.serialization.ByteArrayDeserializer
+[36mradar-hdfs-connector_1     |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,868] INFO Kafka version : 0.10.1.0-cp2 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,862] INFO Hadoop configuration directory  (io.confluent.connect.hdfs.DataWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,862] INFO Hadoop configuration directory  (io.confluent.connect.hdfs.DataWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,883] INFO HdfsSinkConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.keytab = 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.principal = 
+[36mradar-hdfs-connector_1     |[0m 	filename.offset.zero.pad.width = 10
+[36mradar-hdfs-connector_1     |[0m 	flush.size = 150
+[36mradar-hdfs-connector_1     |[0m 	format.class = org.radarcns.sink.hdfs.AvroFormatRadar
+[36mradar-hdfs-connector_1     |[0m 	hadoop.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hadoop.home = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.authentication.kerberos = false
+[36mradar-hdfs-connector_1     |[0m 	hdfs.namenode.principal = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.url = hdfs://hdfs-namenode:8020
+[36mradar-hdfs-connector_1     |[0m 	hive.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hive.database = default
+[36mradar-hdfs-connector_1     |[0m 	hive.home = 
+[36mradar-hdfs-connector_1     |[0m 	hive.integration = false
+[36mradar-hdfs-connector_1     |[0m 	hive.metastore.uris = 
+[36mradar-hdfs-connector_1     |[0m 	kerberos.ticket.renew.period.ms = 3600000
+[36mradar-hdfs-connector_1     |[0m 	locale = 
+[36mradar-hdfs-connector_1     |[0m 	logs.dir = logs
+[36mradar-hdfs-connector_1     |[0m 	partition.duration.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	partition.field.name = 
+[36mradar-hdfs-connector_1     |[0m 	partitioner.class = io.confluent.connect.hdfs.partitioner.DefaultPartitioner
+[36mradar-hdfs-connector_1     |[0m 	path.format = 
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	rotate.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	rotate.schedule.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	schema.cache.size = 1000
+[36mradar-hdfs-connector_1     |[0m 	schema.compatibility = NONE
+[36mradar-hdfs-connector_1     |[0m 	shutdown.timeout.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	storage.class = io.confluent.connect.hdfs.storage.HdfsStorage
+[36mradar-hdfs-connector_1     |[0m 	timezone = 
+[36mradar-hdfs-connector_1     |[0m 	topics.dir = topicAndroidNew
+[36mradar-hdfs-connector_1     |[0m  (io.confluent.connect.hdfs.HdfsSinkConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,891] INFO Hadoop configuration directory  (io.confluent.connect.hdfs.DataWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,882] INFO Kafka commitId : beb290796c342e22 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,907] INFO Created connector radar-hdfs-sink-android-15000 (org.apache.kafka.connect.cli.ConnectStandalone)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,908] INFO HdfsSinkConnectorConfig values: 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.keytab = 
+[36mradar-hdfs-connector_1     |[0m 	connect.hdfs.principal = 
+[36mradar-hdfs-connector_1     |[0m 	filename.offset.zero.pad.width = 10
+[36mradar-hdfs-connector_1     |[0m 	flush.size = 150
+[36mradar-hdfs-connector_1     |[0m 	format.class = org.radarcns.sink.hdfs.AvroFormatRadar
+[36mradar-hdfs-connector_1     |[0m 	hadoop.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hadoop.home = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.authentication.kerberos = false
+[36mradar-hdfs-connector_1     |[0m 	hdfs.namenode.principal = 
+[36mradar-hdfs-connector_1     |[0m 	hdfs.url = hdfs://hdfs-namenode:8020
+[36mradar-hdfs-connector_1     |[0m 	hive.conf.dir = 
+[36mradar-hdfs-connector_1     |[0m 	hive.database = default
+[36mradar-hdfs-connector_1     |[0m 	hive.home = 
+[36mradar-hdfs-connector_1     |[0m 	hive.integration = false
+[36mradar-hdfs-connector_1     |[0m 	hive.metastore.uris = 
+[36mradar-hdfs-connector_1     |[0m 	kerberos.ticket.renew.period.ms = 3600000
+[36mradar-hdfs-connector_1     |[0m 	locale = 
+[36mradar-hdfs-connector_1     |[0m 	logs.dir = logs
+[36mradar-hdfs-connector_1     |[0m 	partition.duration.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	partition.field.name = 
+[36mradar-hdfs-connector_1     |[0m 	partitioner.class = io.confluent.connect.hdfs.partitioner.DefaultPartitioner
+[36mradar-hdfs-connector_1     |[0m 	path.format = 
+[36mradar-hdfs-connector_1     |[0m 	retry.backoff.ms = 5000
+[36mradar-hdfs-connector_1     |[0m 	rotate.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	rotate.schedule.interval.ms = -1
+[36mradar-hdfs-connector_1     |[0m 	schema.cache.size = 1000
+[36mradar-hdfs-connector_1     |[0m 	schema.compatibility = NONE
+[36mradar-hdfs-connector_1     |[0m 	shutdown.timeout.ms = 3000
+[36mradar-hdfs-connector_1     |[0m 	storage.class = io.confluent.connect.hdfs.storage.HdfsStorage
+[36mradar-hdfs-connector_1     |[0m 	timezone = 
+[36mradar-hdfs-connector_1     |[0m 	topics.dir = topicAndroidNew
+[36mradar-hdfs-connector_1     |[0m  (io.confluent.connect.hdfs.HdfsSinkConnectorConfig)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:54,908] INFO Hadoop configuration directory  (io.confluent.connect.hdfs.DataWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:55,363] WARN Unable to load native-hadoop library for your platform... using builtin-java classes where applicable (org.apache.hadoop.util.NativeCodeLoader)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:56,876] INFO Sink task WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} finished initialization and start (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:56,876] INFO Sink task WorkerSinkTask{id=radar-hdfs-sink-android-15000-3} finished initialization and start (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:56,876] INFO Sink task WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} finished initialization and start (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:56,877] INFO Sink task WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} finished initialization and start (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,016] INFO Discovered coordinator kafka-2:9092 (id: 2147483645 rack: null) for group connect-radar-hdfs-sink-android-15000. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,026] INFO Revoking previously assigned partitions [] for group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,048] INFO (Re-)joining group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,020] INFO Discovered coordinator kafka-2:9092 (id: 2147483645 rack: null) for group connect-radar-hdfs-sink-android-15000. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,020] INFO Discovered coordinator kafka-2:9092 (id: 2147483645 rack: null) for group connect-radar-hdfs-sink-android-15000. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,025] INFO Discovered coordinator kafka-2:9092 (id: 2147483645 rack: null) for group connect-radar-hdfs-sink-android-15000. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,055] INFO Revoking previously assigned partitions [] for group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,103] INFO (Re-)joining group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,093] INFO Revoking previously assigned partitions [] for group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,104] INFO (Re-)joining group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,107] INFO Revoking previously assigned partitions [] for group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,108] INFO (Re-)joining group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,164] INFO (Re-)joining group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,242] INFO Successfully joined group connect-radar-hdfs-sink-android-15000 with generation 2 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,243] INFO Successfully joined group connect-radar-hdfs-sink-android-15000 with generation 2 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,244] INFO Successfully joined group connect-radar-hdfs-sink-android-15000 with generation 2 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,245] INFO Setting newly assigned partitions [android_empatica_e4_blood_volume_pulse-0, android_empatica_e4_sensor_status-0, android_empatica_e4_temperature-0, android_empatica_e4_acceleration-0, android_empatica_e4_electrodermal_activity-0, android_empatica_e4_inter_beat_interval-0, android_empatica_e4_battery_level-0] for group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,245] INFO Setting newly assigned partitions [android_empatica_e4_sensor_status-2, android_empatica_e4_blood_volume_pulse-2, android_empatica_e4_acceleration-2, android_empatica_e4_electrodermal_activity-2, android_empatica_e4_temperature-2, android_empatica_e4_inter_beat_interval-2, android_empatica_e4_battery_level-2] for group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,246] INFO Setting newly assigned partitions [android_empatica_e4_blood_volume_pulse-1, android_empatica_e4_sensor_status-1, android_empatica_e4_acceleration-1, android_empatica_e4_electrodermal_activity-1, android_empatica_e4_temperature-1, android_empatica_e4_battery_level-1, android_empatica_e4_inter_beat_interval-1] for group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,247] INFO Successfully joined group connect-radar-hdfs-sink-android-15000 with generation 2 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,247] INFO Setting newly assigned partitions [] for group connect-radar-hdfs-sink-android-15000 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,379] INFO Started recovery for topic partition android_empatica_e4_blood_volume_pulse-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,379] INFO Started recovery for topic partition android_empatica_e4_sensor_status-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,383] INFO Started recovery for topic partition android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,422] INFO Finished recovery for topic partition android_empatica_e4_sensor_status-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,422] INFO Started recovery for topic partition android_empatica_e4_blood_volume_pulse-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,478] INFO Finished recovery for topic partition android_empatica_e4_blood_volume_pulse-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,478] INFO Started recovery for topic partition android_empatica_e4_acceleration-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,481] INFO Finished recovery for topic partition android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,481] INFO Started recovery for topic partition android_empatica_e4_sensor_status-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,493] INFO Finished recovery for topic partition android_empatica_e4_sensor_status-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,494] INFO Started recovery for topic partition android_empatica_e4_acceleration-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,499] INFO Finished recovery for topic partition android_empatica_e4_blood_volume_pulse-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,499] INFO Started recovery for topic partition android_empatica_e4_sensor_status-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,506] INFO Finished recovery for topic partition android_empatica_e4_acceleration-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,506] INFO Started recovery for topic partition android_empatica_e4_electrodermal_activity-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,511] INFO Finished recovery for topic partition android_empatica_e4_electrodermal_activity-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,512] INFO Started recovery for topic partition android_empatica_e4_temperature-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,514] INFO Finished recovery for topic partition android_empatica_e4_sensor_status-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,514] INFO Started recovery for topic partition android_empatica_e4_temperature-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,522] INFO Finished recovery for topic partition android_empatica_e4_acceleration-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,522] INFO Started recovery for topic partition android_empatica_e4_electrodermal_activity-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,531] INFO Finished recovery for topic partition android_empatica_e4_electrodermal_activity-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,531] INFO Started recovery for topic partition android_empatica_e4_temperature-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,534] INFO Finished recovery for topic partition android_empatica_e4_temperature-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,535] INFO Started recovery for topic partition android_empatica_e4_acceleration-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,578] INFO Finished recovery for topic partition android_empatica_e4_temperature-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,578] INFO Started recovery for topic partition android_empatica_e4_battery_level-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,584] INFO Finished recovery for topic partition android_empatica_e4_battery_level-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,590] INFO Finished recovery for topic partition android_empatica_e4_temperature-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,590] INFO Started recovery for topic partition android_empatica_e4_inter_beat_interval-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,605] INFO Started recovery for topic partition android_empatica_e4_inter_beat_interval-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,617] INFO Finished recovery for topic partition android_empatica_e4_inter_beat_interval-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,618] INFO Started recovery for topic partition android_empatica_e4_battery_level-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,618] INFO Finished recovery for topic partition android_empatica_e4_inter_beat_interval-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,619] INFO Finished recovery for topic partition android_empatica_e4_acceleration-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,620] INFO Started recovery for topic partition android_empatica_e4_electrodermal_activity-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,630] INFO Finished recovery for topic partition android_empatica_e4_battery_level-2 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,631] INFO Finished recovery for topic partition android_empatica_e4_electrodermal_activity-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,631] INFO Started recovery for topic partition android_empatica_e4_inter_beat_interval-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,637] INFO Finished recovery for topic partition android_empatica_e4_inter_beat_interval-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,637] INFO Started recovery for topic partition android_empatica_e4_battery_level-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,655] INFO Finished recovery for topic partition android_empatica_e4_battery_level-0 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,656] INFO Fetch offset 750 is out of range for partition android_empatica_e4_blood_volume_pulse-1, resetting offset (org.apache.kafka.clients.consumer.internals.Fetcher)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:57:57,657] INFO Fetch offset 1500 is out of range for partition android_empatica_e4_acceleration-1, resetting offset (org.apache.kafka.clients.consumer.internals.Fetcher)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:58:02,719] INFO Reflections took 10944 ms to scan 265 urls, producing 12685 keys and 83874 values  (org.reflections.Reflections)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:58:54,500] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:58:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:58:54,834] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:59:54,502] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:59:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 14:59:54,833] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:00:54,498] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:00:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:00:54,842] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:05,405] INFO Ignoring stale out-of-order record in android_empatica_e4_blood_volume_pulse-1. Has offset 0 instead of expected offset 750 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:05,480] INFO Ignoring stale out-of-order record in android_empatica_e4_acceleration-1. Has offset 0 instead of expected offset 1500 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:39,269] INFO Recovered from stale out-of-order records in android_empatica_e4_blood_volume_pulse-1 with offset 750 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:41,745] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=750} and end offsets {partition=1=899} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:42,201] INFO Successfully acquired lease for hdfs://hdfs-namenode:8020/logs/android_empatica_e4_blood_volume_pulse/1/log (io.confluent.connect.hdfs.wal.FSWAL)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:42,290] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000000750+0000000899.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:44,693] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=900} and end offsets {partition=1=1049} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:44,748] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000000900+0000001049.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:47,097] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=1050} and end offsets {partition=1=1199} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:47,148] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000001050+0000001199.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:49,551] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=1200} and end offsets {partition=1=1349} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:49,599] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000001200+0000001349.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:52,061] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=1350} and end offsets {partition=1=1499} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:52,103] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000001350+0000001499.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:54,500] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:54,545] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=1500} and end offsets {partition=1=1649} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:54,834] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:54,986] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000001500+0000001649.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:54,986] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:57,041] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=1650} and end offsets {partition=1=1799} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:57,084] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000001650+0000001799.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:59,815] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=1800} and end offsets {partition=1=1949} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:01:59,857] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000001800+0000001949.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:02:02,394] INFO Starting commit and rotation for topic partition android_empatica_e4_blood_volume_pulse-1 with start offsets {partition=1=1950} and end offsets {partition=1=2099} (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:02:02,449] INFO Committed hdfs://hdfs-namenode:8020/topicAndroidNew/android_empatica_e4_blood_volume_pulse/partition=1/android_empatica_e4_blood_volume_pulse+1+0000001950+0000002099.avro for android_empatica_e4_blood_volume_pulse-1 (io.confluent.connect.hdfs.TopicPartitionWriter)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:02:54,499] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:02:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:02:54,833] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:03:54,498] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:03:54,756] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:03:54,834] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:04:54,498] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:04:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:04:54,833] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:05:54,500] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:05:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:05:54,835] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:06:54,500] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:06:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:06:54,834] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:07:54,498] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:07:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:07:54,833] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:08:54,499] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:08:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:08:54,834] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:09:54,499] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:09:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:09:54,835] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:10:54,498] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:10:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:10:54,834] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:11:54,498] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:11:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:11:54,833] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:12:54,498] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:12:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:12:54,835] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:13:54,499] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:13:54,756] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:13:54,833] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:14:54,499] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:14:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:14:54,835] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:15:54,499] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:15:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:15:54,833] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:16:54,499] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:16:54,755] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:16:54,833] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:17:54,498] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:17:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:17:54,834] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:18:54,500] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-0} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:18:54,754] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-1} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)
+[36mradar-hdfs-connector_1     |[0m [2017-02-06 15:18:54,835] INFO WorkerSinkTask{id=radar-hdfs-sink-android-15000-2} Committing offsets (org.apache.kafka.connect.runtime.WorkerSinkTask)

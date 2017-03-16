@@ -1,0 +1,481 @@
+Attaching to radarcphadoopstack_radar-backend-monitor_1
+[36mradar-backend-monitor_1    |[0m ===> Waiting RADAR-CNS topics ... 
+[36mradar-backend-monitor_1    |[0m Waiting 1 second before retrying ...
+[36mradar-backend-monitor_1    |[0m curl: (7) Failed to connect to rest-proxy-1 port 8082: Connection refused
+[36mradar-backend-monitor_1    |[0m Waiting 2 second before retrying ...
+[36mradar-backend-monitor_1    |[0m curl: (7) Failed to connect to rest-proxy-1 port 8082: Connection refused
+[36mradar-backend-monitor_1    |[0m Waiting 4 second before retrying ...
+[36mradar-backend-monitor_1    |[0m curl: (7) Failed to connect to rest-proxy-1 port 8082: Connection refused
+[36mradar-backend-monitor_1    |[0m Waiting 8 second before retrying ...
+[36mradar-backend-monitor_1    |[0m Waiting 16 second before retrying ...
+[36mradar-backend-monitor_1    |[0m All topics are now available. Ready to go!
+[36mradar-backend-monitor_1    |[0m ===> Starting  monitor ....
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:44 UTC]  INFO [main] (RadarBackendOptions.java:41) - Loading configuration (org.radarcns.config.RadarBackendOptions)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:44 UTC]  INFO [main] (RadarPropertyHandlerImpl.java:66) - USER CONFIGURATION: loading config file at /etc/radar.yml (org.radarcns.config.RadarPropertyHandlerImpl)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [main] (RadarBackend.java:50) - Configuration successfully updated (org.radarcns.RadarBackend)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [main] (RadarBackend.java:51) - radar.yml configuration: ---
+[36mradar-backend-monitor_1    |[0m ConfigRadar:
+[36mradar-backend-monitor_1    |[0m   released: 1480204800000
+[36mradar-backend-monitor_1    |[0m   version: "1.0"
+[36mradar-backend-monitor_1    |[0m   mode: "standalone"
+[36mradar-backend-monitor_1    |[0m   zookeeper:
+[36mradar-backend-monitor_1    |[0m   - host: "zookeeper-1"
+[36mradar-backend-monitor_1    |[0m     port: 2181
+[36mradar-backend-monitor_1    |[0m     protocol: null
+[36mradar-backend-monitor_1    |[0m   broker:
+[36mradar-backend-monitor_1    |[0m   - host: "kafka-1"
+[36mradar-backend-monitor_1    |[0m     port: 9092
+[36mradar-backend-monitor_1    |[0m     protocol: null
+[36mradar-backend-monitor_1    |[0m   extras: null
+[36mradar-backend-monitor_1    |[0m   log_path: null
+[36mradar-backend-monitor_1    |[0m   schema_registry:
+[36mradar-backend-monitor_1    |[0m   - host: "schema-registry-1"
+[36mradar-backend-monitor_1    |[0m     port: 8081
+[36mradar-backend-monitor_1    |[0m     protocol: "http"
+[36mradar-backend-monitor_1    |[0m   auto_commit_interval_ms: 1000
+[36mradar-backend-monitor_1    |[0m   session_timeout_ms: 10000
+[36mradar-backend-monitor_1    |[0m   stream_priority:
+[36mradar-backend-monitor_1    |[0m     normal: 2
+[36mradar-backend-monitor_1    |[0m     high: 4
+[36mradar-backend-monitor_1    |[0m     low: 1
+[36mradar-backend-monitor_1    |[0m   battery_monitor:
+[36mradar-backend-monitor_1    |[0m     topics:
+[36mradar-backend-monitor_1    |[0m     - "android_empatica_e4_battery_level"
+[36mradar-backend-monitor_1    |[0m     level: "CRITICAL"
+[36mradar-backend-monitor_1    |[0m     email_address:
+[36mradar-backend-monitor_1    |[0m     - "nivethika@thehyve.nl"
+[36mradar-backend-monitor_1    |[0m     - "joris@thehyve.nl"
+[36mradar-backend-monitor_1    |[0m     email_host: "smtp"
+[36mradar-backend-monitor_1    |[0m     email_port: 25
+[36mradar-backend-monitor_1    |[0m     email_user: "radarcnshyve@hotmail.com"
+[36mradar-backend-monitor_1    |[0m   disconnect_monitor:
+[36mradar-backend-monitor_1    |[0m     topics:
+[36mradar-backend-monitor_1    |[0m     - "android_empatica_e4_temperature"
+[36mradar-backend-monitor_1    |[0m     timeout: 60000
+[36mradar-backend-monitor_1    |[0m     email_address:
+[36mradar-backend-monitor_1    |[0m     - "nivethika@thehyve.nl"
+[36mradar-backend-monitor_1    |[0m     - "joris@thehyve.nl"
+[36mradar-backend-monitor_1    |[0m     email_host: "smtp"
+[36mradar-backend-monitor_1    |[0m     email_port: 25
+[36mradar-backend-monitor_1    |[0m     email_user: "radarcnshyve@hotmail.com"
+[36mradar-backend-monitor_1    |[0m   persistence_path: null
+[36mradar-backend-monitor_1    |[0m  (org.radarcns.RadarBackend)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [main] (RadarBackend.java:104) - STARTING (org.radarcns.RadarBackend)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-1] (AbstractConfig.java:180) - ConsumerConfig values: 
+[36mradar-backend-monitor_1    |[0m 	auto.commit.interval.ms = 5000
+[36mradar-backend-monitor_1    |[0m 	auto.offset.reset = latest
+[36mradar-backend-monitor_1    |[0m 	bootstrap.servers = [kafka-1:9092]
+[36mradar-backend-monitor_1    |[0m 	check.crcs = true
+[36mradar-backend-monitor_1    |[0m 	client.id = 1
+[36mradar-backend-monitor_1    |[0m 	connections.max.idle.ms = 540000
+[36mradar-backend-monitor_1    |[0m 	enable.auto.commit = true
+[36mradar-backend-monitor_1    |[0m 	exclude.internal.topics = true
+[36mradar-backend-monitor_1    |[0m 	fetch.max.bytes = 52428800
+[36mradar-backend-monitor_1    |[0m 	fetch.max.wait.ms = 500
+[36mradar-backend-monitor_1    |[0m 	fetch.min.bytes = 1
+[36mradar-backend-monitor_1    |[0m 	group.id = battery_monitors
+[36mradar-backend-monitor_1    |[0m 	heartbeat.interval.ms = 3000
+[36mradar-backend-monitor_1    |[0m 	interceptor.classes = null
+[36mradar-backend-monitor_1    |[0m 	key.deserializer = class io.confluent.kafka.serializers.KafkaAvroDeserializer
+[36mradar-backend-monitor_1    |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-backend-monitor_1    |[0m 	max.poll.interval.ms = 300000
+[36mradar-backend-monitor_1    |[0m 	max.poll.records = 500
+[36mradar-backend-monitor_1    |[0m 	metadata.max.age.ms = 300000
+[36mradar-backend-monitor_1    |[0m 	metric.reporters = []
+[36mradar-backend-monitor_1    |[0m 	metrics.num.samples = 2
+[36mradar-backend-monitor_1    |[0m 	metrics.sample.window.ms = 30000
+[36mradar-backend-monitor_1    |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-backend-monitor_1    |[0m 	receive.buffer.bytes = 65536
+[36mradar-backend-monitor_1    |[0m 	reconnect.backoff.ms = 50
+[36mradar-backend-monitor_1    |[0m 	request.timeout.ms = 305000
+[36mradar-backend-monitor_1    |[0m 	retry.backoff.ms = 100
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.service.name = null
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-backend-monitor_1    |[0m 	sasl.mechanism = GSSAPI
+[36mradar-backend-monitor_1    |[0m 	security.protocol = PLAINTEXT
+[36mradar-backend-monitor_1    |[0m 	send.buffer.bytes = 131072
+[36mradar-backend-monitor_1    |[0m 	session.timeout.ms = 10000
+[36mradar-backend-monitor_1    |[0m 	ssl.cipher.suites = null
+[36mradar-backend-monitor_1    |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-backend-monitor_1    |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-backend-monitor_1    |[0m 	ssl.key.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.location = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.type = JKS
+[36mradar-backend-monitor_1    |[0m 	ssl.protocol = TLS
+[36mradar-backend-monitor_1    |[0m 	ssl.provider = null
+[36mradar-backend-monitor_1    |[0m 	ssl.secure.random.implementation = null
+[36mradar-backend-monitor_1    |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.location = null
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.type = JKS
+[36mradar-backend-monitor_1    |[0m 	value.deserializer = class io.confluent.kafka.serializers.KafkaAvroDeserializer
+[36mradar-backend-monitor_1    |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-2] (AbstractConfig.java:180) - ConsumerConfig values: 
+[36mradar-backend-monitor_1    |[0m 	auto.commit.interval.ms = 5000
+[36mradar-backend-monitor_1    |[0m 	auto.offset.reset = latest
+[36mradar-backend-monitor_1    |[0m 	bootstrap.servers = [kafka-1:9092]
+[36mradar-backend-monitor_1    |[0m 	check.crcs = true
+[36mradar-backend-monitor_1    |[0m 	client.id = 1
+[36mradar-backend-monitor_1    |[0m 	connections.max.idle.ms = 540000
+[36mradar-backend-monitor_1    |[0m 	enable.auto.commit = true
+[36mradar-backend-monitor_1    |[0m 	exclude.internal.topics = true
+[36mradar-backend-monitor_1    |[0m 	fetch.max.bytes = 52428800
+[36mradar-backend-monitor_1    |[0m 	fetch.max.wait.ms = 500
+[36mradar-backend-monitor_1    |[0m 	fetch.min.bytes = 1
+[36mradar-backend-monitor_1    |[0m 	group.id = temperature_disconnect
+[36mradar-backend-monitor_1    |[0m 	heartbeat.interval.ms = 3000
+[36mradar-backend-monitor_1    |[0m 	interceptor.classes = null
+[36mradar-backend-monitor_1    |[0m 	key.deserializer = class io.confluent.kafka.serializers.KafkaAvroDeserializer
+[36mradar-backend-monitor_1    |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-backend-monitor_1    |[0m 	max.poll.interval.ms = 300000
+[36mradar-backend-monitor_1    |[0m 	max.poll.records = 500
+[36mradar-backend-monitor_1    |[0m 	metadata.max.age.ms = 300000
+[36mradar-backend-monitor_1    |[0m 	metric.reporters = []
+[36mradar-backend-monitor_1    |[0m 	metrics.num.samples = 2
+[36mradar-backend-monitor_1    |[0m 	metrics.sample.window.ms = 30000
+[36mradar-backend-monitor_1    |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-backend-monitor_1    |[0m 	receive.buffer.bytes = 65536
+[36mradar-backend-monitor_1    |[0m 	reconnect.backoff.ms = 50
+[36mradar-backend-monitor_1    |[0m 	request.timeout.ms = 305000
+[36mradar-backend-monitor_1    |[0m 	retry.backoff.ms = 100
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.service.name = null
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-backend-monitor_1    |[0m 	sasl.mechanism = GSSAPI
+[36mradar-backend-monitor_1    |[0m 	security.protocol = PLAINTEXT
+[36mradar-backend-monitor_1    |[0m 	send.buffer.bytes = 131072
+[36mradar-backend-monitor_1    |[0m 	session.timeout.ms = 10000
+[36mradar-backend-monitor_1    |[0m 	ssl.cipher.suites = null
+[36mradar-backend-monitor_1    |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-backend-monitor_1    |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-backend-monitor_1    |[0m 	ssl.key.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.location = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.type = JKS
+[36mradar-backend-monitor_1    |[0m 	ssl.protocol = TLS
+[36mradar-backend-monitor_1    |[0m 	ssl.provider = null
+[36mradar-backend-monitor_1    |[0m 	ssl.secure.random.implementation = null
+[36mradar-backend-monitor_1    |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.location = null
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.type = JKS
+[36mradar-backend-monitor_1    |[0m 	value.deserializer = class io.confluent.kafka.serializers.KafkaAvroDeserializer
+[36mradar-backend-monitor_1    |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-2] (AbstractConfig.java:180) - ConsumerConfig values: 
+[36mradar-backend-monitor_1    |[0m 	auto.commit.interval.ms = 5000
+[36mradar-backend-monitor_1    |[0m 	auto.offset.reset = latest
+[36mradar-backend-monitor_1    |[0m 	bootstrap.servers = [kafka-1:9092]
+[36mradar-backend-monitor_1    |[0m 	check.crcs = true
+[36mradar-backend-monitor_1    |[0m 	client.id = 1
+[36mradar-backend-monitor_1    |[0m 	connections.max.idle.ms = 540000
+[36mradar-backend-monitor_1    |[0m 	enable.auto.commit = true
+[36mradar-backend-monitor_1    |[0m 	exclude.internal.topics = true
+[36mradar-backend-monitor_1    |[0m 	fetch.max.bytes = 52428800
+[36mradar-backend-monitor_1    |[0m 	fetch.max.wait.ms = 500
+[36mradar-backend-monitor_1    |[0m 	fetch.min.bytes = 1
+[36mradar-backend-monitor_1    |[0m 	group.id = temperature_disconnect
+[36mradar-backend-monitor_1    |[0m 	heartbeat.interval.ms = 3000
+[36mradar-backend-monitor_1    |[0m 	interceptor.classes = null
+[36mradar-backend-monitor_1    |[0m 	key.deserializer = class io.confluent.kafka.serializers.KafkaAvroDeserializer
+[36mradar-backend-monitor_1    |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-backend-monitor_1    |[0m 	max.poll.interval.ms = 300000
+[36mradar-backend-monitor_1    |[0m 	max.poll.records = 500
+[36mradar-backend-monitor_1    |[0m 	metadata.max.age.ms = 300000
+[36mradar-backend-monitor_1    |[0m 	metric.reporters = []
+[36mradar-backend-monitor_1    |[0m 	metrics.num.samples = 2
+[36mradar-backend-monitor_1    |[0m 	metrics.sample.window.ms = 30000
+[36mradar-backend-monitor_1    |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-backend-monitor_1    |[0m 	receive.buffer.bytes = 65536
+[36mradar-backend-monitor_1    |[0m 	reconnect.backoff.ms = 50
+[36mradar-backend-monitor_1    |[0m 	request.timeout.ms = 305000
+[36mradar-backend-monitor_1    |[0m 	retry.backoff.ms = 100
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.service.name = null
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-backend-monitor_1    |[0m 	sasl.mechanism = GSSAPI
+[36mradar-backend-monitor_1    |[0m 	security.protocol = PLAINTEXT
+[36mradar-backend-monitor_1    |[0m 	send.buffer.bytes = 131072
+[36mradar-backend-monitor_1    |[0m 	session.timeout.ms = 10000
+[36mradar-backend-monitor_1    |[0m 	ssl.cipher.suites = null
+[36mradar-backend-monitor_1    |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-backend-monitor_1    |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-backend-monitor_1    |[0m 	ssl.key.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.location = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.type = JKS
+[36mradar-backend-monitor_1    |[0m 	ssl.protocol = TLS
+[36mradar-backend-monitor_1    |[0m 	ssl.provider = null
+[36mradar-backend-monitor_1    |[0m 	ssl.secure.random.implementation = null
+[36mradar-backend-monitor_1    |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.location = null
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.type = JKS
+[36mradar-backend-monitor_1    |[0m 	value.deserializer = class io.confluent.kafka.serializers.KafkaAvroDeserializer
+[36mradar-backend-monitor_1    |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-1] (AbstractConfig.java:180) - ConsumerConfig values: 
+[36mradar-backend-monitor_1    |[0m 	auto.commit.interval.ms = 5000
+[36mradar-backend-monitor_1    |[0m 	auto.offset.reset = latest
+[36mradar-backend-monitor_1    |[0m 	bootstrap.servers = [kafka-1:9092]
+[36mradar-backend-monitor_1    |[0m 	check.crcs = true
+[36mradar-backend-monitor_1    |[0m 	client.id = 1
+[36mradar-backend-monitor_1    |[0m 	connections.max.idle.ms = 540000
+[36mradar-backend-monitor_1    |[0m 	enable.auto.commit = true
+[36mradar-backend-monitor_1    |[0m 	exclude.internal.topics = true
+[36mradar-backend-monitor_1    |[0m 	fetch.max.bytes = 52428800
+[36mradar-backend-monitor_1    |[0m 	fetch.max.wait.ms = 500
+[36mradar-backend-monitor_1    |[0m 	fetch.min.bytes = 1
+[36mradar-backend-monitor_1    |[0m 	group.id = battery_monitors
+[36mradar-backend-monitor_1    |[0m 	heartbeat.interval.ms = 3000
+[36mradar-backend-monitor_1    |[0m 	interceptor.classes = null
+[36mradar-backend-monitor_1    |[0m 	key.deserializer = class io.confluent.kafka.serializers.KafkaAvroDeserializer
+[36mradar-backend-monitor_1    |[0m 	max.partition.fetch.bytes = 1048576
+[36mradar-backend-monitor_1    |[0m 	max.poll.interval.ms = 300000
+[36mradar-backend-monitor_1    |[0m 	max.poll.records = 500
+[36mradar-backend-monitor_1    |[0m 	metadata.max.age.ms = 300000
+[36mradar-backend-monitor_1    |[0m 	metric.reporters = []
+[36mradar-backend-monitor_1    |[0m 	metrics.num.samples = 2
+[36mradar-backend-monitor_1    |[0m 	metrics.sample.window.ms = 30000
+[36mradar-backend-monitor_1    |[0m 	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+[36mradar-backend-monitor_1    |[0m 	receive.buffer.bytes = 65536
+[36mradar-backend-monitor_1    |[0m 	reconnect.backoff.ms = 50
+[36mradar-backend-monitor_1    |[0m 	request.timeout.ms = 305000
+[36mradar-backend-monitor_1    |[0m 	retry.backoff.ms = 100
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.min.time.before.relogin = 60000
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.service.name = null
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.ticket.renew.jitter = 0.05
+[36mradar-backend-monitor_1    |[0m 	sasl.kerberos.ticket.renew.window.factor = 0.8
+[36mradar-backend-monitor_1    |[0m 	sasl.mechanism = GSSAPI
+[36mradar-backend-monitor_1    |[0m 	security.protocol = PLAINTEXT
+[36mradar-backend-monitor_1    |[0m 	send.buffer.bytes = 131072
+[36mradar-backend-monitor_1    |[0m 	session.timeout.ms = 10000
+[36mradar-backend-monitor_1    |[0m 	ssl.cipher.suites = null
+[36mradar-backend-monitor_1    |[0m 	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+[36mradar-backend-monitor_1    |[0m 	ssl.endpoint.identification.algorithm = null
+[36mradar-backend-monitor_1    |[0m 	ssl.key.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keymanager.algorithm = SunX509
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.location = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.keystore.type = JKS
+[36mradar-backend-monitor_1    |[0m 	ssl.protocol = TLS
+[36mradar-backend-monitor_1    |[0m 	ssl.provider = null
+[36mradar-backend-monitor_1    |[0m 	ssl.secure.random.implementation = null
+[36mradar-backend-monitor_1    |[0m 	ssl.trustmanager.algorithm = PKIX
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.location = null
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.password = null
+[36mradar-backend-monitor_1    |[0m 	ssl.truststore.type = JKS
+[36mradar-backend-monitor_1    |[0m 	value.deserializer = class io.confluent.kafka.serializers.KafkaAvroDeserializer
+[36mradar-backend-monitor_1    |[0m  (org.apache.kafka.clients.consumer.ConsumerConfig)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-2] (AbstractConfig.java:169) - KafkaAvroDeserializerConfig values: 
+[36mradar-backend-monitor_1    |[0m 	schema.registry.url = [http://schema-registry-1:8081]
+[36mradar-backend-monitor_1    |[0m 	max.schemas.per.subject = 1000
+[36mradar-backend-monitor_1    |[0m 	specific.avro.reader = false
+[36mradar-backend-monitor_1    |[0m  (io.confluent.kafka.serializers.KafkaAvroDeserializerConfig)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-1] (AbstractConfig.java:169) - KafkaAvroDeserializerConfig values: 
+[36mradar-backend-monitor_1    |[0m 	schema.registry.url = [http://schema-registry-1:8081]
+[36mradar-backend-monitor_1    |[0m 	max.schemas.per.subject = 1000
+[36mradar-backend-monitor_1    |[0m 	specific.avro.reader = false
+[36mradar-backend-monitor_1    |[0m  (io.confluent.kafka.serializers.KafkaAvroDeserializerConfig)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-1] (AbstractConfig.java:169) - KafkaAvroDeserializerConfig values: 
+[36mradar-backend-monitor_1    |[0m 	schema.registry.url = [http://schema-registry-1:8081]
+[36mradar-backend-monitor_1    |[0m 	max.schemas.per.subject = 1000
+[36mradar-backend-monitor_1    |[0m 	specific.avro.reader = false
+[36mradar-backend-monitor_1    |[0m  (io.confluent.kafka.serializers.KafkaAvroDeserializerConfig)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-2] (AbstractConfig.java:169) - KafkaAvroDeserializerConfig values: 
+[36mradar-backend-monitor_1    |[0m 	schema.registry.url = [http://schema-registry-1:8081]
+[36mradar-backend-monitor_1    |[0m 	max.schemas.per.subject = 1000
+[36mradar-backend-monitor_1    |[0m 	specific.avro.reader = false
+[36mradar-backend-monitor_1    |[0m  (io.confluent.kafka.serializers.KafkaAvroDeserializerConfig)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-1] (AppInfoParser.java:83) - Kafka version : 0.10.1.0 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-2] (AppInfoParser.java:83) - Kafka version : 0.10.1.0 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-2] (AppInfoParser.java:84) - Kafka commitId : 3402a74efb23d1d4 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-1] (AppInfoParser.java:84) - Kafka commitId : 3402a74efb23d1d4 (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:138) - Monitoring streams [android_empatica_e4_temperature] (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  WARN [pool-1-thread-1] (AppInfoParser.java:60) - Error registering AppInfo mbean (org.apache.kafka.common.utils.AppInfoParser)
+[36mradar-backend-monitor_1    |[0m javax.management.InstanceAlreadyExistsException: kafka.consumer:type=app-info,id=1
+[36mradar-backend-monitor_1    |[0m 	at com.sun.jmx.mbeanserver.Repository.addMBean(Repository.java:437)
+[36mradar-backend-monitor_1    |[0m 	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.registerWithRepository(DefaultMBeanServerInterceptor.java:1898)
+[36mradar-backend-monitor_1    |[0m 	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.registerDynamicMBean(DefaultMBeanServerInterceptor.java:966)
+[36mradar-backend-monitor_1    |[0m 	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.registerObject(DefaultMBeanServerInterceptor.java:900)
+[36mradar-backend-monitor_1    |[0m 	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.registerMBean(DefaultMBeanServerInterceptor.java:324)
+[36mradar-backend-monitor_1    |[0m 	at com.sun.jmx.mbeanserver.JmxMBeanServer.registerMBean(JmxMBeanServer.java:522)
+[36mradar-backend-monitor_1    |[0m 	at org.apache.kafka.common.utils.AppInfoParser.registerAppInfo(AppInfoParser.java:58)
+[36mradar-backend-monitor_1    |[0m 	at org.apache.kafka.clients.consumer.KafkaConsumer.<init>(KafkaConsumer.java:695)
+[36mradar-backend-monitor_1    |[0m 	at org.apache.kafka.clients.consumer.KafkaConsumer.<init>(KafkaConsumer.java:584)
+[36mradar-backend-monitor_1    |[0m 	at org.apache.kafka.clients.consumer.KafkaConsumer.<init>(KafkaConsumer.java:566)
+[36mradar-backend-monitor_1    |[0m 	at org.radarcns.monitor.AbstractKafkaMonitor.start(AbstractKafkaMonitor.java:135)
+[36mradar-backend-monitor_1    |[0m 	at org.radarcns.monitor.CombinedKafkaMonitor.lambda$start$0(CombinedKafkaMonitor.java:78)
+[36mradar-backend-monitor_1    |[0m 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[36mradar-backend-monitor_1    |[0m 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[36mradar-backend-monitor_1    |[0m 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[36mradar-backend-monitor_1    |[0m 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[36mradar-backend-monitor_1    |[0m 	at java.lang.Thread.run(Thread.java:745)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:45 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:138) - Monitoring streams [android_empatica_e4_battery_level] (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-2] (AbstractCoordinator.java:555) - Discovered coordinator kafka-1:9092 (id: 2147483646 rack: null) for group temperature_disconnect. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-2] (ConsumerCoordinator.java:333) - Revoking previously assigned partitions [] for group temperature_disconnect (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-1] (AbstractCoordinator.java:555) - Discovered coordinator kafka-1:9092 (id: 2147483646 rack: null) for group battery_monitors. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-1] (ConsumerCoordinator.java:333) - Revoking previously assigned partitions [] for group battery_monitors (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-1] (AbstractCoordinator.java:381) - (Re-)joining group battery_monitors (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-2] (AbstractCoordinator.java:381) - (Re-)joining group temperature_disconnect (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-1] (AbstractCoordinator.java:600) - Marking the coordinator kafka-1:9092 (id: 2147483646 rack: null) dead for group battery_monitors (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-2] (AbstractCoordinator.java:600) - Marking the coordinator kafka-1:9092 (id: 2147483646 rack: null) dead for group temperature_disconnect (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-1] (AbstractCoordinator.java:555) - Discovered coordinator kafka-1:9092 (id: 2147483646 rack: null) for group battery_monitors. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-1] (AbstractCoordinator.java:381) - (Re-)joining group battery_monitors (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-2] (AbstractCoordinator.java:555) - Discovered coordinator kafka-1:9092 (id: 2147483646 rack: null) for group temperature_disconnect. (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-2] (AbstractCoordinator.java:381) - (Re-)joining group temperature_disconnect (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-1] (AbstractCoordinator.java:349) - Successfully joined group battery_monitors with generation 1 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-1] (ConsumerCoordinator.java:225) - Setting newly assigned partitions [android_empatica_e4_battery_level-1, android_empatica_e4_battery_level-2, android_empatica_e4_battery_level-0] for group battery_monitors (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-2] (AbstractCoordinator.java:349) - Successfully joined group temperature_disconnect with generation 1 (org.apache.kafka.clients.consumer.internals.AbstractCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:57:47 UTC]  INFO [pool-1-thread-2] (ConsumerCoordinator.java:225) - Setting newly assigned partitions [android_empatica_e4_temperature-0, android_empatica_e4_temperature-2, android_empatica_e4_temperature-1] for group temperature_disconnect (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:58:45 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 14:59:45 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:00:45 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 5 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:14 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 2 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:15 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (BatteryLevelMonitor.java:96) - Sent battery level status message successfully (org.radarcns.monitor.BatteryLevelMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  WARN [pool-1-thread-1] (BatteryLevelMonitor.java:67) - Battery level of sensor SourceID_0 of user UserID_0 is critically low (org.radarcns.monitor.BatteryLevelMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 2 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:01:16 UTC]  INFO [pool-1-thread-1] (AbstractKafkaMonitor.java:147) - Received 1 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:02:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:02:16 UTC]  INFO [pool-1-thread-2] (DisconnectMonitor.java:98) - Device {"userId": "UserID_0", "sourceId": "SourceID_0"} timeout 60003. Reporting it missing. (org.radarcns.monitor.DisconnectMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:03:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:04:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:05:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:06:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:07:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:08:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:09:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:10:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:11:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:12:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:13:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:14:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:15:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
+[36mradar-backend-monitor_1    |[0m [2017-02-06 15:16:16 UTC]  INFO [pool-1-thread-2] (AbstractKafkaMonitor.java:147) - Received 0 records (org.radarcns.monitor.AbstractKafkaMonitor)
