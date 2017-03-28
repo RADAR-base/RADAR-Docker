@@ -30,14 +30,20 @@ esac
 # force connection
 connect() {
   log_info "Forcing reconnection"
-  sudo ifconfig $nic down >> $logfile 2>&1
+  sudo ifdown --force $nic >> $logfile 2>&1
   log_info "Turning wifi NIC off"
-  sudo ifconfig $nic up >> $logfile 2>&1
+  sleep 10
+  sudo ifup $nic >> $logfile 2>&1
   log_info "Turning wifi NIC on"
-  #sudo wpa_supplicant -i $nic -Dwext -c/etc/wpa_supplicant/wpa_supplicant.conf >> $logfile 2>&1
-  #log_info "Authenticating"
-  #sudo dhclient $nic >> $logfile 2>&1
-  #log_info "Getting IP address"
+  log_info "Double checking ..."
+  if ! isConnected; then
+    log_info "***** BRUTE-FORCE *****"
+    sudo systemctl restart networking >> $logfile 2>&1
+    log_info "***** Restart network service *****"
+    sudo service ntp restart >> $logfile 2>&1
+    log_info "***** Restart NTP *****"
+    ntpq -p >> $logfile 2>&1
+  fi
   log_info "Completed"
 }
 
