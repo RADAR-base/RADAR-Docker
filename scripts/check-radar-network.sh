@@ -6,6 +6,8 @@ nic=wlp5s1
 lockfile=/home/radar/RADAR-Network/LOCK_RETRY
 # log file
 logfile=/home/radar/RADAR-Network/radar-network.log
+# url to check against
+url=https://www.empatica.com
 
 # maximum file size in byte  to rotate log
 minimumsize=10000000
@@ -20,7 +22,7 @@ log_info() {
 
 # check connection
 isConnected() {
-  case "$(curl -s --max-time 5 -I http://www.kcl.ac.uk | sed 's/^[^ ]*  *\([0-9]\).*/\1/; 1q')" in
+  case "$(curl -s --max-time 5 -I $url | sed 's/^[^ ]*  *\([0-9]\).*/\1/; 1q')" in
     [23]) log_info "HTTP connectivity is up" && return 0;;
     5) log_info "The web proxy won't let us through" && return 1;;
     *) log_info "The network is down or very slow" && return 1;;
