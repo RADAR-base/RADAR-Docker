@@ -22,7 +22,7 @@ log_info() {
 
 # check connection
 isConnected() {
-  case "$(curl -s --max-time 5 -I $url | sed 's/^[^ ]*  *\([0-9]\).*/\1/; 1q')" in
+  case "$(curl -s --max-time 10 --retry 5 -I $url | sed 's/^[^ ]*  *\([0-9]\).*/\1/; 1q')" in
     [23]) log_info "HTTP connectivity is up" && return 0;;
     5) log_info "The web proxy won't let us through" && return 1;;
     *) log_info "The network is down or very slow" && return 1;;
