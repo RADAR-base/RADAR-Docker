@@ -107,11 +107,32 @@ To run RADAR-CNS stack in a single node setup:
      ```
 3. Create `smtp.env` and configure your email settings following `smtp.env.template`. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
 4. (Optional) Modify flush.size and HDFS direcotory for Cold storage in `sink-hdfs.properties`
- 
+
     ```ini
     flush.size=
     topics.dir=/path/to/data
     ```
+	Note: To have different flush.size for different topics, you can create multipe property configurations for a single connector. To do that,
+	
+	4.1 Create multipe property files that have different `flush.size` for given topics. 
+	Examples [sink-hdfs-high.properties](https://github.com/RADAR-CNS/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-CNS/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/sink-hdfs-low.properties)
+	
+	4.2 Add `CONNECTOR_PROPERTY_FILE_PREFIX: <prefix-value>` enviornment variable to `radar-hdfs-connector` service in `docker-compose` file.  
+	
+	4.3 Add created property files to the `radar-hdfs-connector` service in `docker-compose` with name abides to prefix-value mentioned in `CONNECTOR_PROPERTY_FILE_PREFIX`
+
+	```ini
+	    radar-hdfs-connector:
+	      image: radarcns/radar-hdfs-connector-auto:0.2
+	      restart: on-failure
+	      volumes:
+		- ./sink-hdfs-high.properties:/etc/kafka-connect/sink-hdfs-high.properties
+		- ./sink-hdfs-low.properties:/etc/kafka-connect/sink-hdfs-low.properties
+	      environment:
+		CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092	      
+		CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
+	```
+ 
 5. Configure Hot Storage settings in `.env` file
  
     ```ini
