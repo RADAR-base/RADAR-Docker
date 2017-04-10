@@ -37,10 +37,8 @@ services:
     links:
       - mongo
       - elasticsearch
-    environment:
-      - GRAYLOG_PASSWORD_SECRET
-      - GRAYLOG_ROOT_PASSWORD_SHA2
-      - GRAYLOG_WEB_ENDPOINT_URI
+    env_file:
+      - ./graylog.env
     ports:
       - "9000:9000"
       - "12201:12201/udp"
