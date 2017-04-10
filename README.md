@@ -5,30 +5,28 @@ The dockerized RADAR stack for deploying the RADAR-CNS platform. Component repos
 ## Installation instructions 
 To install RADAR-CNS stack, do the following: 
 
-1. Install Docker Engine
-	  * Installation for macOS (Follow [installer](https://docs.docker.com/engine/installation/mac/) from Docker)
-	  * Installation for Windows ( Follow [installer](https://docs.docker.com/docker-for-windows/ from Docker)
-	  * Installation for Ubuntu (Follow [Docker instructions](https://docs.docker.com/engine/installation/linux/ubuntu/))
-	  * For other Linux distributions, install Docker engine from [the list by Docker](https://docs.docker.com/engine/installation/). Install `docker-compose` using the [installation guide](https://docs.docker.com/compose/install/) or by following the [wiki](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu#install-docker-compose).
-2. Install `docker-compose` by following instructions [here](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu#install-docker-compose) 	  
+1. Install [Docker Engine](https://docs.docker.com/engine/installation/)
+2. Install `docker-compose` using the [installation guide](https://docs.docker.com/compose/install/) or by following our [wiki](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu#install-docker-compose).
 3. Verify the Docker installation by running on the command-line:
 
-	```shell
-	sudo docker --version
-	sudo docker-compose --version
-	```
-	This should show Docker version 1.12 or later and docker-compose version 1.9.0 or later.
+    ```shell
+    docker --version
+    docker-compose --version
+    ```
+    This should show Docker version 1.12 or later and docker-compose version 1.9.0 or later.
 4. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for your platform.
-	1. For Ubuntu
-	```shell
-	sudo apt-get install git
-	```
+    1. For Ubuntu
+
+        ```shell
+        sudo apt-get install git
+        ```
 	
 5. Clone [RADAR-Docker](https://github.com/RADAR-CNS/RADAR-Docker) repository from GitHub.
 
     ```shell
     git clone https://github.com/RADAR-CNS/RADAR-Docker.git
     ```
+
 6. Install required component stack following the instructions below.
 
 ## Usage
@@ -164,13 +162,20 @@ To start RADAR-CNS stack on a single node setup after installing, run
 cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
 sudo ./start-radar-stack.sh
 ```
+
 #### cAdvisor 
+
 cAdvisor (Container Advisor) provides container users an understanding of the resource usage and performance characteristics of their running containers.
 
 To view current resource performance,if running locally, try [http://localhost:8181](http://localhost:8181). This will bring up the built-in Web UI. Clicking on `/docker` in `Subcontainers` takes you to a new window with all of the Docker containers listed individually.
 
 #### Portainer
+
 Portainer provides simple interactive UI-based docker management. If running locally, try [http://localhost:8182](http://localhost:8182) for portainer's UI. To set-up portainer follow this [link](https://www.ostechnix.com/portainer-an-easiest-way-to-manage-docker/).
+
+### Logging
+
+Set up logging by going to the `dcompose-stack/logging` directory and follow the README there.
 
 ## Work in progress
 
