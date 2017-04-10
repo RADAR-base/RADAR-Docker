@@ -41,7 +41,7 @@ services:
       - ./graylog.env
     ports:
       - "9000:9000"
-      - "12201:12201/udp"
+      - "12201/udp:12201/udp"
     volumes:
       - graylog:/usr/share/graylog/data/journal
 
