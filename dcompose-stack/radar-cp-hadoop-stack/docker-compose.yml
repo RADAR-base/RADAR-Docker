@@ -1,5 +1,5 @@
 ---
-version: '2'
+version: '2.1'
 
 networks:
   zookeeper:
@@ -12,6 +12,15 @@ networks:
     external: true
   mail:
     driver: bridge
+  monitor:
+    driver: bridge
+  hotstorage:
+    driver: bridge
+
+volumes:
+  kafka-1-data: {}
+  kafka-2-data: {}
+  kafka-3-data: {}
 
 services:
 
@@ -22,6 +31,9 @@ services:
     image: confluentinc/cp-zookeeper:3.1.2-1
     networks:
       - zookeeper
+    volumes:
+      - /var/lib/zookeeper/data
+      - /var/lib/zookeeper/logs
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -38,8 +50,11 @@ services:
     networks:
       - kafka
       - zookeeper
+    volumes:
+      - kafka-1-data:/var/lib/kafka/data
     depends_on:
       - zookeeper-1
+    restart: always
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
@@ -51,8 +66,11 @@ services:
     networks:
       - kafka
       - zookeeper
+    volumes:
+      - kafka-2-data:/var/lib/kafka/data
     depends_on:
       - kafka-1
+    restart: always
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
@@ -64,6 +82,8 @@ services:
     networks:
       - kafka
       - zookeeper
+    volumes:
+      - kafka-3-data:/var/lib/kafka/data
     depends_on:
       - kafka-2
     environment:
@@ -107,6 +127,7 @@ services:
       - schema-registry-1
     ports:
       - "8082:8082"
+    restart: always
     environment:
       KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_REST_LISTENERS: http://rest-proxy-1:8082
@@ -142,13 +163,14 @@ services:
   hotstorage:
     image: radarcns/radar-hotstorage:0.1
     networks:
-      - api
+      - hotstorage
     volumes:
       - "${MONGODB_DIR}/db:/data/db"
       - "${MONGODB_DIR}/configdb:/data/configdb"
     ports:
       - "27017:27017"
       - "28017:28017"
+    restart: always
     environment:
       RADAR_USER: ${HOTSTORAGE_USERNAME}
       RADAR_PWD: ${HOTSTORAGE_PASSWORD}
@@ -160,16 +182,23 @@ services:
   rest-api:
     image: radarcns/radar-restapi:0.1
     networks:
+      - hotstorage
       - api
     ports:
       - "8080:8080"
     depends_on:
       - hotstorage
+    restart: always
     environment:
       MONGODB_USER: ${HOTSTORAGE_USERNAME}
       MONGODB_PASS: ${HOTSTORAGE_PASSWORD}
       MONGODB_DATABASE: ${HOTSTORAGE_NAME} 
       MONGODB_HOST: hotstorage:27017
+    healthcheck:
+      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:8080/radar/api/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # RADAR Dashboard                                                           #
@@ -182,8 +211,14 @@ services:
       - "3000:3000"
     depends_on:
       - rest-api
+    restart: always
     environment:
       API_URI: http://${SERVER_NAME}:8080/api
+    healthcheck:
+      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:3000/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # RADAR Cold Storage                                                        #
@@ -194,6 +229,7 @@ services:
       - hadoop
     volumes:
       - "${HDFS_DATA_DIR_1}:/hadoop/dfs/data"
+    restart: always
     environment:
       CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
       HDFS_CONF_dfs_replication: 2
@@ -204,6 +240,7 @@ services:
       - hadoop
     volumes:
       - "${HDFS_DATA_DIR_2}:/hadoop/dfs/data"
+    restart: always
     environment:
       CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
       HDFS_CONF_dfs_replication: 2
@@ -216,6 +253,7 @@ services:
     volumes:
       - "${HDFS_NAME_DIR_1}:/hadoop/dfs/name/1"
       - "${HDFS_NAME_DIR_2}:/hadoop/dfs/name/2"
+    restart: always
     environment:
       CLUSTER_NAME: radar-cns
       HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
@@ -229,6 +267,7 @@ services:
       - mail
     volumes:
       - /var/spool/exim
+    restart: always
     env_file:
       - smtp.env
 
@@ -243,7 +282,7 @@ services:
     networks:
       - zookeeper
       - kafka
-      - api
+      - hotstorage
     depends_on:
       - zookeeper-1
       - kafka-1
@@ -364,6 +403,7 @@ services:
       - smtp
     volumes:
       - ./radar.yml:/etc/radar.yml
+    restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}      
@@ -373,6 +413,8 @@ services:
   #---------------------------------------------------------------------------#
   cadvisor:
     image: google/cadvisor:v0.24.1
+    networks:
+      - monitor
     ports:
       - "8181:8080"
     volumes:
@@ -380,10 +422,14 @@ services:
       - "/var/run:/var/run:rw"
       - "/sys:/sys:ro"
       - "/var/lib/docker/:/var/lib/docker:ro"
+    restart: always
 
   portainer:
     image: portainer/portainer:1.11.1
+    networks:
+      - monitor
     ports:
       - "8182:9000"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: always
