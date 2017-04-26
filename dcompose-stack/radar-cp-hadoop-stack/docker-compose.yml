@@ -182,7 +182,8 @@ services:
       - "3000:3000"
     depends_on:
       - rest-api
-
+    environment:
+      API_URI: http://${SERVER_NAME}:8080/api
 
   #---------------------------------------------------------------------------#
   # RADAR Cold Storage                                                        #

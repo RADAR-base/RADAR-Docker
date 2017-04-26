@@ -1,19 +1,18 @@
 # RADAR-CNS with a HDFS connector
 
-In the Dockerfile, 2 redundant HDFS volumes and 2 redundant directories are mounted. Set these directories in the `.env` file, and ensure that their parent directory exists. For proper redundancy, the directories should be set to different physical volumes.
+## Installation
+
+First move `env.template` file to .env and check and modify all its variables.
 
 Modify `smtp.env.template` to set a SMTP host to send emails with, and move it to `smtp.env`. The configuration settings are passed to a [namshi/smtp](https://hub.docker.com/r/namshi/smtp/) Docker container. This container supports a.o. regular SMTP and GMail.
 
-Then, create a docker `hadoop` network.
+## Usage
 
+Run
 ```shell
-docker network create hadoop
+./install-radar-stack.sh
 ```
-
-Run the full setup with
-```shell
-sudo docker-compose up -d
-```
+to start all the RADAR services. Use the `(start|stop|reboot)-radar-stack.sh` to start, stop or reboot it.
 
 Data can be extracted from this setup by running:
 
