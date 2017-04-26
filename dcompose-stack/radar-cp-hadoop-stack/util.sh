@@ -36,6 +36,14 @@ sudo-docker-compose() {
   fi
 }
 
+sedi() {
+  if [ $(uname) == "Darwin" ]; then
+    sed -i '' "$@"
+  else
+    sed -i -- "$@"
+  fi
+}
+
 echo "OS version: "$(uname -a)
 check_command_exists docker
 check_command_exists docker-compose
