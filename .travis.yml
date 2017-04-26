@@ -3,7 +3,7 @@ sudo: required
 services:
   - docker
 env:
-  DOCKER_COMPOSE_VERSION: 1.9.0
+  DOCKER_COMPOSE_VERSION: 1.11.2
 
 before_install:
   - mkdir -p "$HOME/bin";
@@ -25,6 +25,7 @@ script:
   # With email and HDFS support
   - cd ../radar-cp-hadoop-stack
   - sudo docker network create hadoop
+  - export SERVER_NAME=localhost
   - export HDFS_DATA_DIR_1=$PWD/hdfs-data1
   - export HDFS_DATA_DIR_2=$PWD/hdfs-data2
   - export HDFS_NAME_DIR_1=$PWD/hdfs-name1
