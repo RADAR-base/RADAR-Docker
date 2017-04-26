@@ -406,6 +406,8 @@ services:
     image: google/cadvisor:v0.24.1
     networks:
       - monitor
+    ports:
+      - "8080:8080"
     volumes:
       - "/:/rootfs:ro"
       - "/var/run:/var/run:rw"
