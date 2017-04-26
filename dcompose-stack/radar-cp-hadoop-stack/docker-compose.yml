@@ -106,8 +106,6 @@ services:
       - kafka-2
       - kafka-3
     restart: always
-    ports:
-      - "8081:8081"
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper-1:2181
       SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
@@ -127,8 +125,6 @@ services:
       - kafka-2
       - kafka-3
       - schema-registry-1
-    ports:
-      - "8082:8082"
     restart: always
     environment:
       KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:2181
@@ -169,9 +165,6 @@ services:
     volumes:
       - "${MONGODB_DIR}/db:/data/db"
       - "${MONGODB_DIR}/configdb:/data/configdb"
-    ports:
-      - "27017:27017"
-      - "28017:28017"
     restart: always
     environment:
       RADAR_USER: ${HOTSTORAGE_USERNAME}
@@ -186,8 +179,6 @@ services:
     networks:
       - hotstorage
       - api
-    ports:
-      - "8080:8080"
     depends_on:
       - hotstorage
     restart: always
@@ -209,8 +200,6 @@ services:
     image: radarcns/radar-dashboard:latest
     networks:
       - api
-    ports:
-      - "3000:3000"
     depends_on:
       - rest-api
     restart: always
@@ -417,8 +406,6 @@ services:
     image: google/cadvisor:v0.24.1
     networks:
       - monitor
-    ports:
-      - "8181:8080"
     volumes:
       - "/:/rootfs:ro"
       - "/var/run:/var/run:rw"
@@ -430,8 +417,6 @@ services:
     image: portainer/portainer:1.11.1
     networks:
       - monitor
-    ports:
-      - "8182:9000"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     restart: always
