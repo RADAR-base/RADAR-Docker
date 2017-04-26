@@ -100,6 +100,7 @@ services:
     networks:
       - kafka
       - zookeeper
+      - api
     depends_on:
       - kafka-1
       - kafka-2
@@ -120,6 +121,7 @@ services:
     networks:
       - kafka
       - zookeeper
+      - api
     depends_on:
       - kafka-1
       - kafka-2
@@ -433,3 +435,24 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     restart: always
+
+  #---------------------------------------------------------------------------#
+  # Webserver                                                                 #
+  #---------------------------------------------------------------------------#
+  webserver:
+    image: nginx:1.12-alpine
+    restart: always
+    networks:
+      - api
+      - monitor
+    depends_on:
+      - cadvisor
+      - portainer
+      - rest-api
+      - schema-registry-1
+      - rest-proxy-1
+      - dashboard
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf:ro"
