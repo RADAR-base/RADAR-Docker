@@ -16,9 +16,16 @@ Run
 ```
 to start all the RADAR services. Use the `(start|stop|reboot)-radar-stack.sh` to start, stop or reboot it.
 
-Data can be extracted from this setup by running:
+Raw data can be extracted from this setup by running:
 
 ```shell
-./extract_from_hdfs <hdfs file> <destination directory>
+./hdfs_extract.sh <hdfs file> <destination directory>
 ```
 This command will not overwrite data in the destination directory.
+
+CSV-structured data can be gotten from HDFS by running
+
+```shell
+./hdfs_restructure.sh /topicAndroidNew <destination directory>
+```
+This will put all CSV files in the destination directory, with subdirectory structure `PatientId/SensorType/Date_Hour.csv`.
