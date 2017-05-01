@@ -3,4 +3,4 @@
 . ./util.sh
 
 echo "==> Starting radar-cns platform"
-sudo-docker-compose start
+sudo-linux docker-compose start
