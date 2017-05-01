@@ -20,19 +20,11 @@ check_parent_exists() {
   fi
 }
 
-sudo-docker() {
+sudo-linux() {
   if [ $(uname) == "Darwin" ]; then
-    docker "$@"
+    "$@"
   else
-    sudo docker "$@"
-  fi
-}
-
-sudo-docker-compose() {
-  if [ $(uname) == "Darwin" ]; then
-    docker-compose "$@"
-  else
-    sudo docker-compose "$@"
+    sudo "$@"
   fi
 }
 
@@ -51,6 +43,6 @@ inline_variable() {
   fi
 }
 
-echo "OS version: "$(uname -a)
+echo "OS version: $(uname -a)"
 check_command_exists docker
 check_command_exists docker-compose

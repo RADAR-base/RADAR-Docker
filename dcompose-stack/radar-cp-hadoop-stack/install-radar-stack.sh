@@ -9,9 +9,9 @@ check_parent_exists HDFS_NAME_DIR_1 ${HDFS_NAME_DIR_1}
 check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
 
-if [ -z $(sudo-docker network ls --format '{{.Name}}' | grep "^hadoop$") ]; then
+if [ -z $(sudo-linux docker network ls --format '{{.Name}}' | grep "^hadoop$") ]; then
   echo "==> Creating docker network - hadoop"
-  sudo-docker network create hadoop
+  sudo-linux docker network create hadoop
 else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
@@ -31,4 +31,4 @@ echo "==> Setting HDFS Connector"
 inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" sink-hdfs.properties
 
 echo "==> Starting RADAR-CNS Platform"
-sudo-docker-compose up --force-recreate -d
+sudo-linux docker-compose up --force-recreate -d

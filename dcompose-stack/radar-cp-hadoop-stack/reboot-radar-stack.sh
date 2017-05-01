@@ -3,4 +3,4 @@
 . ./util.sh
 
 echo "==> Restarting RADAR-CNS Platform"
-sudo-docker-compose restart
+sudo-linux docker-compose restart
