@@ -260,7 +260,7 @@ services:
       - /var/spool/exim
     restart: always
     env_file:
-      - smtp.env
+      - ./etc/smtp.env
 
   #---------------------------------------------------------------------------#
   # RADAR mongo connector                                                     #
@@ -269,7 +269,7 @@ services:
     image: radarcns/radar-mongodb-connector-auto:0.2
     restart: on-failure
     volumes:
-      - ./sink-mongo.properties:/etc/kafka-connect/sink.properties
+      - ./etc/sink-mongo.properties:/etc/kafka-connect/sink.properties
     networks:
       - zookeeper
       - kafka
@@ -313,7 +313,7 @@ services:
     image: radarcns/radar-hdfs-connector-auto:0.2
     restart: on-failure
     volumes:
-      - ./sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
+      - ./etc/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
     networks:
       - zookeeper
       - kafka
@@ -368,7 +368,7 @@ services:
       - schema-registry-1
       - kafka-init
     volumes:
-      - ./radar.yml:/etc/radar.yml
+      - ./etc/radar.yml:/etc/radar.yml
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
@@ -393,7 +393,7 @@ services:
       - kafka-init
       - smtp
     volumes:
-      - ./radar.yml:/etc/radar.yml
+      - ./etc/radar.yml:/etc/radar.yml
     restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
@@ -442,4 +442,4 @@ services:
     ports:
       - "80:80"
     volumes:
-      - "./nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
