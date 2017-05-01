@@ -34,7 +34,7 @@ script:
   - export HDFS_DATA_DIR_2=$PWD/hdfs-data2
   - export HDFS_NAME_DIR_1=$PWD/hdfs-name1
   - export HDFS_NAME_DIR_2=$PWD/hdfs-name2
-  - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > smtp.env
+  - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > etc/smtp.env
   - sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo $HOME/bin/docker-compose down
   - sudo docker network rm hadoop
