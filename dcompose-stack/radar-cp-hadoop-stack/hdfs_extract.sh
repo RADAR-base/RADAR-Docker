@@ -5,6 +5,8 @@ if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
    exit 1
 fi
 
+. ./util.sh
+
 # HDFS filename to get
 HDFS_FILE=$1
 # Absolute directory to write output to
@@ -16,4 +18,4 @@ HDFS_OUTPUT_DIR=/home/output
 HDFS_COMMAND="hdfs dfs -get $HDFS_FILE $HDFS_OUTPUT_DIR"
 
 mkdir -p $OUTPUT_DIR
-docker run --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" -e CLUSTER_NAME=radar-cns -e CORE_CONF_fs_defaultFS=hdfs://hdfs-namenode:8020 uhopper/hadoop:2.7.2 $HDFS_COMMAND
+sudo-linux docker run -i --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" -e CLUSTER_NAME=radar-cns -e CORE_CONF_fs_defaultFS=hdfs://hdfs-namenode:8020 uhopper/hadoop:2.7.2 $HDFS_COMMAND
