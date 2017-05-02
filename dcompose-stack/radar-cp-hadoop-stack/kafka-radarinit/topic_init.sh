@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Check if first execution
-if [ -f /home/.radar_topic_set ]; then
+if [ -f /.radar_topic_set ]; then
 	echo "*********************************************"
 	echo "**  RADAR-CNS topics are ready to be used  **"
 	echo "*********************************************"
     exit 0
 fi
 
-# Wait untill all brokers are up & running
+# Wait until all brokers are up & running
 interval=1
 while [ "$LENGTH" != "$KAFKA_BROKERS" ]; do
     BROKERS=$(curl -sS $KAFKA_REST_PROXY/brokers)
@@ -58,7 +58,7 @@ do
     kafka-topics --zookeeper $KAFKA_ZOOKEEPER_CONNECT --create --topic $element --partitions $RADAR_PARTITIONS  --replication-factor $RADAR_REPLICATION_FACTOR --if-not-exists
 done
 
-touch /home/.radar_topic_set
+touch /.radar_topic_set
 
 echo "Topics created!"
 
