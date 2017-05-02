@@ -34,6 +34,7 @@ services:
     volumes:
       - /var/lib/zookeeper/data
       - /var/lib/zookeeper/logs
+    restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -86,6 +87,7 @@ services:
       - kafka-3-data:/var/lib/kafka/data
     depends_on:
       - kafka-2
+    restart: always
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
