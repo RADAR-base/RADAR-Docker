@@ -19,16 +19,16 @@ fi
 echo "==> Setting MongoDB Connector"
 
 # Update sink-mongo.properties
-inline_variable 'mongo.username=' $HOTSTORAGE_USERNAME sink-mongo.properties
-inline_variable 'mongo.password=' $HOTSTORAGE_PASSWORD sink-mongo.properties
-inline_variable 'mongo.database=' $HOTSTORAGE_NAME sink-mongo.properties
-inline_variable 'server_name[[:space:]]*' $SERVER_NAME nginx.conf
+inline_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/sink-mongo.properties
+inline_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/sink-mongo.properties
+inline_variable 'mongo.database=' $HOTSTORAGE_NAME etc/sink-mongo.properties
+inline_variable 'server_name[[:space:]]*' $SERVER_NAME etc/nginx.conf
 
 # Set topics
-inline_variable 'topics=' "${RADAR_AGG_TOPIC_LIST}" sink-mongo.properties
+inline_variable 'topics=' "${RADAR_AGG_TOPIC_LIST}" etc/sink-mongo.properties
 
 echo "==> Setting HDFS Connector"
-inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" sink-hdfs.properties
+inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
 echo "==> Starting RADAR-CNS Platform"
 sudo-linux docker-compose up --force-recreate -d
