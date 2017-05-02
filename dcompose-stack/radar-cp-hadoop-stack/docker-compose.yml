@@ -4,18 +4,24 @@ version: '2.1'
 networks:
   zookeeper:
     driver: bridge
+    internal: true
   kafka:
     driver: bridge
+    internal: true
   api:
     driver: bridge
+    internal: true
   hadoop:
     external: true
   mail:
     driver: bridge
+    internal: true
   monitor:
     driver: bridge
+    internal: true
   hotstorage:
     driver: bridge
+    internal: true
 
 volumes:
   kafka-1-data: {}
@@ -144,6 +150,7 @@ services:
       - kafka
       - zookeeper
     depends_on:
+      - zookeeper-1
       - kafka-1
       - kafka-2
       - kafka-3
@@ -408,6 +415,7 @@ services:
     image: google/cadvisor:v0.24.1
     networks:
       - monitor
+      - default
     ports:
       - "8080:8080"
     volumes:
@@ -434,6 +442,7 @@ services:
     networks:
       - api
       - monitor
+      - default
     depends_on:
       - cadvisor
       - portainer
