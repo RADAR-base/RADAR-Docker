@@ -35,7 +35,7 @@ script:
   - export HDFS_NAME_DIR_1=$PWD/hdfs-name1
   - export HDFS_NAME_DIR_2=$PWD/hdfs-name2
   - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > etc/smtp.env
-  - cp etc/nginx.conf.template etc/nginx.template
+  - cp etc/nginx.conf.template etc/nginx.conf
   - cp etc/sink-hdfs.properties.template etc/sink-hdfs.properties
   - cp etc/sink-mongo.properties.template etc/sink-mongo.properties
   - sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
