@@ -6,7 +6,7 @@ First move `etc/env.template` file to `./.env` and check and modify all its vari
 
 Modify `etc/smtp.env.template` to set a SMTP host to send emails with, and move it to `etc/smtp.env`. The configuration settings are passed to a [namshi/smtp](https://hub.docker.com/r/namshi/smtp/) Docker container. This container supports a.o. regular SMTP and GMail.
 
-Finally, edit `etc/radar.yml`, especially concerning the monitor email address configuration.
+Finally, move `etc/radar.yml.template` to `etc/radar.yml` and edit it, especially concerning the monitor email address configuration.
 
 ## Usage
 
