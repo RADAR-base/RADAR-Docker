@@ -19,9 +19,7 @@ fi
 echo "==> Setting MongoDB Connector"
 
 # Update sink-mongo.properties
-if [ ! -e etc/sink-mongo.properties ]; then
-  cp etc/sink-mongo.properties.template etc/sink-mongo.properties
-fi
+copy_template_if_absent etc/sink-mongo.properties
 inline_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/sink-mongo.properties
 inline_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/sink-mongo.properties
 inline_variable 'mongo.database=' $HOTSTORAGE_NAME etc/sink-mongo.properties
@@ -30,15 +28,11 @@ inline_variable 'mongo.database=' $HOTSTORAGE_NAME etc/sink-mongo.properties
 inline_variable 'topics=' "${RADAR_AGG_TOPIC_LIST}" etc/sink-mongo.properties
 
 echo "==> Setting HDFS Connector"
-if [ ! -e etc/sink-hdfs.properties ]; then
-  cp etc/sink-hdfs.properties.template etc/sink-hdfs.properties
-fi
+copy_template_if_absent etc/sink-hdfs.properties
 inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
 echo "==> Setting nginx"
-if [ ! -e etc/nginx.conf ]; then
-  cp etc/nginx.conf.template etc/nginx.conf
-fi
+copy_template_if_absent etc/nginx.conf
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
 
 echo "==> Starting RADAR-CNS Platform"

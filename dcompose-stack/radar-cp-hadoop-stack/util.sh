@@ -39,7 +39,16 @@ inline_variable() {
   if [ $(uname) == "Darwin" ]; then
     sed -i '' 's/^\([[:space:]]*'$1'\).*$/\1'$2'/' $3
   else
-    sed -i -- 's/^\([[:space:]]*'$1'\).*$/\1'$2'/' $3
+    sudo sed -i -- 's/^\([[:space:]]*'$1'\).*$/\1'$2'/' $3
+  fi
+}
+
+# Copies the template (defined by the given config file with suffix
+# ".template") to intended configuration file, if the file does not
+# yet exist.
+copy_template_if_absent() {
+  if [ ! -e $1 ]; then
+    sudo-linux cp -p "${1}.template" "$1"
   fi
 }
 
