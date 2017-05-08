@@ -67,8 +67,48 @@ inline_variable() {
 # ".template") to intended configuration file, if the file does not
 # yet exist.
 copy_template_if_absent() {
-  if [ ! -e $1 ]; then
+  if [ ! -e "$1" ]; then
     sudo-linux cp -p "${1}.template" "$1"
+  elif [ "$1" -ot "${1}.template" ]; then
+    echo "Configuration file ${1} is older than its template ${1}.template."
+    echo "Please edit ${1} to ensure it matches the template, remove it or"
+    echo "run touch on it."
+    exit 1
+  fi
+}
+
+request_certificate() {
+  SERVER_NAME=$1
+  SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
+  if sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "[ -e '$SSL_PATH/chain.pem' ]"; then
+    KEY_EXISTS=1
+    if [ "$2" = "force" ]; then
+      echo "    WARN: SSL certificate already existed, renewing"
+    else
+      echo "    SSL certificate already exists, not recreating"
+      return
+    fi
+  else
+    KEY_EXISTS=0
+  fi
+
+  if [ "$SERVER_NAME" = "localhost" ]; then
+    echo "==> Generating self-signed certificate"
+    sudo-linux docker run -i --rm -v certs:/etc/openssl -v certs-data:/var/lib/openssl alpine:3.5 \
+        /bin/sh -c "mkdir -p $SSL_PATH && touch /var/lib/openssl/.well-known && apk update && apk add openssl && openssl req -x509 -newkey rsa:4086 -subj '/C=XX/ST=XXXX/L=XXXX/O=XXXX/CN=localhost' -keyout '$SSL_PATH/privkey.pem' -out '$SSL_PATH/chain.pem' -days 3650 -nodes -sha256 && cp $SSL_PATH/chain.pem $SSL_PATH/fullchain.pem"
+  else
+    echo "==> Requesting Let's Encrypt SSL certificate"
+    CERTBOT_DOCKER_OPTS=(-i --rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
+    CERTBOT_OPTS=(--webroot --webroot-path=/data/letsencrypt -d $SERVER_NAME)
+    if [ $KEY_EXISTS -eq 0 ]; then
+      # request key for the first time
+      sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
+    else
+      # renew key
+      sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" renew "${CERTBOT_OPTS[@]}"
+      # Reload webserver configuration
+      sudo-linux docker-compose kill -s HUP webserver
+    fi
   fi
 }
 
