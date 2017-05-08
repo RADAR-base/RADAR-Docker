@@ -37,3 +37,4 @@ inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
 
 echo "==> Starting RADAR-CNS Platform"
 sudo-linux docker-compose up --force-recreate -d
+echo "### SUCCESS ###"

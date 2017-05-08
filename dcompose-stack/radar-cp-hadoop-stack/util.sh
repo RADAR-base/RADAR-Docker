@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# this will trap any errors or commands with non-zero exit status
+# by calling function catch_errors()
+trap catch_errors ERR;
+
+function catch_errors() {
+   exit_code=$?
+   echo "### FAILURE ###";
+   exit $exit_code;
+}
+
+# Check whether given command exists and call it with the --version flag.
 check_command_exists() {
   if command -v "$1" > /dev/null 2>&1; then
     echo "$1 version: $($1 --version)"
@@ -9,6 +20,8 @@ check_command_exists() {
   fi
 }
 
+# Check if the parent directory of given variable is set. Usage:
+# check_parent_exists MY_PATH_VAR $MY_PATH_VAR
 check_parent_exists() {
   if [ -z "$2" ]; then
     echo "Directory variable $1 is not set in .env"
@@ -20,11 +33,22 @@ check_parent_exists() {
   fi
 }
 
+# sudo if on Linux, not on OS X
+# useful for docker, which doesn't need sudo on OS X
 sudo-linux() {
   if [ $(uname) == "Darwin" ]; then
     "$@"
   else
     sudo "$@"
+  fi
+}
+
+# OS X/linux portable sed -i
+sed_i() {
+  if [ $(uname) == "Darwin" ]; then
+    sed -i '' "$@"
+  else
+    sudo sed -i -- "$@"
   fi
 }
 
@@ -36,11 +60,7 @@ sudo-linux() {
 # inline_variable 'a=' 123 test.txt
 # will replace a line '  a=232 ' with '  a=123'
 inline_variable() {
-  if [ $(uname) == "Darwin" ]; then
-    sed -i '' 's/^\([[:space:]]*'$1'\).*$/\1'$2'/' $3
-  else
-    sudo sed -i -- 's/^\([[:space:]]*'$1'\).*$/\1'$2'/' $3
-  fi
+  sed_i 's|^\([[:space:]]*'$1'\).*$|\(\1\)'$2'|' $3
 }
 
 # Copies the template (defined by the given config file with suffix
