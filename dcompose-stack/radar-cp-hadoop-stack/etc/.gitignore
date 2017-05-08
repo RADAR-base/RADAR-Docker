@@ -1,2 +1,3 @@
 /sink-mongo.properties
 /sink-hdfs.properties
+/nginx.conf
