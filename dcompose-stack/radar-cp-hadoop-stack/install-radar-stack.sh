@@ -39,7 +39,7 @@ echo "==> Setting nginx"
 if [ ! -e etc/nginx.conf ]; then
   cp etc/nginx.conf.template etc/nginx.conf
 fi
-inline_variable 'server_name[[:space:]]*' $SERVER_NAME etc/nginx.conf
+inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
 
 echo "==> Starting RADAR-CNS Platform"
 sudo-linux docker-compose up --force-recreate -d
