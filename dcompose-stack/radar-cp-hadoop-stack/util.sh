@@ -60,16 +60,97 @@ sed_i() {
 # inline_variable 'a=' 123 test.txt
 # will replace a line '  a=232 ' with '  a=123'
 inline_variable() {
-  sed_i 's|^\([[:space:]]*'$1'\).*$|\(\1\)'$2'|' $3
+  sed_i 's|^\([[:space:]]*'"$1"'\).*$|\1'"$2"'|' "$3"
 }
 
 # Copies the template (defined by the given config file with suffix
 # ".template") to intended configuration file, if the file does not
 # yet exist.
 copy_template_if_absent() {
-  if [ ! -e $1 ]; then
+  if [ ! -e "$1" ]; then
     sudo-linux cp -p "${1}.template" "$1"
+  elif [ "$1" -ot "${1}.template" ]; then
+    echo "Configuration file ${1} is older than its template ${1}.template."
+    echo "Please edit ${1} to ensure it matches the template, remove it or"
+    echo "run touch on it."
+    exit 1
   fi
+}
+
+self_signed_certificate() {
+  SERVER_NAME=$1
+  SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
+  echo "==> Generating self-signed certificate"
+  sudo-linux docker run -i --rm -v certs:/etc/openssl -v certs-data:/var/lib/openssl alpine:3.5 \
+      /bin/sh -c "mkdir -p '${SSL_PATH}' && touch /var/lib/openssl/.well-known && apk update && apk add openssl && openssl req -x509 -newkey rsa:4086 -subj '/C=XX/ST=XXXX/L=XXXX/O=XXXX/CN=localhost' -keyout '${SSL_PATH}/privkey.pem' -out '${SSL_PATH}/cert.pem' -days 3650 -nodes -sha256 && cp '${SSL_PATH}/cert.pem' '${SSL_PATH}/chain.pem' && cp '${SSL_PATH}/cert.pem' '${SSL_PATH}/fullchain.pem' && rm -f '${SSL_PATH}/.letsencrypt'"
+}
+
+letsencrypt_certonly() {
+  SERVER_NAME=$1
+  SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
+  echo "==> Requesting Let's Encrypt SSL certificate for ${SERVER_NAME}"
+
+  # start from a clean slate
+  sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "find /etc/openssl -name '${SERVER_NAME}*' -prune -exec rm -rf '{}' +"
+
+  CERTBOT_DOCKER_OPTS=(-i --rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
+  CERTBOT_OPTS=(--webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}")
+  sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
+
+  # mark the directory as letsencrypt dir
+  sudo-linux docker run -i --rm -v certs:/etc/openssl alpine:3.5 /bin/touch "${SSL_PATH}/.letsencrypt"
+}
+
+letsencrypt_renew() {
+  SERVER_NAME=$1
+  echo "==> Renewing Let's Encrypt SSL certificate for ${SERVER_NAME}"
+  CERTBOT_DOCKER_OPTS=(-i --rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
+  CERTBOT_OPTS=(-n --webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}")
+  sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
+}
+
+init_certificate() {
+  SERVER_NAME=$1
+  SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
+  if sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "[ ! -e '${SSL_PATH}/chain.pem' ]"; then
+    self_signed_certificate "${SERVER_NAME}"
+  fi
+}
+
+request_certificate() {
+  SERVER_NAME=$1
+  SELF_SIGNED=$2
+  SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
+
+  init_certificate "${SERVER_NAME}"
+  CURRENT_CERT=$(sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "[ -e '${SSL_PATH}/.letsencrypt' ] && echo letsencrypt || echo self-signed")
+
+  if [ "${CURRENT_CERT}" = "letsencrypt" ]; then
+    if [ "$3" != "force" ]; then
+      echo "Let's Encrypt SSL certificate already exists, not renewing"
+      return
+    fi
+
+    if [ "${SELF_SIGNED}" = "yes" ]; then
+      echo "Converting Let's Encrypt SSL certificate to a self-signed SSL"
+      self_signed_certificate "${SERVER_NAME}"
+    else
+      letsencrypt_renew "${SERVER_NAME}"
+    fi
+  else
+    if [ "${SELF_SIGNED}" = "yes" ]; then
+      if [ "$3" = "force" ]; then
+        echo "WARN: Self-signed SSL certificate already existed, recreating"
+        self_signed_certificate "${SERVER_NAME}"
+      else
+        echo "Self-signed SSL certificate exists, not recreating"
+        return
+      fi
+    else
+      letsencrypt_certonly "${SERVER_NAME}"
+    fi
+  fi
+  sudo-linux docker-compose kill -s HUP webserver
 }
 
 echo "OS version: $(uname -a)"
