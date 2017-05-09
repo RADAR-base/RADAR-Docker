@@ -60,7 +60,7 @@ sed_i() {
 # inline_variable 'a=' 123 test.txt
 # will replace a line '  a=232 ' with '  a=123'
 inline_variable() {
-  sed_i 's|^\([[:space:]]*'$1'\).*$|\1'$2'|' $3
+  sed_i 's|^\([[:space:]]*'"$1"'\).*$|\1'"$2"'|' "$3"
 }
 
 # Copies the template (defined by the given config file with suffix

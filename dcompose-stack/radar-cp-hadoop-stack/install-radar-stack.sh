@@ -39,7 +39,7 @@ inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 echo "==> Configuring nginx"
 copy_template_if_absent etc/nginx.conf
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
-sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'$SERVER_NAME'\2|' etc/nginx.conf
+sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/nginx.conf
 init_certificate "${SERVER_NAME}"
 
 echo "==> Starting RADAR-CNS Platform"
