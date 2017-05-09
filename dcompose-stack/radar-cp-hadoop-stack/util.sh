@@ -107,7 +107,7 @@ letsencrypt_renew() {
   SERVER_NAME=$1
   echo "==> Renewing Let's Encrypt SSL certificate for ${SERVER_NAME}"
   CERTBOT_DOCKER_OPTS=(-i --rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
-  CERTBOT_OPTS=(--webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}")
+  CERTBOT_OPTS=(-n --webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}")
   sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
 }
 
