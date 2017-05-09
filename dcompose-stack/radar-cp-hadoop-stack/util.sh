@@ -100,7 +100,7 @@ letsencrypt_certonly() {
   sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
 
   # mark the directory as letsencrypt dir
-  sudo-linux docker run -i --rm -v certs:/etc/openssl alpine:3.5 /usr/bin/touch "${SSL_PATH}/.letsencrypt"
+  sudo-linux docker run -i --rm -v certs:/etc/openssl alpine:3.5 /bin/touch "${SSL_PATH}/.letsencrypt"
 }
 
 letsencrypt_renew() {
