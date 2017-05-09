@@ -87,13 +87,17 @@ self_signed_certificate() {
 
 letsencrypt_certonly() {
   SERVER_NAME=$1
+  SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
   echo "==> Requesting Let's Encrypt SSL certificate for ${SERVER_NAME}"
+
+  # start from a clean slate
+  sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/rm -rf "${SSL_PATH}"
   CERTBOT_DOCKER_OPTS=(-i --rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
   CERTBOT_OPTS=(--webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}")
   sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
-  SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
-  sudo-linux docker run -i --rm -v certs:/etc/openssl alpine:3.5 \
-      /bin/sh -c "mkdir -p '${SSL_PATH}' && touch '${SSL_PATH}/.letsencrypt'"
+
+  # mark the directory as letsencrypt dir
+  sudo-linux docker run -i --rm -v certs:/etc/openssl alpine:3.5 /usr/bin/touch "${SSL_PATH}/.letsencrypt"
 }
 
 letsencrypt_renew() {
