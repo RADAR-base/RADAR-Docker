@@ -92,7 +92,7 @@ letsencrypt_certonly() {
 
   # start from a clean slate
   sudo-linux docker-compose stop webserver
-  sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "find /etc/openssl -name '${SERVER_NAME}*' -exec rm -rf '{}' ';'"
+  sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "find /etc/openssl -name '${SERVER_NAME}*' -prune -exec rm -rf '{}' +"
   sudo-linux docker-compose start webserver
 
   CERTBOT_DOCKER_OPTS=(-i --rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
