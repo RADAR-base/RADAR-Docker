@@ -20,7 +20,7 @@ else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
 
-echo "==> Setting MongoDB Connector"
+echo "==> Configuring MongoDB Connector"
 
 # Update sink-mongo.properties
 copy_template_if_absent etc/sink-mongo.properties
@@ -31,14 +31,16 @@ inline_variable 'mongo.database=' $HOTSTORAGE_NAME etc/sink-mongo.properties
 # Set topics
 inline_variable 'topics=' "${RADAR_AGG_TOPIC_LIST}" etc/sink-mongo.properties
 
-echo "==> Setting HDFS Connector"
+echo "==> Configuring HDFS Connector"
 copy_template_if_absent etc/sink-hdfs.properties
 inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
-echo "==> Setting nginx"
+echo "==> Configuring nginx"
 copy_template_if_absent etc/nginx.conf
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
-sed_i 's|\(/etc/letsencrypt/live/\)[^/]*/\(.*\.pem\)|\1'$SERVER_NAME'\2|' etc/nginx.conf
+sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'$SERVER_NAME'\2|' etc/nginx.conf
+sudo-linux docker volume create certs
+sudo-linux docker volume create certs-data
 
 echo "==> Starting RADAR-CNS Platform"
 sudo-linux docker-compose up --force-recreate -d
