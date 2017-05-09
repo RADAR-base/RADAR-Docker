@@ -118,21 +118,9 @@ request_certificate() {
   SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
 
   init_certificate "${SERVER_NAME}"
-  CURRENT_CERT=$(sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "[ -e '${SSL_PATH}/.letsencrypt ] && echo letsencrypt || echo self-signed")
+  CURRENT_CERT=$(sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "[ -e '${SSL_PATH}/.letsencrypt' ] && echo letsencrypt || echo self-signed")
 
-  if [ $CURRENT_CERT = "self-signed" ]; then
-    if [ "${SELF_SIGNED}" = "yes" ]; then
-      if [ "$3" = "force" ]; then
-        echo "WARN: Self-signed SSL certificate already existed, recreating"
-        self_signed_certificate "${SERVER_NAME}"
-      else
-        echo "Self-signed SSL certificate exists, not recreating"
-        return
-      fi
-    else
-      letsencrypt_certonly "${SERVER_NAME}"
-    fi
-  else
+  if [ "${CURRENT_CERT}" = "letsencrypt" ]; then
     if [ "$3" != "force" ]; then
       echo "Let's Encrypt SSL certificate already exists, not renewing"
       return
@@ -144,6 +132,18 @@ request_certificate() {
     fi
     if [ "$3" = "force"]; then
       letsencrypt_renew "${SERVER_NAME}"
+    fi
+  else
+    if [ "${SELF_SIGNED}" = "yes" ]; then
+      if [ "$3" = "force" ]; then
+        echo "WARN: Self-signed SSL certificate already existed, recreating"
+        self_signed_certificate "${SERVER_NAME}"
+      else
+        echo "Self-signed SSL certificate exists, not recreating"
+        return
+      fi
+    else
+      letsencrypt_certonly "${SERVER_NAME}"
     fi
   fi
   sudo-linux docker-compose kill -s HUP webserver
