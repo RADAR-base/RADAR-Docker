@@ -16,7 +16,7 @@ fi
 
 if [ -z $(sudo-linux docker network ls --format '{{.Name}}' | grep "^hadoop$") ]; then
   echo "==> Creating docker network - hadoop"
-  sudo-linux docker network create hadoop
+  sudo-linux docker network create hadoop > /dev/null
 else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
