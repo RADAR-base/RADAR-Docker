@@ -9,8 +9,9 @@ check_parent_exists HDFS_NAME_DIR_1 ${HDFS_NAME_DIR_1}
 check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
 
-if [ -z "$SERVER_NAME" ]; then
+if [ -z ${SERVER_NAME} ]; then
   echo "Set SERVER_NAME variable in .env"
+  exit 1
 fi
 
 if [ -z $(sudo-linux docker network ls --format '{{.Name}}' | grep "^hadoop$") ]; then
