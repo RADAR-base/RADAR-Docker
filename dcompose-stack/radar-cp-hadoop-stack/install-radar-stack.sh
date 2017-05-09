@@ -40,11 +40,10 @@ echo "==> Configuring nginx"
 copy_template_if_absent etc/nginx.conf
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
 sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'$SERVER_NAME'\2|' etc/nginx.conf
-sudo-linux docker volume create certs
-sudo-linux docker volume create certs-data
+init_certificate "${SERVER_NAME}"
 
 echo "==> Starting RADAR-CNS Platform"
 sudo-linux docker-compose up --force-recreate -d
 
-request_certificate "$SERVER_NAME"
+request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERT:-yes}"
 echo "### SUCCESS ###"

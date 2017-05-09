@@ -8,4 +8,4 @@ if [ -z ${SERVER_NAME} ]; then
   exit 1
 fi
 
-request_certificate $SERVER_NAME force
+request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERTIFICATE:-yes}" force
