@@ -38,9 +38,10 @@ inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 echo "==> Setting nginx"
 copy_template_if_absent etc/nginx.conf
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
-sed_i 's|\(/etc/letsencrypt/live/\)[^/]*/\(.*\.pem\)|\(\1\)'$SERVER_NAME'\2|' etc/nginx.conf
-request_certificate "$SERVER_NAME"
+sed_i 's|\(/etc/letsencrypt/live/\)[^/]*/\(.*\.pem\)|\1'$SERVER_NAME'\2|' etc/nginx.conf
 
 echo "==> Starting RADAR-CNS Platform"
 sudo-linux docker-compose up --force-recreate -d
+
+request_certificate "$SERVER_NAME"
 echo "### SUCCESS ###"
