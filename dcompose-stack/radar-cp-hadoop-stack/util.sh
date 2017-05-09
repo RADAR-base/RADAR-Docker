@@ -82,7 +82,7 @@ self_signed_certificate() {
   SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
   echo "==> Generating self-signed certificate"
   sudo-linux docker run -i --rm -v certs:/etc/openssl -v certs-data:/var/lib/openssl alpine:3.5 \
-      /bin/sh -c "mkdir -p '${SSL_PATH}' && touch /var/lib/openssl/.well-known && apk update && apk add openssl && openssl req -x509 -newkey rsa:4086 -subj '/C=XX/ST=XXXX/L=XXXX/O=XXXX/CN=localhost' -keyout '${SSL_PATH}/privkey.pem' -out '${SSL_PATH}/chain.pem' -days 3650 -nodes -sha256 && cp '${SSL_PATH}/chain.pem' '${SSL_PATH}/fullchain.pem' && rm -f '${SSL_PATH}/.letsencrypt'"
+      /bin/sh -c "mkdir -p '${SSL_PATH}' && touch /var/lib/openssl/.well-known && apk update && apk add openssl && openssl req -x509 -newkey rsa:4086 -subj '/C=XX/ST=XXXX/L=XXXX/O=XXXX/CN=localhost' -keyout '${SSL_PATH}/privkey.pem' -out '${SSL_PATH}/cert.pem' -days 3650 -nodes -sha256 && cp '${SSL_PATH}/cert.pem' '${SSL_PATH}/chain.pem' && cp '${SSL_PATH}/cert.pem' '${SSL_PATH}/fullchain.pem' && rm -f '${SSL_PATH}/.letsencrypt'"
 }
 
 letsencrypt_certonly() {
@@ -136,8 +136,7 @@ request_certificate() {
     if [ "${SELF_SIGNED}" = "yes" ]; then
       echo "Converting Let's Encrypt SSL certificate to a self-signed SSL"
       self_signed_certificate "${SERVER_NAME}"
-    fi
-    if [ "$3" = "force"]; then
+    else
       letsencrypt_renew "${SERVER_NAME}"
     fi
   else

@@ -2,7 +2,7 @@
 
 ## Configuration
 
-First move `etc/env.template` file to `./.env` and check and modify all its variables.
+First move `etc/env.template` file to `./.env` and check and modify all its variables. To have a valid HTTPS connection for a public host, set `SELF_SIGNED_CERT=no`.
 
 Modify `etc/smtp.env.template` to set a SMTP host to send emails with, and move it to `etc/smtp.env`. The configuration settings are passed to a [namshi/smtp](https://hub.docker.com/r/namshi/smtp/) Docker container. This container supports a.o. regular SMTP and GMail.
 
@@ -29,3 +29,5 @@ CSV-structured data can be gotten from HDFS by running
 ./hdfs_restructure.sh /topicAndroidNew <destination directory>
 ```
 This will put all CSV files in the destination directory, with subdirectory structure `PatientId/SensorType/Date_Hour.csv`.
+
+If `SELF_SIGNED_CERT=no` in `./.env`, be sure to run `./renew_ssl_certificate.sh` every day to ensure that your certificate does not expire.
