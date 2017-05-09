@@ -14,7 +14,7 @@ Run
 ```shell
 ./install-radar-stack.sh
 ```
-to start all the RADAR services. Use the `(start|stop|reboot)-radar-stack.sh` to start, stop or reboot it.
+to start all the RADAR services. Use the `(start|stop|reboot)-radar-stack.sh` to start, stop or reboot it. Note: whenever `.env` or `docker-compose.yml` are modified, this script needs to be called again.
 
 Raw data can be extracted from this setup by running:
 
