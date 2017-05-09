@@ -35,6 +35,8 @@ script:
   - export HDFS_NAME_DIR_1=$PWD/hdfs-name1
   - export HDFS_NAME_DIR_2=$PWD/hdfs-name2
   - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > etc/smtp.env
+  - sudo docker volume create certs
+  - sudo docker volume create certs-data
   - cp etc/radar.yml.template etc/radar.yml
   - cp etc/nginx.conf.template etc/nginx.conf
   - cp etc/sink-hdfs.properties.template etc/sink-hdfs.properties
