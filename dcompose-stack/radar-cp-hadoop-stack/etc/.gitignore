@@ -2,3 +2,6 @@
 /sink-hdfs.properties
 /nginx.conf
 /radar.yml
+/smtp.env
+/rest-api/device-catalog.yml
+/rest-api/radar.yml

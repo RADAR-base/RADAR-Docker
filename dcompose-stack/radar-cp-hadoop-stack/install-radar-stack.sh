@@ -46,7 +46,7 @@ inline_variable 'pwd:[[:space:]]' $HOTSTORAGE_PASSWORD etc/rest-api/radar.yml
 inline_variable 'db:[[:space:]]' $HOTSTORAGE_NAME etc/rest-api/radar.yml
 
 # Set variable for Swagger
-inline_variable 'host:[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
+inline_variable 'host:[[:space:]]*' "${SERVER_NAME}" etc/rest-api/radar.yml
 
 echo "==> Configuring nginx"
 copy_template_if_absent etc/nginx.conf
