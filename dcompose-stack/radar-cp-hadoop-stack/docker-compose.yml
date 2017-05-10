@@ -38,7 +38,7 @@ services:
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:3.1.2-1
+    image: confluentinc/cp-zookeeper:3.2.1-5
     networks:
       - zookeeper
     volumes:
@@ -57,7 +57,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:3.1.2-1
+    image: confluentinc/cp-kafka:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -73,7 +73,7 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
   kafka-2:
-    image: confluentinc/cp-kafka:3.1.2-1
+    image: confluentinc/cp-kafka:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -89,7 +89,7 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
   kafka-3:
-    image: confluentinc/cp-kafka:3.1.2-1
+    image: confluentinc/cp-kafka:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -108,7 +108,7 @@ services:
   # Schema Registry                                                           #
   #---------------------------------------------------------------------------#
   schema-registry-1:
-    image: confluentinc/cp-schema-registry:3.1.2-1
+    image: confluentinc/cp-schema-registry:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -127,7 +127,7 @@ services:
   # REST proxy                                                                #
   #---------------------------------------------------------------------------#
   rest-proxy-1:
-    image: confluentinc/cp-kafka-rest:3.1.2-1
+    image: confluentinc/cp-kafka-rest:3.2.1-5
     networks:
       - kafka
       - zookeeper
