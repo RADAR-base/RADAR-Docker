@@ -36,6 +36,18 @@ echo "==> Configuring HDFS Connector"
 copy_template_if_absent etc/sink-hdfs.properties
 inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
+echo "==> Configuring REST-API"
+copy_template_if_absent etc/rest-api/radar.yml
+copy_template_if_absent etc/rest-api/device-catalog.yml
+
+# Set MongoDb credential
+inline_variable 'usr:[[:space:]]' $HOTSTORAGE_USERNAME etc/rest-api/radar.yml
+inline_variable 'pwd:[[:space:]]' $HOTSTORAGE_PASSWORD etc/rest-api/radar.yml
+inline_variable 'db:[[:space:]]' $HOTSTORAGE_NAME etc/rest-api/radar.yml
+
+# Set variable for Swagger
+inline_variable 'host:[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
+
 echo "==> Configuring nginx"
 copy_template_if_absent etc/nginx.conf
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf

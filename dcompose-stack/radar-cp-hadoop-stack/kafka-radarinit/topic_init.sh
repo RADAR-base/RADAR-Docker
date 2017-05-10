@@ -11,10 +11,11 @@ fi
 # Wait until all brokers are up & running
 interval=1
 while [ "$LENGTH" != "$KAFKA_BROKERS" ]; do
-    BROKERS=$(curl -sS $KAFKA_REST_PROXY/brokers)
-    BROKERS="$(echo -e "${BROKERS:12}" | tr -d '[:space:]'  | tr -d '}'  | tr -d ']')"
+    ZOOKEEPER_CHECK=$(zookeeper-shell $KAFKA_ZOOKEEPER_CONNECT <<< "ls /brokers/ids")
+    ZOOKEEPER_CHECK="${ZOOKEEPER_CHECK##*$'\n'}"
+    ZOOKEEPER_CHECK="$(echo -e "${ZOOKEEPER_CHECK}" | tr -d '[:space:]'  | tr -d '['  | tr -d ']')"
 
-    IFS=',' read -r -a array <<< $BROKERS
+    IFS=',' read -r -a array <<< $ZOOKEEPER_CHECK
     LENGTH=${#array[@]}
 
     if [ "$LENGTH" != "$KAFKA_BROKERS" ]; then

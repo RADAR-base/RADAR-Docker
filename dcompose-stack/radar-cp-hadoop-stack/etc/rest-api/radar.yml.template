@@ -1,0 +1,27 @@
+version: 0.1
+released: 2017-05-10
+
+# Swagger documentation version
+swagger_version: 1.0.0
+
+# Comma separated list stating supported Application Protocols applicable to query APIs
+application_protocol: https
+
+# Machine address hosting the APIs
+host: localhost
+
+# Base or Root path for the RESTFul interface
+api_base_path: api
+
+# Mongodb hosts
+mongo_hosts:
+    hotstorage: 27017
+
+# Mongodb User
+mongo_user:
+    usr: 
+    pwd: 
+    db: 
+
+# Path to the Device Catalog
+device_catalog: device-catalog.yml

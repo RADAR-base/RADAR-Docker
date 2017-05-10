@@ -1,0 +1,116 @@
+#=========================== Device Catalog ===========================#
+#List of integrated sources with relative configuration
+device_catalog:
+  #====================== Empatica E4 Wristband =======================#
+  #A device item states the specification and the configurations required to integrate a wearable
+  # device into the data access interface. The used value must be contained in
+  # RADAR-Schemas/restapi/source/sources_type.avsc
+  EMPATICA:
+    #List of on-board sensors
+    sensors:
+        #Sensor name. Possible values are listed by RADAR-Schemas/restapi/data/sensor_type.avsc
+      - name: ACCELEROMETER
+        #Default data frequency
+        frequency: 32.0
+        #Measurement unit. Possible values are listed in RADAR-Schemas/restapi/data/unit.avsc
+        unit: G
+        #Define if the samples are RAW data or instead they the result of some computation. Possible
+        # values are listed by RADAR-Schemas/restapi/data/data_type.avsc
+        data_type: RAW
+        #The associated Data Class: actual generalised reader implantation that extract data from
+        # the storage
+        data_class: ACCELERATION_FORMAT
+        #List of supported collections
+        collections:
+          #Time-frame of 10 seconds
+          10sec: android_empatica_e4_acceleration_output
+          #Time-frame of 30 seconds
+          30sec: android_empatica_e4_acceleration_output_30sec
+          #Time-frame of 1 minute
+          1min: android_empatica_e4_acceleration_output_1min
+          #Time-frame of 10 minutes
+          10min: android_empatica_e4_acceleration_output_10min
+          #Time-frame of 1 hour
+          1h: android_empatica_e4_acceleration_output_1h
+          #Time-frame of 1 day
+          1d: android_empatica_e4_acceleration_output_1d
+          #Time-frame of 1 week
+          1w: android_empatica_e4_acceleration_output_1w
+      - name: BATTERY
+        frequency: 1.0
+        unit: PERCENTAGE
+        data_type: RAW
+        data_class: DOUBLE_FORMAT
+        collections:
+          10sec: android_empatica_e4_battery_level_output
+          30sec: android_empatica_e4_battery_level_output_30sec
+          1min: android_empatica_e4_battery_level_output_1min
+          10min: android_empatica_e4_battery_level_output_10min
+          1h: android_empatica_e4_battery_level_output_1h
+          1d: android_empatica_e4_battery_level_output_1d
+          1w: android_empatica_e4_battery_level_output_1w
+      - name: BLOOD_VOLUME_PULSE
+        frequency: 64.0
+        unit: NANOWATT
+        data_type: RAW
+        data_class: DOUBLE_FORMAT
+        collections:
+          10sec: android_empatica_e4_blood_volume_pulse_output
+          30sec: android_empatica_e4_blood_volume_pulse_output_30sec
+          1min: android_empatica_e4_blood_volume_pulse_output_1min
+          10min: android_empatica_e4_blood_volume_pulse_output_10min
+          1h: android_empatica_e4_blood_volume_pulse_output_1h
+          1d: android_empatica_e4_blood_volume_pulse_output_1d
+          1w: android_empatica_e4_blood_volume_pulse_output_1w
+      - name: ELECTRODERMAL_ACTIVITY
+        frequency: 4.0
+        unit: MICROSIEMENS
+        data_type: RAW
+        data_class: DOUBLE_FORMAT
+        collections:
+          10sec: android_empatica_e4_electrodermal_activity_output
+          30sec: android_empatica_e4_electrodermal_activity_output_30sec
+          1min: android_empatica_e4_electrodermal_activity_output_1min
+          10min: android_empatica_e4_electrodermal_activity_output_10min
+          1h: android_empatica_e4_electrodermal_activity_output_1h
+          1d: android_empatica_e4_electrodermal_activity_output_1d
+          1w: android_empatica_e4_electrodermal_activity_output_1w
+      - name: HEART_RATE
+        frequency: 1.0
+        unit: BEATS_PER_MIN
+        data_type: RADAR
+        data_class: DOUBLE_FORMAT
+        collections:
+          10sec: android_empatica_e4_heartrate
+          30sec: android_empatica_e4_heartrate_30sec
+          1min: android_empatica_e4_heartrate_1min
+          10min: android_empatica_e4_heartrate_10min
+          1h: android_empatica_e4_heartrate_1h
+          1d: android_empatica_e4_heartrate_1d
+          1w: android_empatica_e4_heartrate_1w
+      - name: INTER_BEAT_INTERVAL
+        frequency: 1.0
+        unit: BEATS_PER_MIN
+        data_type: RAW
+        data_class: DOUBLE_FORMAT
+        collections:
+          10sec: android_empatica_e4_inter_beat_interval_output
+          30sec: android_empatica_e4_inter_beat_interval_output_30sec
+          1min: android_empatica_e4_inter_beat_interval_output_1min
+          10min: android_empatica_e4_inter_beat_interval_output_10min
+          1h: android_empatica_e4_inter_beat_interval_output_1h
+          1d: android_empatica_e4_inter_beat_interval_output_1d
+          1w: android_empatica_e4_inter_beat_interval_output_1w
+      - name: THERMOMETER
+        frequency: 4.0
+        unit: CELSIUS
+        data_type: RAW
+        data_class: DOUBLE_FORMAT
+        collections:
+          10sec: android_empatica_e4_temperature_output
+          30sec: android_empatica_e4_temperature_output_30sec
+          1min: android_empatica_e4_temperature_output_1min
+          10min: android_empatica_e4_temperature_output_10min
+          1h: android_empatica_e4_temperature_output_1h
+          1d: android_empatica_e4_temperature_output_1d
+          1w: android_empatica_e4_temperature_output_1w
