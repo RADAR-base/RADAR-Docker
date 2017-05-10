@@ -8,7 +8,7 @@ fi
 . ./util.sh
 
 # HDFS restructure version
-JAR_VERSION=0.1
+JAR_VERSION=0.1.1
 # HDFS restructure JAR
 JAR="restructurehdfs-all-${JAR_VERSION}.jar"
 
