@@ -25,7 +25,7 @@ OUTPUT_DIR="$(cd "$(dirname "$OUTPUT_DIR")"; pwd)/$(basename "$OUTPUT_DIR")"
 # Internal docker directory to write output to
 HDFS_OUTPUT_DIR=/output
 # HDFS command to run
-HDFS_COMMAND="java -jar /${JAR} hdfs://hdfs-namenode:8020 $HDFS_FILE $HDFS_OUTPUT_DIR"
+HDFS_COMMAND=(/usr/bin/java -jar "/${JAR}" hdfs://hdfs-namenode:8020 "$HDFS_FILE" "$HDFS_OUTPUT_DIR")
 
 mkdir -p $OUTPUT_DIR
-sudo-linux docker run -i --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" -v "$PWD/lib/${JAR}:/${JAR}" openjdk:8-jre-alpine $HDFS_COMMAND
+sudo-linux docker run -i --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" -v "$PWD/lib/${JAR}:/${JAR}" openjdk:8-jre-alpine "${HDFS_COMMAND[@]}"
