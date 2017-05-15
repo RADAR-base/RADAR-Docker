@@ -378,6 +378,7 @@ services:
       - kafka-init
     volumes:
       - ./etc/radar.yml:/etc/radar.yml
+    restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
