@@ -18,5 +18,3 @@ $ docker run -d -p 8080:8080 -v /path/to/config:/usr/local/tomcat/conf/radar --n
 ```
 
 The RestApi will be running at http://localhost:8080. To test them, access the [Swagger Documentation](http://localhost:8080/radar/api/swagger.json)
-
-## Runtime environment variables  
