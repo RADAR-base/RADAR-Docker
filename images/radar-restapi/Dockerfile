@@ -17,8 +17,6 @@ MAINTAINER @fnobilia, @afolarin
 
 LABEL description="RADAR-CNS Rest Api docker container"
 
-RUN mkdir /usr/local/tomcat/conf/radar
-
 # Install Rest API
 RUN echo && echo "==> Installing Components" \
     # Download Git RestApi release
