@@ -79,10 +79,9 @@ copy_template_if_absent() {
 
 self_signed_certificate() {
   SERVER_NAME=$1
-  SSL_PATH="/etc/openssl/live/${SERVER_NAME}"
   echo "==> Generating self-signed certificate"
-  sudo-linux docker run -i --rm -v certs:/etc/openssl -v certs-data:/var/lib/openssl alpine:3.5 \
-      /bin/sh -c "mkdir -p '${SSL_PATH}' && mkdir /var/lib/openssl/.well-known && apk update && apk add openssl && openssl req -x509 -newkey rsa:4086 -subj '/C=XX/ST=XXXX/L=XXXX/O=XXXX/CN=localhost' -keyout '${SSL_PATH}/privkey.pem' -out '${SSL_PATH}/cert.pem' -days 3650 -nodes -sha256 && cp '${SSL_PATH}/cert.pem' '${SSL_PATH}/chain.pem' && cp '${SSL_PATH}/cert.pem' '${SSL_PATH}/fullchain.pem' && rm -f '${SSL_PATH}/.letsencrypt'"
+  sudo-linux docker run -i --rm -v certs:/etc/openssl -v certs-data:/var/lib/openssl -v "${PWD}/lib/self-sign-certificate.sh:/self-sign-certificate.sh" alpine:3.5 \
+      /self-sign-certificate.sh "/etc/openssl/live/${SERVER_NAME}"
 }
 
 letsencrypt_certonly() {
@@ -150,7 +149,8 @@ request_certificate() {
       letsencrypt_certonly "${SERVER_NAME}"
     fi
   fi
-  sudo-linux docker-compose kill -s HUP webserver
+  echo "Reloading webserver configuration"
+  sudo-linux docker-compose kill -s HUP webserver 1>/dev/null 2>&1
 }
 
 echo "OS version: $(uname -a)"
