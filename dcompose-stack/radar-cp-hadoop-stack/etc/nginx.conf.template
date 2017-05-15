@@ -62,10 +62,14 @@ http {
     location /kafka/ {
       proxy_pass         http://rest-proxy-1:8082/;
       proxy_set_header   Host $host;
+      proxy_http_version 1.1;
+      proxy_set_header   Connection "";
     }
     location /schema/ {
       proxy_pass         http://schema-registry-1:8081/;
       proxy_set_header   Host $host;
+      proxy_http_version 1.1;
+      proxy_set_header   Connection "";
     }
     location /dashboard/ {
       proxy_pass         http://dashboard:3000/;
