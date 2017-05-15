@@ -161,7 +161,6 @@ services:
       - rest-proxy-1
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
-      KAFKA_REST_PROXY: http://rest-proxy-1:8082
       KAFKA_BROKERS: 3
       RADAR_TOPICS: ${RADAR_TOPIC_LIST}
       RADAR_PARTITIONS: 3
@@ -195,11 +194,8 @@ services:
     depends_on:
       - hotstorage
     restart: always
-    environment:
-      MONGODB_USER: ${HOTSTORAGE_USERNAME}
-      MONGODB_PASS: ${HOTSTORAGE_PASSWORD}
-      MONGODB_DATABASE: ${HOTSTORAGE_NAME} 
-      MONGODB_HOST: hotstorage:27017
+    volumes:
+      - "./etc/rest-api:/usr/local/tomcat/conf/radar"
     healthcheck:
       test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:8080/radar/api/"]
       interval: 1m
@@ -382,6 +378,7 @@ services:
       - kafka-init
     volumes:
       - ./etc/radar.yml:/etc/radar.yml
+    restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
