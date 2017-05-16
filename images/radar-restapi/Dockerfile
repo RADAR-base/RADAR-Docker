@@ -18,21 +18,7 @@ MAINTAINER @fnobilia, @afolarin
 LABEL description="RADAR-CNS Rest Api docker container"
 
 # Install Rest API
-RUN echo && echo "==> Installing Components" \
-    # Download Git RestApi release
-    && echo "==> Downloading RADAR-CNS/RADAR-RestApi v0.1-beta.1 release from GitHub" \
-    && cd /usr/local && mkdir RADAR-RestApi && cd /usr/local/RADAR-RestApi \
-    && wget https://github.com/RADAR-CNS/RADAR-RestApi/releases/download/v0.1-beta.1/radar.war \
-    # Deploy the war
-    && echo "==> Deploying the WAR" \
-    && cp /usr/local/RADAR-RestApi/radar.war /usr/local/tomcat/webapps/ \
-    # Remove repository
-    && echo "==> Cleaning up" \
-    && cd /usr/local && rm -R /usr/local/RADAR-RestApi \
-    # Create config folder
-    && echo "==> Creating config folder" \
-    && mkdir /usr/local/tomcat/conf/radar \
-    && echo 
+ADD https://github.com/RADAR-CNS/RADAR-RestApi/releases/download/v0.1-beta.1/radar.war /usr/local/tomcat/webapps
 
 EXPOSE 8080
 
