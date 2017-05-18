@@ -11,7 +11,7 @@
 # limitations under the License.
 
 
-FROM tomcat:8.0.37
+FROM tomcat:8.0.44-jre8
 
 MAINTAINER @fnobilia, @afolarin
 
