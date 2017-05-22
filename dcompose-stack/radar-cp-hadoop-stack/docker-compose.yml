@@ -312,7 +312,6 @@ services:
       CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS: 300000
       CONNECT_CONSUMER_SESSION_TIMEOUT_MS: 10000
       CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
-      KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
 
   #---------------------------------------------------------------------------#
@@ -355,7 +354,6 @@ services:
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
-      KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
 
