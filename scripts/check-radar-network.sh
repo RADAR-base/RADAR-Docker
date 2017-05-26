@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # network interface
+network=eduroam
+# network interface
 nic=wlp5s1
 # lock file
 lockfile=/home/radar/RADAR-Network/LOCK_RETRY
@@ -32,18 +34,18 @@ esac
 # force connection
 connect() {
   log_info "Forcing reconnection"
-  sudo ifdown --force $nic >> $logfile 2>&1
+  sudo nmcli conn down $network >> $logfile 2>&1
   log_info "Turning wifi NIC off"
-  sleep 10
-  sudo ifup $nic >> $logfile 2>&1
+  sleep 30
+  sudo nmcli conn up $network >> $logfile 2>&1
   log_info "Turning wifi NIC on"
   log_info "Double checking ..."
   if ! isConnected; then
     log_info "Forcing reconnection with a sleep time of 30 sec ..."
-    sudo ifdown --force $nic >> $logfile 2>&1
+    sudo nmcli conn down $network >> $logfile 2>&1
     log_info "Turning wifi NIC off"
-    sleep 30
-    sudo ifup $nic >> $logfile 2>&1
+    sleep 60
+    sudo nmcli conn up $network >> $logfile 2>&1
     log_info "Turning wifi NIC on"
   fi
   log_info "Completed"
