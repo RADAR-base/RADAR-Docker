@@ -1,28 +1,42 @@
 #!/bin/bash
 
-# network interface
-network=eduroam
-# network interface
-nic=wlp5s1
-# lock file
-lockfile=/home/radar/RADAR-Network/LOCK_RETRY
-# log file
-logfile=/home/radar/RADAR-Network/radar-network.log
-# url to check against
-url=https://www.empatica.com
+PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin
 
 # maximum file size in byte  to rotate log
 minimumsize=10000000
 
 # current time
-timestamp=$(date '+%d/%m/%Y %H:%M:%S');
+timestamp=$(date '+%Y-%m-%d %H:%M:%S');
 
-# write message in the log file
+# Write message in the log file
 log_info() {
   echo "$timestamp - $@" >> $logfile 2>&1
 }
 
-# check connection
+# Remove old lock
+checkLock() {
+  uptime=$(</proc/uptime)
+  uptime=${uptime%%.*}
+
+  if [ "$uptime" -lt "180" ]; then
+     if [ -f $lockfile ]; then
+       rm $lockfile
+       log_info "Removed old lock"
+     fi
+  fi
+}
+
+# Rolling log file
+rolloverLog() {
+  actualsize=$(wc -c <"$logfile")
+  if [ $actualsize -ge $minimumsize ]; then
+    timestamp=$(date '+%d-%m-%Y_%H-%M-%S');
+    cp $logfile $logfile"_"$timestamp
+    > $logfile
+  fi
+}
+
+# Check connection
 isConnected() {
   case "$(curl -s --max-time 10 --retry 5 -I $url | sed 's/^[^ ]*  *\([0-9]\).*/\1/; 1q')" in
     [23]) log_info "HTTP connectivity is up" && return 0;;
@@ -31,7 +45,7 @@ isConnected() {
 esac
 }
 
-# force connection
+# Force connection
 connect() {
   log_info "Forcing reconnection"
   sudo nmcli conn down $network >> $logfile 2>&1
@@ -51,37 +65,8 @@ connect() {
   log_info "Completed"
 }
 
-# remove old lock
-checkLock() {
-  uptime=$(</proc/uptime)
-  uptime=${uptime%%.*}
-
-  if [ "$uptime" -lt "180" ]; then
-     if [ -f $lockfile ]; then
-       rm $lockfile
-       log_info "Removed old lock"
-     fi
-  fi
-}
-
-# check connection and force reconnection if needed
+# Entry point
 touch $logfile
+log_info "### $timestamp ###"
+log_info "Checking lock ..."
 checkLock
-if [ ! -f $lockfile ]; then
-  touch $lockfile
-  if ! isConnected; then
-    connect
-  fi
-  rm $lockfile
-else
-  log_info "Another instance is already running ... "
-fi
-
-# check if log size exceeds the limit. If so, it rotates the log file
-actualsize=$(wc -c <"$logfile")
-
-if [ $actualsize -ge $minimumsize ]; then
-  timestamp=$(date '+%d-%m-%Y_%H-%M-%S');
-  cp $logfile $logfile"_"$timestamp
-  > $logfile
-fi
