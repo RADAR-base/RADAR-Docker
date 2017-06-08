@@ -187,7 +187,7 @@ services:
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
   rest-api:
-    image: radarcns/radar-restapi:0.1
+    image: radarcns/radar-restapi:0.1.1
     networks:
       - hotstorage
       - api
