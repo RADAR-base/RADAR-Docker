@@ -18,7 +18,7 @@ MAINTAINER @fnobilia, @afolarin
 LABEL description="RADAR-CNS Rest Api docker container"
 
 # Install Rest API
-ADD https://github.com/RADAR-CNS/RADAR-RestApi/releases/download/v0.1.1/radar-0.1.1.war /usr/local/tomcat/webapps
+ADD https://github.com/RADAR-CNS/RADAR-RestApi/releases/download/v0.1.1/radar-0.1.1.war /usr/local/tomcat/webapps/radar.war
 
 EXPOSE 8080
 
