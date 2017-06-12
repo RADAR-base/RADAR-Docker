@@ -9,6 +9,11 @@ if [ -f /.radar_topic_set ]; then
 fi
 
 # Wait until all brokers are up & running
+if [ -z ${KAFKA_ZOOKEEPER_CONNECT} ]; then
+        echo "KAFKA_ZOOKEEPER_CONNECT is not defined"
+        exit 2
+fi
+
 interval=1
 while [ "$LENGTH" != "$KAFKA_BROKERS" ]; do
     ZOOKEEPER_CHECK=$(zookeeper-shell $KAFKA_ZOOKEEPER_CONNECT <<< "ls /brokers/ids")
@@ -32,11 +37,6 @@ done
 if [ -z ${RADAR_TOPICS} ]; then
 	echo "RADAR_TOPICS is not defined"
 	exit 2
-fi
-
-if [ -z ${KAFKA_ZOOKEEPER_CONNECT} ]; then
-        echo "KAFKA_ZOOKEEPER_CONNECT is not defined"
-        exit 2
 fi
 
 if [ -z ${RADAR_PARTITIONS} ]; then

@@ -187,7 +187,7 @@ services:
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
   rest-api:
-    image: radarcns/radar-restapi:0.1
+    image: radarcns/radar-restapi:0.1.1
     networks:
       - hotstorage
       - api
@@ -275,7 +275,7 @@ services:
   # RADAR mongo connector                                                     #
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
-    image: radarcns/radar-mongodb-connector-auto:0.2
+    image: radarcns/radar-mongodb-connector-auto:0.2.1
     restart: on-failure
     volumes:
       - ./etc/sink-mongo.properties:/etc/kafka-connect/sink.properties
@@ -312,14 +312,13 @@ services:
       CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS: 300000
       CONNECT_CONSUMER_SESSION_TIMEOUT_MS: 10000
       CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
-      KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
 
   #---------------------------------------------------------------------------#
   # RADAR HDFS connector                                                     #
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
-    image: radarcns/radar-hdfs-connector-auto:0.2
+    image: radarcns/radar-hdfs-connector-auto:0.2.1
     restart: on-failure
     volumes:
       - ./etc/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
@@ -355,7 +354,6 @@ services:
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
-      KAFKA_REST_PROXY: http://rest-proxy-1:8082
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
 
