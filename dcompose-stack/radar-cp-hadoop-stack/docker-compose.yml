@@ -22,6 +22,9 @@ networks:
   hotstorage:
     driver: bridge
     internal: true
+  hive:
+    driver: bridge
+    internal: true
 
 volumes:
   kafka-1-data: {}
@@ -224,39 +227,95 @@ services:
   # RADAR Cold Storage                                                        #
   #---------------------------------------------------------------------------#
   hdfs-datanode-1:
-    image: uhopper/hadoop-datanode:2.7.2
+    image: bde2020/hadoop-datanode:1.1.0-hadoop2.8-java8
     networks:
       - hadoop
     volumes:
       - "${HDFS_DATA_DIR_1}:/hadoop/dfs/data"
     restart: always
-    environment:
-      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
-      HDFS_CONF_dfs_replication: 2
+    env_file:
+      - ./etc/hadoop-hive.env
 
   hdfs-datanode-2:
-    image: uhopper/hadoop-datanode:2.7.2
+    image: bde2020/hadoop-datanode:1.1.0-hadoop2.8-java8
     networks:
       - hadoop
     volumes:
       - "${HDFS_DATA_DIR_2}:/hadoop/dfs/data"
     restart: always
-    environment:
-      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
-      HDFS_CONF_dfs_replication: 2
+    env_file:
+      - ./etc/hadoop-hive.env
 
   hdfs-namenode:
     build: hdfs-namenode
-    image: radarcns/hdfs-namenode:2.7.2
+    image: radarcns/hdfs-namenode:2.8
     networks:
       - hadoop
     volumes:
       - "${HDFS_NAME_DIR_1}:/hadoop/dfs/name/1"
       - "${HDFS_NAME_DIR_2}:/hadoop/dfs/name/2"
     restart: always
+    env_file:
+      - ./etc/hadoop-hive.env
+    ports:
+      - "50070:50070"
+
+  hive-server:
+    imagebuild: .
+    env_file:
+      - ./etc/hadoop-hive.env
     environment:
-      CLUSTER_NAME: radar-cns
-      HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
+    ports:
+      - "10000:10000"
+
+  yarn-resourcemanager:
+    image: bde2020/hadoop-resourcemanager:1.1.0-hadoop2.8-java8
+    networks:
+      - hadoop
+    depends_on:
+      - hdfs-namenode
+      - hdfs-datanode-1
+      - hdfs-datanode-2
+    env_file:
+      - ./etc/hadoop-hive.env
+  
+  yarn-historyserver:
+    image: bde2020/hadoop-historyserver:1.1.0-hadoop2.8-java8
+    networks:
+      - hadoop
+    depends_on:
+      - hdfs-namenode
+      - hdfs-datanode-1
+      - hdfs-datanode-2
+    volumes:
+      - /hadoop/yarn/timeline
+    env_file:
+      - ./etc/hadoop-hive.env
+
+  hive-server:
+    image: bde2020/hive
+    networks:
+      - hadoop
+    env_file:
+      - ./etc/hadoop-hive.env
+    environment:
+      - "HIVE_CORE_CONF_javax_jdo_option_ConnectionURL=jdbc:postgresql://hive-metastore/metastore"
+    ports:
+      - "10000:10000"
+
+  hive-metastore:
+    image: bde2020/hive
+    networks:
+      - hadoop
+      - hive
+    env_file:
+      - ./etc/hadoop-hive.env
+    command: /opt/hive/bin/hive --service metastore
+
+  hive-metastore-postgresql:
+    image: bde2020/hive-metastore-postgresql:2.1.0
+    networks:
+      - hive
 
   #---------------------------------------------------------------------------#
   # Email server                                                              #
@@ -456,3 +515,13 @@ services:
       - certs:/etc/letsencrypt
       - certs-data:/data/letsencrypt
       - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
+  
+  hue:
+    image: gethue/hue:latest
+    command: ./build/env/bin/hue runserver_plus 0.0.0.0:8888
+    networks:
+      - hadoop
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./etc/hue.ini:/hue/desktop/conf/hue.ini"
