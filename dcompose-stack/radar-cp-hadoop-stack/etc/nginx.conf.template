@@ -5,8 +5,6 @@ events {
 }
 
 http {
-  index    index.html index.htm index.php;
-
   default_type application/octet-stream;
   log_format   main '$remote_addr - $remote_user [$time_local]  $status '
     '"$request" $body_bytes_sent "$http_referer" '
@@ -94,5 +92,11 @@ http {
       proxy_pass         http://rest-api:8080/radar/frontend/;
       proxy_set_header   Host $host;
     }
+    # uncomment the following block to get a browsable hdfs output directory
+    # location /output/ {
+    #   alias /var/www/output/;
+    #   autoindex on;
+    #   autoindex_format jsonp;
+    # }
   }
 }
