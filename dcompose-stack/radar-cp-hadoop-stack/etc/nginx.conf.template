@@ -72,7 +72,7 @@ http {
       proxy_set_header   Connection "";
     }
     location /dashboard/ {
-      proxy_pass         http://dashboard:3000/;
+      proxy_pass         http://dashboard:80/;
       proxy_set_header   Host $host;
     }
     location /portainer/ {

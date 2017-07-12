@@ -213,9 +213,9 @@ services:
       - rest-api
     restart: always
     environment:
-      API_URI: http://${SERVER_NAME}:8080/api
+      API_URI: https://${SERVER_NAME}/api
     healthcheck:
-      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:3000/"]
+      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:80/"]
       interval: 1m
       timeout: 5s
       retries: 3
