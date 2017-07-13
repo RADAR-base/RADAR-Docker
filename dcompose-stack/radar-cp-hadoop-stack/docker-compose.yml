@@ -206,7 +206,7 @@ services:
   # RADAR Dashboard                                                           #
   #---------------------------------------------------------------------------#
   dashboard:
-    image: radarcns/radar-dashboard:latest
+    image: radarcns/radar-dashboard:2.0.5-beta-base-href
     networks:
       - api
     depends_on:
