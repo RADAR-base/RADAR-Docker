@@ -206,16 +206,17 @@ services:
   # RADAR Dashboard                                                           #
   #---------------------------------------------------------------------------#
   dashboard:
-    image: radarcns/radar-dashboard:latest
+    image: radarcns/radar-dashboard:2.0.5-beta-base-href
     networks:
       - api
     depends_on:
       - rest-api
     restart: always
     environment:
-      API_URI: http://${SERVER_NAME}:8080/api
+      API_URI: https://${SERVER_NAME}/api
+      BASE_HREF: /dashboard/
     healthcheck:
-      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:3000/"]
+      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:80/"]
       interval: 1m
       timeout: 5s
       retries: 3
