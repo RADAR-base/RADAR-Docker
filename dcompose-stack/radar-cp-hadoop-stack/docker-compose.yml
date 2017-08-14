@@ -266,6 +266,7 @@ services:
     image: namshi/smtp:latest
     networks:
       - mail
+      - default
     volumes:
       - /var/spool/exim
     restart: always
@@ -387,8 +388,7 @@ services:
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
     image: radarcns/radar-backend-kafka-auto:0.2
-    command:
-      - monitor
+    command: monitor
     networks:
       - zookeeper
       - kafka
@@ -437,7 +437,7 @@ services:
   # Webserver                                                                 #
   #---------------------------------------------------------------------------#
   webserver:
-    image: nginx:1.12-alpine
+    image: nginx:1.13.1-alpine
     restart: always
     networks:
       - api
