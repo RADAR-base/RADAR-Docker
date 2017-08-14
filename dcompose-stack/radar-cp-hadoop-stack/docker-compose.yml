@@ -71,6 +71,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
 
   kafka-2:
     image: confluentinc/cp-kafka:3.1.2-1
@@ -87,6 +88,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
 
   kafka-3:
     image: confluentinc/cp-kafka:3.1.2-1
@@ -103,6 +105,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
 
   #---------------------------------------------------------------------------#
   # Schema Registry                                                           #
@@ -357,6 +360,7 @@ services:
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
 
   #---------------------------------------------------------------------------#
   # RADAR backend streams                                                     #
