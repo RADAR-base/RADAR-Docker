@@ -40,6 +40,9 @@ echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
 
+echo "==> Configuring REDCap-Integration"
+copy_template_if_absent etc/redcap-integration/radar.yml
+
 # Set MongoDb credential
 inline_variable 'usr:[[:space:]]' $HOTSTORAGE_USERNAME etc/rest-api/radar.yml
 inline_variable 'pwd:[[:space:]]' $HOTSTORAGE_PASSWORD etc/rest-api/radar.yml

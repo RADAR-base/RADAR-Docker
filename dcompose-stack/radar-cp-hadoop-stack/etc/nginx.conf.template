@@ -90,6 +90,10 @@ http {
       proxy_pass         http://rest-api:8080/radar/api/;
       proxy_set_header   Host $host;
     }
+    location /redcapint/ {
+      proxy_pass         http://radar-integration:8080/redcap/;
+      proxy_set_header   Host $host;
+    }
     location /frontend/config/ {
       proxy_pass         http://rest-api:8080/radar/frontend/;
       proxy_set_header   Host $host;
