@@ -12,8 +12,8 @@ function catch_errors() {
 
 # Check whether given command exists and call it with the --version flag.
 check_command_exists() {
-  if command -v "$1" > /dev/null 2>&1; then
-    echo "$1 version: $($1 --version)"
+  if sudo-linux /bin/bash -c "command -v "$1" > /dev/null 2>&1"; then
+    echo "$1 version: $(sudo-linux "$1" --version)"
   else
     echo "RADAR-CNS cannot start without $1. Please, install $1 and then try again"
     exit 1
@@ -93,7 +93,7 @@ letsencrypt_certonly() {
   sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.5 /bin/sh -c "find /etc/openssl -name '${SERVER_NAME}*' -prune -exec rm -rf '{}' +"
 
   CERTBOT_DOCKER_OPTS=(-i --rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
-  CERTBOT_OPTS=(--webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}")
+  CERTBOT_OPTS=(--webroot --webroot-path=/data/letsencrypt --agree-tos -m "${MAINTAINER_EMAIL}" -d "${SERVER_NAME}" --non-interactive)
   sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
 
   # mark the directory as letsencrypt dir
@@ -104,7 +104,7 @@ letsencrypt_renew() {
   SERVER_NAME=$1
   echo "==> Renewing Let's Encrypt SSL certificate for ${SERVER_NAME}"
   CERTBOT_DOCKER_OPTS=(-i --rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
-  CERTBOT_OPTS=(-n --webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}")
+  CERTBOT_OPTS=(-n --webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}" --non-interactive)
   sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
 }
 

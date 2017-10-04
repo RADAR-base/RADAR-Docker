@@ -40,6 +40,9 @@ echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
 
+echo "==> Configuring REDCap-Integration"
+copy_template_if_absent etc/redcap-integration/radar.yml
+
 # Set MongoDb credential
 inline_variable 'usr:[[:space:]]' $HOTSTORAGE_USERNAME etc/rest-api/radar.yml
 inline_variable 'pwd:[[:space:]]' $HOTSTORAGE_PASSWORD etc/rest-api/radar.yml
@@ -55,7 +58,7 @@ sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' et
 init_certificate "${SERVER_NAME}"
 
 echo "==> Starting RADAR-CNS Platform"
-sudo-linux docker-compose up --force-recreate -d
+sudo-linux docker-compose up --force-recreate -d "$@"
 
 request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERT:-yes}"
 echo "### SUCCESS ###"

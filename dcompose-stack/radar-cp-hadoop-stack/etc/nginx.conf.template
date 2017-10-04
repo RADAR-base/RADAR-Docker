@@ -70,7 +70,7 @@ http {
       proxy_set_header   Connection "";
     }
     location /dashboard/ {
-      proxy_pass         http://dashboard:3000/;
+      proxy_pass         http://dashboard:80/;
       proxy_set_header   Host $host;
     }
     location /portainer/ {
@@ -86,6 +86,10 @@ http {
     }
     location /api/ {
       proxy_pass         http://rest-api:8080/radar/api/;
+      proxy_set_header   Host $host;
+    }
+    location /redcapint/ {
+      proxy_pass         http://radar-integration:8080/redcap/;
       proxy_set_header   Host $host;
     }
     location /frontend/config/ {
