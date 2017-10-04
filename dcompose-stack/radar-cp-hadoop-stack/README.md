@@ -2,14 +2,30 @@
 
 ## Configuration
 
-First move `etc/env.template` file to `./.env` and check and modify all its variables. To have a valid HTTPS connection for a public host, set `SELF_SIGNED_CERT=no`. You need to provide a public valid DNS name as `SERVER_NAME` for SSL certificate to work. IP addresses will not work.
+1. First move `etc/env.template` file to `./.env` and check and modify all its variables. To have a valid HTTPS connection for a public host, set `SELF_SIGNED_CERT=no`. You need to provide a public valid DNS name as `SERVER_NAME` for SSL certificate to work. IP addresses will not work.
 
-Modify `etc/smtp.env.template` to set a SMTP host to send emails with, and move it to `etc/smtp.env`. The configuration settings are passed to a [namshi/smtp](https://hub.docker.com/r/namshi/smtp/) Docker container. This container supports a.o. regular SMTP and GMail.
+2. Modify `etc/smtp.env.template` to set a SMTP host to send emails with, and move it to `etc/smtp.env`. The configuration settings are passed to a [namshi/smtp](https://hub.docker.com/r/namshi/smtp/) Docker container. This container supports a.o. regular SMTP and GMail.
 
-Modify the `etc/redcap-integration/radar.yml.template` to configure the properties of Redcap instance and the management portal, and move it to `etc/redcap-integration/radar.yml`. For reference on cofiguration of this file look at the Readme file here - https://github.com/RADAR-CNS/RADAR-RedcapIntegration#configuration
+3. Modify the `etc/redcap-integration/radar.yml.template` to configure the properties of Redcap instance and the management portal, and move it to `etc/redcap-integration/radar.yml`. For reference on configuration of this file look at the Readme file here - https://github.com/RADAR-CNS/RADAR-RedcapIntegration#configuration
 In the REDcap portal under Project Setup, define the Data Trigger as `https://<YOUR_HOST_URL>/redcapint/trigger`
 
-Finally, move `etc/radar.yml.template` to `etc/radar.yml` and edit it, especially concerning the monitor email address configuration.
+4. ### Build ManagementPortal from source ( Required to build it from source for secured deployment at the moment)
+
+4.1. Clone ManagementPortal 
+```shell
+git clone https://github.com/RADAR-CNS/ManagementPortal.git
+```
+4.2. Change OAuth2 client credentials for production environment at `src/main/resources/config/liquibase/oauth_client_details.csv`
+
+4.3. Change the base href url to  `<base href="/managementportal/" />` at `src/main/webapp/index.html`.
+ 
+4.4. Build ManagementPortal for production
+```shell
+./gradlew bootRepackage -Pprod buildDocker
+```
+4.5. Copy built `.war` file to `/managementportal/`
+
+5. Finally, move `etc/radar.yml.template` to `etc/radar.yml` and edit it, especially concerning the monitor email address configuration.
 
 ## Usage
 

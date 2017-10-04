@@ -25,6 +25,9 @@ networks:
   redcap:
     driver: bridge
     internal: true
+  management:
+    driver: bridge
+    internal: true
 
 volumes:
   kafka-1-data: {}
@@ -217,6 +220,7 @@ services:
     networks:
       - redcap
       - default
+      - management
     #depends_on:
       #- hotstorage
     restart: always
@@ -291,6 +295,7 @@ services:
   smtp:
     image: namshi/smtp:latest
     networks:
+      - default
       - mail
     volumes:
       - /var/spool/exim
@@ -486,3 +491,29 @@ services:
       - certs:/etc/letsencrypt
       - certs-data:/data/letsencrypt
       - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
+
+  managementportal-app:
+    image: managementportal
+    build: managementportal
+    networks:
+      - default
+      - management
+      - mail
+    environment:
+      SPRING_PROFILES_ACTIVE: prod,swagger
+      SPRING_DATASOURCE_URL: jdbc:postgresql://managementportal-postgresql:5432/managementportal
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      MANAGEMENTPORTAL_MAIL_FROM: ${FROM_EMAIL}
+      MANAGEMENTPORTAL_MAIL_BASEURL: https://${SERVER_NAME}/managementportal
+      JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
+      JAVA_OPTS: "-Xmx256m"  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
+#    ports:
+#      - "8081:8080"
+
+  managementportal-postgresql:
+    networks:
+      - management
+    extends:
+      file: postgresql.yml
+      service: managementportal-postgresql
