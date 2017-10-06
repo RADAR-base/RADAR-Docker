@@ -9,21 +9,7 @@
 3. Modify the `etc/redcap-integration/radar.yml.template` to configure the properties of Redcap instance and the management portal, and move it to `etc/redcap-integration/radar.yml`. For reference on configuration of this file look at the Readme file here - https://github.com/RADAR-CNS/RADAR-RedcapIntegration#configuration
 In the REDcap portal under Project Setup, define the Data Trigger as `https://<YOUR_HOST_URL>/redcapint/trigger`
 
-4. ### Build ManagementPortal from source ( Required to build it from source for secured deployment at the moment)
-
-4.1. Clone ManagementPortal 
-```shell
-git clone https://github.com/RADAR-CNS/ManagementPortal.git
-```
-4.2. Change OAuth2 client credentials for production environment at `src/main/resources/config/liquibase/oauth_client_details.csv`
-
-4.3. Change the base href url to  `<base href="/managementportal/" />` at `src/main/webapp/index.html`.
- 
-4.4. Build ManagementPortal for production
-```shell
-./gradlew bootRepackage -Pprod buildDocker
-```
-4.5. Copy built `.war` file to `/managementportal/`
+4. Move `etc/managementportal/oauth_client_details.csv.template` to `etc/managementportal/oauth_client_details.csv` and change OAuth client credentials for production MP. (Except ManagementPortalapp)
 
 5. Finally, move `etc/radar.yml.template` to `etc/radar.yml` and edit it, especially concerning the monitor email address configuration.
 

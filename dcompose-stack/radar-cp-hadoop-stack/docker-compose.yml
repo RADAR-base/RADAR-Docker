@@ -493,8 +493,7 @@ services:
       - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
 
   managementportal-app:
-    image: managementportal
-    build: managementportal
+    image: radarcns/management-portal:latest
     networks:
       - default
       - management
@@ -507,9 +506,9 @@ services:
       MANAGEMENTPORTAL_MAIL_FROM: ${FROM_EMAIL}
       MANAGEMENTPORTAL_MAIL_BASEURL: https://${SERVER_NAME}/managementportal
       JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
-      JAVA_OPTS: "-Xmx256m"  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
-#    ports:
-#      - "8081:8080"
+      JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
+    volumes:
+      - ./etc/managementportal/changelogs:/changelogs
 
   managementportal-postgresql:
     networks:
