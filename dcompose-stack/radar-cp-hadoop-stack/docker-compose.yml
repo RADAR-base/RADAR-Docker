@@ -22,6 +22,9 @@ networks:
   hotstorage:
     driver: bridge
     internal: true
+  redcap:
+    driver: bridge
+    internal: true
 
 volumes:
   kafka-1-data: {}
@@ -71,6 +74,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
 
   kafka-2:
     image: confluentinc/cp-kafka:3.1.2-1
@@ -87,6 +91,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
 
   kafka-3:
     image: confluentinc/cp-kafka:3.1.2-1
@@ -103,6 +108,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
 
   #---------------------------------------------------------------------------#
   # Schema Registry                                                           #
@@ -198,6 +204,26 @@ services:
       - "./etc/rest-api:/usr/local/tomcat/conf/radar"
     healthcheck:
       test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:8080/radar/api/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+
+  #---------------------------------------------------------------------------#
+  # RADAR REDCap Integration                                                  #
+  #---------------------------------------------------------------------------#
+  radar-integration:
+    image: radarcns/radar-redcapintegration:latest
+    networks:
+      - redcap
+      - default
+    #depends_on:
+      #- hotstorage
+    restart: always
+    volumes:
+      - "./etc/redcap-integration:/usr/local/tomcat/conf/radar"
+    healthcheck:
+      test: ["CMD", "curl", "-IX", "POST", "http://localhost:8080/redcap/trigger"]
       interval: 1m
       timeout: 5s
       retries: 3
@@ -358,6 +384,7 @@ services:
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
 
   #---------------------------------------------------------------------------#
   # RADAR backend streams                                                     #
@@ -406,7 +433,7 @@ services:
     restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
-      TOPIC_LIST: ${RADAR_TOPIC_LIST}      
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
 
   #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #
@@ -441,6 +468,7 @@ services:
     restart: always
     networks:
       - api
+      - redcap
       - monitor
       - default
     depends_on:
@@ -450,6 +478,7 @@ services:
       - schema-registry-1
       - rest-proxy-1
       - dashboard
+      - radar-integration
     ports:
       - "80:80"
       - "443:443"
