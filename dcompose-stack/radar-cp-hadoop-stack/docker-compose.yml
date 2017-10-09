@@ -484,6 +484,7 @@ services:
       - rest-proxy-1
       - dashboard
       - radar-integration
+      - managementportal-app
     ports:
       - "80:80"
       - "443:443"
@@ -498,6 +499,9 @@ services:
       - default
       - management
       - mail
+    depends_on:
+      - managementportal-postgresql
+      - smtp
     environment:
       SPRING_PROFILES_ACTIVE: prod,swagger
       SPRING_DATASOURCE_URL: jdbc:postgresql://managementportal-postgresql:5432/managementportal
