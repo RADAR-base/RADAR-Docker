@@ -22,6 +22,9 @@ networks:
   hotstorage:
     driver: bridge
     internal: true
+  redcap:
+    driver: bridge
+    internal: true
 
 volumes:
   kafka-1-data: {}
@@ -201,6 +204,26 @@ services:
       - "./etc/rest-api:/usr/local/tomcat/conf/radar"
     healthcheck:
       test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:8080/radar/api/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+
+  #---------------------------------------------------------------------------#
+  # RADAR REDCap Integration                                                  #
+  #---------------------------------------------------------------------------#
+  radar-integration:
+    image: radarcns/radar-redcapintegration:latest
+    networks:
+      - redcap
+      - default
+    #depends_on:
+      #- hotstorage
+    restart: always
+    volumes:
+      - "./etc/redcap-integration:/usr/local/tomcat/conf/radar"
+    healthcheck:
+      test: ["CMD", "curl", "-IX", "POST", "http://localhost:8080/redcap/trigger"]
       interval: 1m
       timeout: 5s
       retries: 3
@@ -410,7 +433,7 @@ services:
     restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
-      TOPIC_LIST: ${RADAR_TOPIC_LIST}      
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
 
   #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #
@@ -445,6 +468,7 @@ services:
     restart: always
     networks:
       - api
+      - redcap
       - monitor
       - default
     depends_on:
@@ -454,6 +478,7 @@ services:
       - schema-registry-1
       - rest-proxy-1
       - dashboard
+      - radar-integration
     ports:
       - "80:80"
       - "443:443"
