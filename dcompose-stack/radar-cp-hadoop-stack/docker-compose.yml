@@ -221,8 +221,8 @@ services:
       - redcap
       - default
       - management
-    #depends_on:
-      #- hotstorage
+    depends_on:
+      - managementportal-app
     restart: always
     volumes:
       - "./etc/redcap-integration:/usr/local/tomcat/conf/radar"
@@ -515,8 +515,12 @@ services:
       - ./etc/managementportal/changelogs:/changelogs
 
   managementportal-postgresql:
+    image: postgres:9.6.2
+    volumes:
+      - "${MP_POSTGRES_DIR}/:/var/lib/postgresql/"
+    environment:
+      POSTGRES_USER : ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: managementportal
     networks:
       - management
-    extends:
-      file: postgresql.yml
-      service: managementportal-postgresql
