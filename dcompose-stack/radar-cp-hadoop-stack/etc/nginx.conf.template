@@ -98,5 +98,10 @@ http {
       proxy_pass         http://rest-api:8080/radar/frontend/;
       proxy_set_header   Host $host;
     }
+
+    location /managementportal/{
+          proxy_pass         http://managementportal-app:8080/;
+          proxy_set_header   Host $host;
+    }
   }
 }

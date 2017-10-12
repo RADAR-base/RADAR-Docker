@@ -8,6 +8,7 @@ check_parent_exists HDFS_DATA_DIR_2 ${HDFS_DATA_DIR_2}
 check_parent_exists HDFS_NAME_DIR_1 ${HDFS_NAME_DIR_1}
 check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
+check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 
 if [ -z ${SERVER_NAME} ]; then
   echo "Set SERVER_NAME variable in .env"
