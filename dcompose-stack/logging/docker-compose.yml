@@ -1,0 +1,47 @@
+---
+version: '3'
+
+networks:
+  graylog:
+    driver: bridge
+
+volumes:
+  mongo: {}
+  elasticsearch: {}
+  graylog: {}
+
+services:
+
+  mongo:
+    image: mongo:3.4.3
+    networks:
+      - graylog
+    volumes:
+      - mongo:/data/db
+
+  elasticsearch:
+    image: elasticsearch:2.4.4-alpine
+    command: elasticsearch -Des.cluster.name="graylog"
+    networks:
+      - graylog
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+
+  graylog:
+    image: graylog2/server:2.2.3-1
+    networks:
+      - graylog
+    depends_on:
+      - mongo
+      - elasticsearch
+    links:
+      - mongo
+      - elasticsearch
+    env_file:
+      - ./graylog.env
+    ports:
+      - "9000:9000"
+      - "12201/udp:12201/udp"
+    volumes:
+      - graylog:/usr/share/graylog/data/journal
+

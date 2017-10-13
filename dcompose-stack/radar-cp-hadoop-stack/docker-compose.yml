@@ -1,0 +1,526 @@
+---
+version: '2.1'
+
+networks:
+  zookeeper:
+    driver: bridge
+    internal: true
+  kafka:
+    driver: bridge
+    internal: true
+  api:
+    driver: bridge
+    internal: true
+  hadoop:
+    external: true
+  mail:
+    driver: bridge
+    internal: true
+  monitor:
+    driver: bridge
+    internal: true
+  hotstorage:
+    driver: bridge
+    internal: true
+  redcap:
+    driver: bridge
+    internal: true
+  management:
+    driver: bridge
+    internal: true
+
+volumes:
+  kafka-1-data: {}
+  kafka-2-data: {}
+  kafka-3-data: {}
+  certs:
+    external: true
+  certs-data:
+    external: true
+
+services:
+
+  #---------------------------------------------------------------------------#
+  # Zookeeper Cluster                                                         #
+  #---------------------------------------------------------------------------#
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:3.1.2-1
+    networks:
+      - zookeeper
+    volumes:
+      - /var/lib/zookeeper/data
+      - /var/lib/zookeeper/logs
+    restart: always
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888
+
+  #---------------------------------------------------------------------------#
+  # Kafka Cluster                                                             #
+  #---------------------------------------------------------------------------#
+  kafka-1:
+    image: confluentinc/cp-kafka:3.1.2-1
+    networks:
+      - kafka
+      - zookeeper
+    volumes:
+      - kafka-1-data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper-1
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
+
+  kafka-2:
+    image: confluentinc/cp-kafka:3.1.2-1
+    networks:
+      - kafka
+      - zookeeper
+    volumes:
+      - kafka-2-data:/var/lib/kafka/data
+    depends_on:
+      - kafka-1
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
+
+  kafka-3:
+    image: confluentinc/cp-kafka:3.1.2-1
+    networks:
+      - kafka
+      - zookeeper
+    volumes:
+      - kafka-3-data:/var/lib/kafka/data
+    depends_on:
+      - kafka-2
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
+
+  #---------------------------------------------------------------------------#
+  # Schema Registry                                                           #
+  #---------------------------------------------------------------------------#
+  schema-registry-1:
+    image: confluentinc/cp-schema-registry:3.1.2-1
+    networks:
+      - kafka
+      - zookeeper
+      - api
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    restart: always
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper-1:2181
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+  #---------------------------------------------------------------------------#
+  # REST proxy                                                                #
+  #---------------------------------------------------------------------------#
+  rest-proxy-1:
+    image: confluentinc/cp-kafka-rest:3.1.2-1
+    networks:
+      - kafka
+      - zookeeper
+      - api
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+    restart: always
+    environment:
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_REST_LISTENERS: http://0.0.0.0:8082
+      KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      KAFKA_REST_HOST_NAME: rest-proxy-1
+
+  #---------------------------------------------------------------------------#
+  # Kafka Init                                                                #
+  #---------------------------------------------------------------------------#
+  kafka-init:
+    build: kafka-radarinit
+    image: radarcns/kafka-init:3.1.2-1
+    networks:
+      - kafka
+      - zookeeper
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - rest-proxy-1
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_BROKERS: 3
+      RADAR_TOPICS: ${RADAR_TOPIC_LIST}
+      RADAR_PARTITIONS: 3
+      RADAR_REPLICATION_FACTOR: 3
+
+
+  #---------------------------------------------------------------------------#
+  # RADAR Hot Storage                                                         #
+  #---------------------------------------------------------------------------#
+  hotstorage:
+    image: radarcns/radar-hotstorage:0.1
+    networks:
+      - hotstorage
+    volumes:
+      - "${MONGODB_DIR}/db:/data/db"
+      - "${MONGODB_DIR}/configdb:/data/configdb"
+    restart: always
+    environment:
+      RADAR_USER: ${HOTSTORAGE_USERNAME}
+      RADAR_PWD: ${HOTSTORAGE_PASSWORD}
+      RADAR_DB: ${HOTSTORAGE_NAME}
+
+  #---------------------------------------------------------------------------#
+  # RADAR REST API                                                            #
+  #---------------------------------------------------------------------------#
+  rest-api:
+    image: radarcns/radar-restapi:0.1.1
+    networks:
+      - hotstorage
+      - api
+    depends_on:
+      - hotstorage
+    restart: always
+    volumes:
+      - "./etc/rest-api:/usr/local/tomcat/conf/radar"
+    healthcheck:
+      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:8080/radar/api/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+
+  #---------------------------------------------------------------------------#
+  # RADAR REDCap Integration                                                  #
+  #---------------------------------------------------------------------------#
+  radar-integration:
+    image: radarcns/radar-redcapintegration:latest
+    networks:
+      - redcap
+      - default
+      - management
+    depends_on:
+      - managementportal-app
+    restart: always
+    volumes:
+      - "./etc/redcap-integration:/usr/local/tomcat/conf/radar"
+    healthcheck:
+      test: ["CMD", "curl", "-IX", "POST", "http://localhost:8080/redcap/trigger"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR Dashboard                                                           #
+  #---------------------------------------------------------------------------#
+  dashboard:
+    image: radarcns/radar-dashboard:2.0.5-beta-base-href
+    networks:
+      - api
+    depends_on:
+      - rest-api
+    restart: always
+    environment:
+      API_URI: https://${SERVER_NAME}/api
+      BASE_HREF: /dashboard/
+    healthcheck:
+      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:80/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR Cold Storage                                                        #
+  #---------------------------------------------------------------------------#
+  hdfs-datanode-1:
+    image: uhopper/hadoop-datanode:2.7.2
+    networks:
+      - hadoop
+    volumes:
+      - "${HDFS_DATA_DIR_1}:/hadoop/dfs/data"
+    restart: always
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
+      HDFS_CONF_dfs_replication: 2
+
+  hdfs-datanode-2:
+    image: uhopper/hadoop-datanode:2.7.2
+    networks:
+      - hadoop
+    volumes:
+      - "${HDFS_DATA_DIR_2}:/hadoop/dfs/data"
+    restart: always
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
+      HDFS_CONF_dfs_replication: 2
+
+  hdfs-namenode:
+    build: hdfs-namenode
+    image: radarcns/hdfs-namenode:2.7.2
+    networks:
+      - hadoop
+    volumes:
+      - "${HDFS_NAME_DIR_1}:/hadoop/dfs/name/1"
+      - "${HDFS_NAME_DIR_2}:/hadoop/dfs/name/2"
+    restart: always
+    environment:
+      CLUSTER_NAME: radar-cns
+      HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
+
+  #---------------------------------------------------------------------------#
+  # Email server                                                              #
+  #---------------------------------------------------------------------------#
+  smtp:
+    image: namshi/smtp:latest
+    networks:
+      - default
+      - mail
+    volumes:
+      - /var/spool/exim
+    restart: always
+    env_file:
+      - ./etc/smtp.env
+
+  #---------------------------------------------------------------------------#
+  # RADAR mongo connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-mongodb-connector:
+    image: radarcns/radar-mongodb-connector-auto:0.2.1
+    restart: on-failure
+    volumes:
+      - ./etc/sink-mongo.properties:/etc/kafka-connect/sink.properties
+    networks:
+      - zookeeper
+      - kafka
+      - hotstorage
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - rest-proxy-1
+      - kafka-init
+      - hotstorage
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-mongodb-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      CONNECT_CONSUMER_MAX_POLL_RECORDS: 500
+      CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS: 300000
+      CONNECT_CONSUMER_SESSION_TIMEOUT_MS: 10000
+      CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
+
+  #---------------------------------------------------------------------------#
+  # RADAR HDFS connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-hdfs-connector:
+    image: radarcns/radar-hdfs-connector-auto:0.2.1
+    restart: on-failure
+    volumes:
+      - ./etc/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
+    networks:
+      - zookeeper
+      - kafka
+      - api
+      - hadoop
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - rest-proxy-1
+      - kafka-init
+      - hdfs-datanode-1
+      - hdfs-datanode-2
+      - hdfs-namenode
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
+      CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
+
+  #---------------------------------------------------------------------------#
+  # RADAR backend streams                                                     #
+  #---------------------------------------------------------------------------#
+  radar-backend-stream:
+    image: radarcns/radar-backend-kafka-auto:0.2
+    command:
+      - stream
+    networks:
+      - zookeeper
+      - kafka
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - kafka-init
+    volumes:
+      - ./etc/radar.yml:/etc/radar.yml
+    restart: always
+    environment:
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
+
+  #---------------------------------------------------------------------------#
+  # RADAR backend monitor                                                     #
+  #---------------------------------------------------------------------------#
+  radar-backend-monitor:
+    image: radarcns/radar-backend-kafka-auto:0.2
+    command:
+      - monitor
+    networks:
+      - zookeeper
+      - kafka
+      - mail
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - kafka-init
+      - smtp
+    volumes:
+      - ./etc/radar.yml:/etc/radar.yml
+    restart: always
+    environment:
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      TOPIC_LIST: ${RADAR_TOPIC_LIST}
+
+  #---------------------------------------------------------------------------#
+  # Docker Monitoring                                                         #
+  #---------------------------------------------------------------------------#
+  cadvisor:
+    image: google/cadvisor:v0.24.1
+    networks:
+      - monitor
+      - default
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:rw"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+    restart: always
+
+  portainer:
+    image: portainer/portainer:1.11.1
+    networks:
+      - monitor
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: always
+
+  #---------------------------------------------------------------------------#
+  # Webserver                                                                 #
+  #---------------------------------------------------------------------------#
+  webserver:
+    image: nginx:1.12-alpine
+    restart: always
+    networks:
+      - api
+      - redcap
+      - monitor
+      - default
+    depends_on:
+      - cadvisor
+      - portainer
+      - rest-api
+      - schema-registry-1
+      - rest-proxy-1
+      - dashboard
+      - radar-integration
+      - managementportal-app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/letsencrypt
+      - certs-data:/data/letsencrypt
+      - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
+
+  managementportal-app:
+    image: radarcns/management-portal:latest
+    networks:
+      - default
+      - management
+      - mail
+    depends_on:
+      - managementportal-postgresql
+      - smtp
+    environment:
+      SPRING_PROFILES_ACTIVE: prod,swagger
+      SPRING_DATASOURCE_URL: jdbc:postgresql://managementportal-postgresql:5432/managementportal
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      MANAGEMENTPORTAL_MAIL_FROM: ${FROM_EMAIL}
+      MANAGEMENTPORTAL_MAIL_BASEURL: https://${SERVER_NAME}/managementportal
+      JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
+      JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
+    volumes:
+      - ./etc/managementportal/changelogs:/changelogs
+
+  managementportal-postgresql:
+    image: postgres:9.6.2
+    volumes:
+      - "${MP_POSTGRES_DIR}/:/var/lib/postgresql/"
+    environment:
+      POSTGRES_USER : ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: managementportal
+    networks:
+      - management
