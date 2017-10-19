@@ -44,6 +44,9 @@ copy_template_if_absent etc/rest-api/device-catalog.yml
 echo "==> Configuring REDCap-Integration"
 copy_template_if_absent etc/redcap-integration/radar.yml
 
+echo "==> Starting redcap configuration listener in the background"
+exec ./redcap-config-listener.sh &
+
 # Set MongoDb credential
 inline_variable 'usr:[[:space:]]' $HOTSTORAGE_USERNAME etc/rest-api/radar.yml
 inline_variable 'pwd:[[:space:]]' $HOTSTORAGE_PASSWORD etc/rest-api/radar.yml
