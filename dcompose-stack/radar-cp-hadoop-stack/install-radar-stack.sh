@@ -37,6 +37,9 @@ echo "==> Configuring HDFS Connector"
 copy_template_if_absent etc/sink-hdfs.properties
 inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
+echo "==> Generating keystore to hold RSA keypair for JWT signing"
+keytool -genkey -alias selfsigned -keyalg RSA -keystore etc/managementportal/changelogs/config/keystore.jks -keysize 4048 -storepass radarbase
+
 echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
