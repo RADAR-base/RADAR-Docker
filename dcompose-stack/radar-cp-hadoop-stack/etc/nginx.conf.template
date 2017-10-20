@@ -100,7 +100,7 @@ http {
     }
 
     location /managementportal/{
-          proxy_pass         http://managementportal-app:8080/;
+          proxy_pass         http://managementportal-app:8080/managementportal/;
           proxy_set_header   Host $host;
     }
   }
