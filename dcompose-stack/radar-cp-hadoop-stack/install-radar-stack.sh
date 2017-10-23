@@ -38,7 +38,13 @@ copy_template_if_absent etc/sink-hdfs.properties
 inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
 echo "==> Generating keystore to hold RSA keypair for JWT signing"
-keytool -genkey -alias selfsigned -keyalg RSA -keystore etc/managementportal/changelogs/config/keystore.jks -keysize 4048 -storepass radarbase
+keystorefile=etc/managementportal/changelogs/config/keystore.jks
+if [ -f "$keystorefile" ]
+then
+  echo "Keystore already exists. Not creating a new one."
+else
+  keytool -genkey -alias selfsigned -keyalg RSA -keystore $keystorefile -keysize 4048 -storepass radarbase
+fi
 
 echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
