@@ -103,5 +103,9 @@ http {
           proxy_pass         http://managementportal-app:8080/managementportal/;
           proxy_set_header   Host $host;
     }
+    location /kafkamanager/{
+          proxy_pass         http://kafka-manager:9000;
+          proxy_set_header   Host $host;
+    }
   }
 }
