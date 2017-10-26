@@ -476,6 +476,7 @@ services:
       - redcap
       - monitor
       - default
+      - zookeeper
     depends_on:
       - cadvisor
       - portainer
@@ -485,6 +486,7 @@ services:
       - dashboard
       - radar-integration
       - managementportal-app
+      - kafka-manager
     ports:
       - "80:80"
       - "443:443"
