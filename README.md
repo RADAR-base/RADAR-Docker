@@ -185,7 +185,7 @@ Instructions for deploying kafka-manager in a docker container and proxied throu
 5. Unzip the zip file to the stack location at `RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/`
 6. change directory to unzipped folder (in my case `$ cd kafka-manager-1.3.3.14/`)
 7. Create a file named Dockerfile for specifying the docker build - `$ sudo vim Dockerfile`
-8. Add the following content to the Dockerfile -  
+8. Add the following content to the Dockerfile - 
 ```dockerfile
 	FROM hseeberger/scala-sbt
 
@@ -211,6 +211,7 @@ Instructions for deploying kafka-manager in a docker container and proxied throu
 
 ![Add a Cluster](/img/add_cluster.png)
 
+Note- You can also take the easy route and just pull the docker image from docker hub located at `radarcns/kafka-manager`. But remember that the context path is `/kafka-manager` so you will need to specify this in your `nginx.conf` file
 
 ### Logging
 
