@@ -476,6 +476,7 @@ services:
       - redcap
       - monitor
       - default
+      - zookeeper
     depends_on:
       - cadvisor
       - portainer
@@ -485,6 +486,7 @@ services:
       - dashboard
       - radar-integration
       - managementportal-app
+      - kafka-manager
     ports:
       - "80:80"
       - "443:443"
@@ -493,8 +495,11 @@ services:
       - certs-data:/data/letsencrypt
       - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
 
+  #---------------------------------------------------------------------------#
+  # Management Portal                                                         #
+  #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarcns/management-portal:latest
+    image: radarcns/management-portal:0.1.0
     networks:
       - default
       - management
@@ -524,3 +529,17 @@ services:
       POSTGRES_DB: managementportal
     networks:
       - management
+
+  #---------------------------------------------------------------------------#
+  # Kafka Manager                                                             #
+  #---------------------------------------------------------------------------#
+  kafka-manager:
+    image: radarcns/kafka-manager
+    networks:
+      - zookeeper
+      - kafka
+    depends_on:
+      - zookeeper-1
+    environment:
+      ZK_HOSTS: zookeeper-1:2181
+    restart: always
