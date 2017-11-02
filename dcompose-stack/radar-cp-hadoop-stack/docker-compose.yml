@@ -522,7 +522,7 @@ services:
   managementportal-postgresql:
     image: postgres:9.6.2
     volumes:
-      - "${MP_POSTGRES_DIR}/:/var/lib/postgresql/"
+      - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
     environment:
       POSTGRES_USER : ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
