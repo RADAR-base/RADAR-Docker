@@ -25,6 +25,9 @@ networks:
   redcap:
     driver: bridge
     internal: true
+  management:
+    driver: bridge
+    internal: true
 
 volumes:
   kafka-1-data: {}
@@ -217,8 +220,9 @@ services:
     networks:
       - redcap
       - default
-    #depends_on:
-      #- hotstorage
+      - management
+    depends_on:
+      - managementportal-app
     restart: always
     volumes:
       - "./etc/redcap-integration:/usr/local/tomcat/conf/radar"
@@ -291,6 +295,7 @@ services:
   smtp:
     image: namshi/smtp:latest
     networks:
+      - default
       - mail
     volumes:
       - /var/spool/exim
@@ -471,6 +476,7 @@ services:
       - redcap
       - monitor
       - default
+      - zookeeper
     depends_on:
       - cadvisor
       - portainer
@@ -479,6 +485,8 @@ services:
       - rest-proxy-1
       - dashboard
       - radar-integration
+      - managementportal-app
+      - kafka-manager
     ports:
       - "80:80"
       - "443:443"
@@ -486,4 +494,52 @@ services:
       - certs:/etc/letsencrypt
       - certs-data:/data/letsencrypt
       - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
-      - "./output:/var/www/output"
+
+  #---------------------------------------------------------------------------#
+  # Management Portal                                                         #
+  #---------------------------------------------------------------------------#
+  managementportal-app:
+    image: radarcns/management-portal:0.1.0
+    networks:
+      - default
+      - management
+      - mail
+    depends_on:
+      - managementportal-postgresql
+      - smtp
+    environment:
+      SPRING_PROFILES_ACTIVE: prod,swagger
+      SPRING_DATASOURCE_URL: jdbc:postgresql://managementportal-postgresql:5432/managementportal
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      MANAGEMENTPORTAL_MAIL_FROM: ${FROM_EMAIL}
+      MANAGEMENTPORTAL_MAIL_BASEURL: https://${SERVER_NAME}/managementportal
+      JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
+      JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
+    volumes:
+      - ./etc/managementportal/changelogs:/changelogs
+
+  managementportal-postgresql:
+    image: postgres:9.6.2
+    volumes:
+      - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
+    environment:
+      POSTGRES_USER : ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: managementportal
+    networks:
+      - management
+
+  #---------------------------------------------------------------------------#
+  # Kafka Manager                                                             #
+  #---------------------------------------------------------------------------#
+  kafka-manager:
+    image: radarcns/kafka-manager
+    networks:
+      - zookeeper
+      - kafka
+    depends_on:
+      - zookeeper-1
+    environment:
+      ZK_HOSTS: zookeeper-1:2181
+    restart: always
