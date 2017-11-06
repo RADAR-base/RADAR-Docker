@@ -65,7 +65,16 @@ http {
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
     }
+    location ^~ /kafka/consumers {
+      deny all;
+    }
+    location ^~ /kafka/brokers {
+      deny all;
+    }
     location /schema/ {
+      limit_except GET {
+        deny all;
+      }
       proxy_pass         http://schema-registry-1:8081/;
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
