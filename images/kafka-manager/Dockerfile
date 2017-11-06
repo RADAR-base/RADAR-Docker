@@ -22,6 +22,8 @@ MAINTAINER Yatharth Ranjan <https://github.com/yatharthranjan>
 
 ENV ZK_HOSTS=zookeeper-1:2181
 
+RUN apk add --no-cache bash
+
 COPY --from=0 /kafka-manager /kafka-manager
 COPY ./conf/application.conf /kafka-manager/conf/application.conf
 WORKDIR /kafka-manager
