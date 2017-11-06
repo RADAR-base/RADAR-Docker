@@ -419,8 +419,7 @@ services:
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
     image: radarcns/radar-backend-kafka-auto:0.2
-    command:
-      - monitor
+    command: monitor
     networks:
       - zookeeper
       - kafka
