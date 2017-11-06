@@ -1,4 +1,4 @@
-FROM confluentinc/cp-kafka:3.1.2-1
+FROM confluentinc/cp-kafka:3.2.1-5
 
 # Copy bash file
 COPY ./topic_init.sh /
