@@ -297,7 +297,6 @@ services:
     networks:
       - default
       - mail
-      - default
     volumes:
       - /var/spool/exim
     restart: always
