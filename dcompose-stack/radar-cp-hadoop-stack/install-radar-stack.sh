@@ -8,6 +8,7 @@ check_parent_exists HDFS_DATA_DIR_2 ${HDFS_DATA_DIR_2}
 check_parent_exists HDFS_NAME_DIR_1 ${HDFS_NAME_DIR_1}
 check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
+check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 
 if [ -z ${SERVER_NAME} ]; then
   echo "Set SERVER_NAME variable in .env"
@@ -36,12 +37,24 @@ echo "==> Configuring HDFS Connector"
 copy_template_if_absent etc/sink-hdfs.properties
 inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
+echo "==> Generating keystore to hold RSA keypair for JWT signing"
+keystorefile=etc/managementportal/changelogs/config/keystore.jks
+if [ -f "$keystorefile" ]
+then
+  echo "Keystore already exists. Not creating a new one."
+else
+  keytool -genkey -alias selfsigned -keyalg RSA -keystore $keystorefile -keysize 4048 -storepass radarbase
+fi
+
 echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
 
 echo "==> Configuring REDCap-Integration"
 copy_template_if_absent etc/redcap-integration/radar.yml
+
+echo "==> Starting redcap configuration listener in the background"
+exec ./redcap-config-listener.sh &
 
 # Set MongoDb credential
 inline_variable 'usr:[[:space:]]' $HOTSTORAGE_USERNAME etc/rest-api/radar.yml
