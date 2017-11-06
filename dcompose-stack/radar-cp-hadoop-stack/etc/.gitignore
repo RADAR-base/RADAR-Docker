@@ -5,3 +5,5 @@
 /smtp.env
 /rest-api/device-catalog.yml
 /rest-api/radar.yml
+/redcap-integration/radar.yml
+/managementportal/changelogs/config/keystore.jks

@@ -22,6 +22,9 @@ else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
 
+echo "==> Building images"
+sudo-linux docker-compose build
+
 echo "==> Configuring MongoDB Connector"
 
 # Update sink-mongo.properties
@@ -31,11 +34,23 @@ inline_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/sink-mongo.properties
 inline_variable 'mongo.database=' $HOTSTORAGE_NAME etc/sink-mongo.properties
 
 # Set topics
-inline_variable 'topics=' "${RADAR_AGG_TOPIC_LIST}" etc/sink-mongo.properties
+if [ -z "${COMBINED_AGG_TOPIC_LIST}"]; then
+  COMBINED_AGG_TOPIC_LIST=$(sudo-linux docker run --rm radarcns/kafka-init list_aggregated.sh 2>/dev/null)
+  if [ -n "${RADAR_AGG_TOPIC_LIST}" ]; then
+    COMBINED_AGG_TOPIC_LIST="${RADAR_AGG_TOPIC_LIST},${COMBINED_AGG_TOPIC_LIST}"
+  fi
+fi
+inline_variable 'topics=' "${COMBINED_AGG_TOPIC_LIST}" etc/sink-mongo.properties
 
 echo "==> Configuring HDFS Connector"
 copy_template_if_absent etc/sink-hdfs.properties
-inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
+if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
+  COMBINED_RAW_TOPIC_LIST=$(sudo-linux docker run --rm radarcns/kafka-init list_raw.sh 2>/dev/null)
+  if [ -n "${RADAR_RAW_TOPIC_LIST}" ]; then
+    COMBINED_RAW_TOPIC_LIST="${RADAR_RAW_TOPIC_LIST},${COMBINED_RAW_TOPIC_LIST}"
+  fi
+fi
+inline_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
 echo "==> Generating keystore to hold RSA keypair for JWT signing"
 keystorefile=etc/managementportal/changelogs/config/keystore.jks
