@@ -44,7 +44,7 @@ services:
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:3.1.2-1
+    image: confluentinc/cp-zookeeper:3.2.1-5
     networks:
       - zookeeper
     volumes:
@@ -63,7 +63,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:3.1.2-1
+    image: confluentinc/cp-kafka:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -80,7 +80,7 @@ services:
       KAFKA_LOG_RETENTION_HOURS: 730
 
   kafka-2:
-    image: confluentinc/cp-kafka:3.1.2-1
+    image: confluentinc/cp-kafka:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -97,7 +97,7 @@ services:
       KAFKA_LOG_RETENTION_HOURS: 730
 
   kafka-3:
-    image: confluentinc/cp-kafka:3.1.2-1
+    image: confluentinc/cp-kafka:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -117,7 +117,7 @@ services:
   # Schema Registry                                                           #
   #---------------------------------------------------------------------------#
   schema-registry-1:
-    image: confluentinc/cp-schema-registry:3.1.2-1
+    image: confluentinc/cp-schema-registry:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -136,7 +136,7 @@ services:
   # REST proxy                                                                #
   #---------------------------------------------------------------------------#
   rest-proxy-1:
-    image: confluentinc/cp-kafka-rest:3.1.2-1
+    image: confluentinc/cp-kafka-rest:3.2.1-5
     networks:
       - kafka
       - zookeeper
@@ -420,8 +420,7 @@ services:
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
     image: radarcns/radar-backend-kafka-auto:0.2
-    command:
-      - monitor
+    command: monitor
     networks:
       - zookeeper
       - kafka
@@ -470,7 +469,7 @@ services:
   # Webserver                                                                 #
   #---------------------------------------------------------------------------#
   webserver:
-    image: nginx:1.12-alpine
+    image: nginx:1.13.1-alpine
     restart: always
     networks:
       - api
