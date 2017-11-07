@@ -60,7 +60,7 @@ http {
     error_log                 /var/log/nginx/error.log;
 
     location /kafka/ {
-      proxy_pass         http://rest-proxy-1:8082/;
+      proxy_pass         http://gateway:8080/radar-gateway/;
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
@@ -99,7 +99,7 @@ http {
       proxy_set_header   Host $host;
     }
 
-    location /managementportal/{
+    location /managementportal/ {
           proxy_pass         http://managementportal-app:8080/managementportal/;
           proxy_set_header   Host $host;
     }

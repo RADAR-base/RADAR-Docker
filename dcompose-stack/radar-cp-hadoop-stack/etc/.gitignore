@@ -7,3 +7,4 @@
 /rest-api/radar.yml
 /redcap-integration/radar.yml
 /managementportal/changelogs/config/keystore.jks
+/managementportal/changelogs/config/liquibase/oauth_client_details.csv
