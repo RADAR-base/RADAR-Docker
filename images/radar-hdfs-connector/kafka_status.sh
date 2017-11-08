@@ -2,56 +2,62 @@
 
 # Check if variables exist
 if [ -z "$CONNECT_ZOOKEEPER_CONNECT" ]; then
-        echo "CONNECT_ZOOKEEPER_CONNECT is not defined"
-        exit 2
+    echo "CONNECT_ZOOKEEPER_CONNECT is not defined"
+    exit 2
 fi
 
-if [ -z "$TOPIC_LIST" ]; then
-        echo "TOPIC_LIST is not defined"
-        exit 2
+if [ -z "$CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL" ]; then
+    echo "CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL is not defined"
+    exit 4
 fi
 
-# Save current IFS
-SAVEIFS=$IFS
+KAFKA_BROKERS=${KAFKA_BROKERS:-3}
 
-# Fetch env topic list
-IFS=', ' read -r -a needed <<< $TOPIC_LIST
+max_timeout=32
 
-# Fetch env topic list
-IFS=$'\n'
-count=0
-interval=1
-max_retryes=10
-while [ "$count" != "${#needed[@]}" ] ; do
+tries=10
+timeout=1
+while true; do
+    ZOOKEEPER_CHECK=$(zookeeper-shell $KAFKA_ZOOKEEPER_CONNECT <<< "ls /brokers/ids")
+    ZOOKEEPER_CHECK="${ZOOKEEPER_CHECK##*$'\n'}"
+    ZOOKEEPER_CHECK="$(echo -e "${ZOOKEEPER_CHECK}" | tr -d '[:space:]'  | tr -d '['  | tr -d ']')"
 
-    if [ "$max_retryes" -eq "0" ] ; then
-        IFS=$SAVEIFS
-        echo "Force rebooting  ... "
-        exit 2
+    IFS=',' read -r -a array <<< $ZOOKEEPER_CHECK
+    LENGTH=${#array[@]}
+    if [ "$LENGTH" -eq "$KAFKA_BROKERS" ]; then
+        echo "Kafka brokers available."
+        break
     fi
 
-    count=0
-    topics=$(kafka-topics --list --zookeeper $CONNECT_ZOOKEEPER_CONNECT)
-    topics=($topics)
-
-    for topic in "${topics[@]}"
-    do
-        for need in "${needed[@]}"
-        do
-            if [ "$topic" = "$need" ] ; then
-                ((count++))
-            fi
-        done
-    done
-
-    if [ "$count" != "${#needed[@]}" ] ; then
-        echo "Waiting $interval second before retrying ..."
-        sleep $interval
-        if (( interval < 30 )); then
-                ((interval=interval*2))
-        fi
-        ((max_retryes--))
+    tries=$((tries - 1))
+    if [ $tries -eq 0 ]; then
+        echo "FAILED: KAFKA BROKERs NOT READY."
+        exit 5
+    fi
+    echo "Expected $KAFKA_BROKERS brokers but found only $LENGTH. Waiting $timeout second before retrying ..."
+    sleep $timeout
+    if [ $timeout -lt $max_timeout ]; then
+        timeout=$((timeout * 2))
     fi
 done
 
-echo "All topics are now available. Ready to go!"
+tries=10
+timeout=1
+while true; do
+    if wget -sq "${CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL}/subjects" 2>/dev/null; then
+        break
+    fi
+    tries=$((tries - 1))
+    if [ $tries -eq 0 ]; then
+        echo "FAILED TO REACH SCHEMA REGISTRY."
+        exit 6
+    fi
+    echo "Failed to reach schema registry. Retrying in ${timeout} seconds."
+    sleep $timeout
+    if [ $timeout -lt $max_timeout ]; then
+        timeout=$((timeout * 2))
+    fi
+done
+
+
+echo "Kafka is available. Ready to go!"
