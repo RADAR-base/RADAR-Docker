@@ -39,11 +39,14 @@ inline_variable 'topics=' "${RADAR_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
 echo "==> Generating keystore to hold RSA keypair for JWT signing"
 keystorefile=etc/managementportal/changelogs/config/keystore.jks
-if [ -f "$keystorefile" ]
-then
+if [ -f "$keystorefile" ]; then
   echo "Keystore already exists. Not creating a new one."
 else
-  keytool -genkey -alias selfsigned -keyalg RSA -keystore $keystorefile -keysize 4048 -storepass radarbase
+  if [ -n "${MANAGEMENTPORTAL_KEY_DNAME}" ]; then
+    keytool -genkeypair -dname "${MANAGEMENTPORTAL_KEY_DNAME}" -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
+  else
+    keytool -genkeypair -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
+  fi
 fi
 
 echo "==> Configuring REST-API"
