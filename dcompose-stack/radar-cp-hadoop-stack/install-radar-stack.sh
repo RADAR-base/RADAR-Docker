@@ -22,8 +22,8 @@ else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
 
-echo "==> Building images"
-sudo-linux docker-compose build
+echo "==> Setting up topics"
+sudo-linux docker-compose run kafka-init
 
 echo "==> Configuring MongoDB Connector"
 
@@ -83,7 +83,7 @@ sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' et
 init_certificate "${SERVER_NAME}"
 
 echo "==> Starting RADAR-CNS Platform"
-sudo-linux docker-compose up --force-recreate -d "$@"
+sudo-linux docker-compose up -d "$@"
 
 request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERT:-yes}"
 echo "### SUCCESS ###"
