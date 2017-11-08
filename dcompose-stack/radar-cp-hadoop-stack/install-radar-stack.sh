@@ -31,7 +31,7 @@ if ! sudo-linux docker volume ls -q | grep -q "^certs-data$"; then
 fi
 
 echo "==> Setting up topics"
-sudo-linux docker-compose run kafka-init
+sudo-linux docker-compose run --rm kafka-init
 
 echo "==> Configuring MongoDB Connector"
 
