@@ -22,6 +22,12 @@ else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
 
+echo "==> Configuring nginx"
+copy_template_if_absent etc/nginx.conf
+inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
+sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/nginx.conf
+init_certificate "${SERVER_NAME}"
+
 echo "==> Setting up topics"
 sudo-linux docker-compose run kafka-init
 
@@ -75,12 +81,6 @@ inline_variable 'db:[[:space:]]' $HOTSTORAGE_NAME etc/rest-api/radar.yml
 
 # Set variable for Swagger
 inline_variable 'host:[[:space:]]*' "${SERVER_NAME}" etc/rest-api/radar.yml
-
-echo "==> Configuring nginx"
-copy_template_if_absent etc/nginx.conf
-inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
-sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/nginx.conf
-init_certificate "${SERVER_NAME}"
 
 echo "==> Starting RADAR-CNS Platform"
 sudo-linux docker-compose up -d "$@"
