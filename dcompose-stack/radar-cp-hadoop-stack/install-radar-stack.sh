@@ -1,6 +1,11 @@
 #!/bin/bash
 
 . ./util.sh
+
+sudo-linux chmod og-rw ./.env
+sudo-linux chmod og-rwx ./etc
+sudo-linux chmod og-rwx ./output
+
 . ./.env
 
 check_parent_exists HDFS_DATA_DIR_1 ${HDFS_DATA_DIR_1}
@@ -43,10 +48,11 @@ if [ -f "$keystorefile" ]; then
   echo "Keystore already exists. Not creating a new one."
 else
   if [ -n "${MANAGEMENTPORTAL_KEY_DNAME}" ]; then
-    keytool -genkeypair -dname "${MANAGEMENTPORTAL_KEY_DNAME}" -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
+    sudo-linux keytool -genkeypair -dname "${MANAGEMENTPORTAL_KEY_DNAME}" -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
   else
-    keytool -genkeypair -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
+    sudo-linux keytool -genkeypair -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
   fi
+  sudo-linux chmod 400 "${keystorefile}"
 fi
 
 echo "==> Configuring REST-API"
