@@ -394,6 +394,11 @@ services:
       CONNECT_CONSUMER_SESSION_TIMEOUT_MS: 10000
       CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
+    healthcheck:
+      test: ["CMD-SHELL", "[ \"$$(curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | sed 's/\".*\":\"\\(.*\\)\"/\\1/' | tr '\\n' ',')\" = 'RUNNING,RUNNING,RUNNING,RUNNING,RUNNING,' ] || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # RADAR HDFS connector                                                     #
@@ -438,6 +443,11 @@ services:
       TOPIC_LIST: ${RADAR_TOPIC_LIST}
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
+    healthcheck:
+      test: ["CMD-SHELL", "[ \"$$(curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | sed 's/\".*\":\"\\(.*\\)\"/\\1/' | tr '\\n' ',')\" = 'RUNNING,RUNNING,RUNNING,RUNNING,RUNNING,' ] || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # RADAR backend streams                                                     #
@@ -542,6 +552,9 @@ services:
       - certs:/etc/letsencrypt
       - certs-data:/data/letsencrypt
       - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
+    # healthcheck hard to do, however, it is possible to monitor this externally
+    # with
+    # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
 
   #---------------------------------------------------------------------------#
   # Management Portal                                                         #
