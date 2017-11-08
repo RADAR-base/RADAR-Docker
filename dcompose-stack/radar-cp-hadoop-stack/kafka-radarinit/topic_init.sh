@@ -16,7 +16,7 @@ tries=10
 timeout=1
 max_timeout=32
 while true; do
-  if wget -sq "${KAFKA_SCHEMA_REGISTRY}" 2>/dev/null; then
+  if wget --spider -q "${KAFKA_SCHEMA_REGISTRY}" 2>/dev/null; then
     break;
   fi
   tries=$((tries - 1))
