@@ -8,7 +8,8 @@ ENV KAFKA_NUM_REPLICATION=2
 ENV KAFKA_NUM_BROKERS=3
 ENV KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181
 
-RUN apk add --no-cache rsync tar bash
+RUN apk add --no-cache rsync tar bash wget
+
 RUN mkdir -p /schema/merged
 
 WORKDIR /schema
@@ -27,3 +28,4 @@ RUN chmod +x /usr/bin/*.sh
 
 ENTRYPOINT ["init.sh"]
 CMD ["topic_init.sh"]
+
