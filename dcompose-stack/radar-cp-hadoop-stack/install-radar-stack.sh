@@ -15,18 +15,20 @@ if [ -z ${SERVER_NAME} ]; then
   exit 1
 fi
 
-if [ -z $(sudo-linux docker network ls --format '{{.Name}}' | grep "^hadoop$") ]; then
+if ! sudo-linux docker network ls --format '{{.Name}}' | grep -q "^hadoop$"; then
   echo "==> Creating docker network - hadoop"
   sudo-linux docker network create hadoop > /dev/null
 else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
 
-echo "==> Configuring nginx"
-copy_template_if_absent etc/nginx.conf
-inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
-sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/nginx.conf
-init_certificate "${SERVER_NAME}"
+echo "==> Checking docker external volumes"
+if ! sudo-linux docker volume ls -q | grep -q "^certs$"; then
+  sudo-linux docker volume create --name=certs
+fi
+if ! sudo-linux docker volume ls -q | grep -q "^certs-data$"; then
+  sudo-linux docker volume create --name=certs-data
+fi
 
 echo "==> Setting up topics"
 sudo-linux docker-compose run kafka-init
@@ -81,6 +83,12 @@ inline_variable 'db:[[:space:]]' $HOTSTORAGE_NAME etc/rest-api/radar.yml
 
 # Set variable for Swagger
 inline_variable 'host:[[:space:]]*' "${SERVER_NAME}" etc/rest-api/radar.yml
+
+echo "==> Configuring nginx"
+copy_template_if_absent etc/nginx.conf
+inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/nginx.conf
+sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/nginx.conf
+init_certificate "${SERVER_NAME}"
 
 echo "==> Starting RADAR-CNS Platform"
 sudo-linux docker-compose up -d "$@"
