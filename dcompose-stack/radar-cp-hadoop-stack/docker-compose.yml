@@ -240,7 +240,7 @@ services:
     volumes:
       - "./etc/rest-api:/usr/local/tomcat/conf/radar"
     healthcheck:
-      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:8080/radar/api/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/radar/api/source/specification/ANDROID"]
       interval: 1m
       timeout: 5s
       retries: 3
