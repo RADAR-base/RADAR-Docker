@@ -8,6 +8,7 @@ if ! radar-schemas-tools create -p $KAFKA_NUM_PARTITIONS -r $KAFKA_NUM_REPLICATI
   exit 1
 fi
 
+
 echo "Topics created."
 
 echo "Registering RADAR-CNS schemas..."
