@@ -1,6 +1,15 @@
 #!/bin/bash
 
 . ./util.sh
+
+sudo-linux chmod og-rw ./.env
+sudo-linux chmod og-rwx ./etc
+if [ -e ./output ]; then
+  sudo-linux chmod og-rwx ./output
+else
+  sudo-linux mkdir -m 0700 ./output
+fi
+
 . ./.env
 
 # Check provided directories and configurations
@@ -69,16 +78,21 @@ inline_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
 echo "==> Generating keystore to hold RSA keypair for JWT signing"
 keystorefile=etc/managementportal/changelogs/config/keystore.jks
-if [ -f "$keystorefile" ]
-then
+if [ -f "$keystorefile" ]; then
   echo "Keystore already exists. Not creating a new one."
 else
-  keytool -genkey -alias selfsigned -keyalg RSA -keystore $keystorefile -keysize 4048 -storepass radarbase
+  if [ -n "${MANAGEMENTPORTAL_KEY_DNAME}" ]; then
+    sudo-linux keytool -genkeypair -dname "${MANAGEMENTPORTAL_KEY_DNAME}" -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
+  else
+    sudo-linux keytool -genkeypair -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
+  fi
+  sudo-linux chmod 400 "${keystorefile}"
 fi
 
 echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
+copy_template_if_absent etc/rest-api/mp_info.yml
 
 echo "==> Configuring REDCap-Integration"
 copy_template_if_absent etc/redcap-integration/radar.yml
