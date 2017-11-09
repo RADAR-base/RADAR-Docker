@@ -497,7 +497,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarcns/management-portal:0.1.0
+    image: radarcns/management-portal:0.2.0
     networks:
       - default
       - api
