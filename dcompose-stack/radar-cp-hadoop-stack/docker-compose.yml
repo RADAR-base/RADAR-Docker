@@ -501,6 +501,8 @@ services:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
       KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
       KAFKA_BROKERS: 3
+      # For backwards compatibility
+      TOPIC_LIST: "application_record_counts"
 
   #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #
