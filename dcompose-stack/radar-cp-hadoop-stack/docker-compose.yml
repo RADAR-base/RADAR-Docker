@@ -394,7 +394,7 @@ services:
       # For backwards compatibility
       TOPIC_LIST: "application_record_counts"
     healthcheck:
-      test: ["CMD-SHELL", "[ \"$$(curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | sed 's/\".*\":\"\\(.*\\)\"/\\1/' | tr '\\n' ',')\" = 'RUNNING,RUNNING,RUNNING,RUNNING,RUNNING,' ] || exit 1"]
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
       interval: 1m
       timeout: 5s
       retries: 3
@@ -445,7 +445,7 @@ services:
       # For backwards compatibility
       TOPIC_LIST: "application_record_counts"
     healthcheck:
-      test: ["CMD-SHELL", "[ \"$$(curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | sed 's/\".*\":\"\\(.*\\)\"/\\1/' | tr '\\n' ',')\" = 'RUNNING,RUNNING,RUNNING,RUNNING,RUNNING,' ] || exit 1"]
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
       interval: 1m
       timeout: 5s
       retries: 3
