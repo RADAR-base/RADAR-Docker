@@ -584,6 +584,11 @@ services:
       JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
     volumes:
       - ./etc/managementportal/changelogs:/changelogs
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "localhost:8080/managementportal/oauth/token_key"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   managementportal-postgresql:
     image: postgres:9.6.2
@@ -595,6 +600,11 @@ services:
       POSTGRES_DB: managementportal
     networks:
       - management
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U '${POSTGRES_USER}' managementportal -l || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # Kafka Manager                                                             #
