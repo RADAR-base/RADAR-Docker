@@ -219,7 +219,7 @@ services:
       RADAR_PWD: ${HOTSTORAGE_PASSWORD}
       RADAR_DB: ${HOTSTORAGE_NAME}
     healthcheck:
-      test: ["CMD", "pgrep", "mongod"]
+      test: ["CMD", "mongo", "-u", "${HOTSTORAGE_USERNAME}", "-p", "${HOTSTORAGE_PASSWORD}", "${HOTSTORAGE_NAME}", "--eval", "db"]
       interval: 1m
       timeout: 5s
       retries: 3
