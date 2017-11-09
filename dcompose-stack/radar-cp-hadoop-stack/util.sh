@@ -31,6 +31,11 @@ check_parent_exists() {
     echo "RADAR-CNS stores volumes at ${PARENT}. If this folder does not exist, please create the entire path and then try again"
     exit 1
   fi
+  if [ -d "$2" ]; then
+    sudo-linux chmod 700 "$2"
+  else
+    sudo-linux mkdir -p -m 0700 "$2"
+  fi
 }
 
 # sudo if on Linux, not on OS X
