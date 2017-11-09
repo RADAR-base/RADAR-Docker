@@ -40,10 +40,10 @@ fi
 
 echo "==> Checking docker external volumes"
 if ! sudo-linux docker volume ls -q | grep -q "^certs$"; then
-  sudo-linux docker volume create --name=certs
+  sudo-linux docker volume create --name=certs --label certs
 fi
 if ! sudo-linux docker volume ls -q | grep -q "^certs-data$"; then
-  sudo-linux docker volume create --name=certs-data
+  sudo-linux docker volume create --name=certs-data --label certs
 fi
 
 # Initializing Kafka
