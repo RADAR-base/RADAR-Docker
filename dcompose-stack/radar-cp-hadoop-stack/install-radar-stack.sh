@@ -33,6 +33,7 @@ fi
 echo "==> Setting up topics"
 sudo-linux docker-compose run --rm kafka-init
 
+
 echo "==> Configuring MongoDB Connector"
 
 # Update sink-mongo.properties

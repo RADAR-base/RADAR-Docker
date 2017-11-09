@@ -22,9 +22,6 @@ networks:
   hotstorage:
     driver: bridge
     internal: true
-  redcap:
-    driver: bridge
-    internal: true
   management:
     driver: bridge
     internal: true
@@ -165,7 +162,6 @@ services:
     networks:
       - kafka
       - zookeeper
-      - api
     depends_on:
       - kafka-1
       - kafka-2
@@ -254,9 +250,8 @@ services:
   radar-integration:
     image: radarcns/radar-redcapintegration:latest
     networks:
-      - redcap
+      - api
       - default
-      - management
     depends_on:
       - managementportal-app
     restart: always
@@ -416,7 +411,6 @@ services:
     networks:
       - zookeeper
       - kafka
-      - api
       - hadoop
     depends_on:
       - zookeeper-1
@@ -541,16 +535,14 @@ services:
     restart: always
     networks:
       - api
-      - redcap
       - monitor
       - default
-      - zookeeper
     depends_on:
       - cadvisor
       - portainer
       - rest-api
       - schema-registry-1
-      - rest-proxy-1
+      - gateway
       - dashboard
       - radar-integration
       - managementportal-app
@@ -573,6 +565,7 @@ services:
     image: radarcns/management-portal:0.1.0
     networks:
       - default
+      - api
       - management
       - mail
     depends_on:
@@ -609,8 +602,24 @@ services:
     networks:
       - zookeeper
       - kafka
+      - api
     depends_on:
       - zookeeper-1
     environment:
       ZK_HOSTS: zookeeper-1:2181
     restart: always
+
+  #---------------------------------------------------------------------------#
+  # RADAR Gateway                                                             #
+  #---------------------------------------------------------------------------#
+  gateway:
+    image: radarcns/radar-gateway
+    networks:
+      - api
+      - kafka
+    depends_on:
+      - rest-proxy-1
+      - managementportal-app
+    volumes:
+      - ./etc/gateway/radar-is.yml:/etc/radar-gateway/radar-is.yml
+      - ./etc/gateway/classpath.xml:/usr/local/tomcat/conf/Catalina/localhost/radar-gateway.xml
