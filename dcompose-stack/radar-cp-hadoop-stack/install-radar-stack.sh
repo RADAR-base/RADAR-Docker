@@ -4,7 +4,11 @@
 
 sudo-linux chmod og-rw ./.env
 sudo-linux chmod og-rwx ./etc
-sudo-linux chmod og-rwx ./output
+if [ -e ./output ]; then
+  sudo-linux chmod og-rwx ./output
+else
+  sudo-linux mkdir -m 0700 ./output
+fi
 
 . ./.env
 
