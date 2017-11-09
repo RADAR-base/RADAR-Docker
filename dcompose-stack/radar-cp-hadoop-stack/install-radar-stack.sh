@@ -71,7 +71,7 @@ fi
 inline_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
 echo "==> Generating keystore to hold RSA keypair for JWT signing"
-keystorefile=etc/managementportal/changelogs/config/keystore.jks
+keystorefile=etc/managementportal/config/keystore.jks
 if [ -f "$keystorefile" ]; then
   echo "Keystore already exists. Not creating a new one."
 else
