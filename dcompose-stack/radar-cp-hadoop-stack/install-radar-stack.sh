@@ -73,6 +73,7 @@ fi
 echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
+copy_template_if_absent etc/rest-api/mp_info.yml
 
 echo "==> Configuring REDCap-Integration"
 copy_template_if_absent etc/redcap-integration/radar.yml
