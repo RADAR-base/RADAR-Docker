@@ -12,6 +12,7 @@ fi
 
 . ./.env
 
+# Check provided directories and configurations
 check_parent_exists HDFS_DATA_DIR_1 ${HDFS_DATA_DIR_1}
 check_parent_exists HDFS_DATA_DIR_2 ${HDFS_DATA_DIR_2}
 check_parent_exists HDFS_NAME_DIR_1 ${HDFS_NAME_DIR_1}
@@ -19,11 +20,17 @@ check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
 check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 
+if [ ! -f etc/radar.yml ]; then
+  echo "etc/radar.yml is not present. Please initialize it from etc/radar.yml.template"
+  exit 1
+fi
+
 if [ -z ${SERVER_NAME} ]; then
   echo "Set SERVER_NAME variable in .env"
   exit 1
 fi
 
+# Create networks and volumes
 if ! sudo-linux docker network ls --format '{{.Name}}' | grep -q "^hadoop$"; then
   echo "==> Creating docker network - hadoop"
   sudo-linux docker network create hadoop > /dev/null
@@ -33,18 +40,17 @@ fi
 
 echo "==> Checking docker external volumes"
 if ! sudo-linux docker volume ls -q | grep -q "^certs$"; then
-  sudo-linux docker volume create --name=certs
+  sudo-linux docker volume create --name=certs --label certs
 fi
 if ! sudo-linux docker volume ls -q | grep -q "^certs-data$"; then
-  sudo-linux docker volume create --name=certs-data
+  sudo-linux docker volume create --name=certs-data --label certs
 fi
 
+# Initializing Kafka
 echo "==> Setting up topics"
 sudo-linux docker-compose run --rm kafka-init
 
-
 echo "==> Configuring MongoDB Connector"
-
 # Update sink-mongo.properties
 copy_template_if_absent etc/sink-mongo.properties
 inline_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/sink-mongo.properties

@@ -55,6 +55,11 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # Kafka Cluster                                                             #
@@ -75,6 +80,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+    healthcheck:
+      test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/1 || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   kafka-2:
     image: confluentinc/cp-kafka:3.2.1-5
@@ -92,6 +102,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+    healthcheck:
+      test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   kafka-3:
     image: confluentinc/cp-kafka:3.2.1-5
@@ -109,6 +124,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+    healthcheck:
+      test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # Schema Registry                                                           #
@@ -128,6 +148,11 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper-1:2181
       SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8081/subjects"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # REST proxy                                                                #
@@ -148,6 +173,11 @@ services:
       KAFKA_REST_LISTENERS: http://0.0.0.0:8082
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
       KAFKA_REST_HOST_NAME: rest-proxy-1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8082/topics"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # Kafka Init                                                                #
@@ -188,6 +218,11 @@ services:
       RADAR_USER: ${HOTSTORAGE_USERNAME}
       RADAR_PWD: ${HOTSTORAGE_PASSWORD}
       RADAR_DB: ${HOTSTORAGE_NAME}
+    healthcheck:
+      test: ["CMD", "mongo", "-u", "${HOTSTORAGE_USERNAME}", "-p", "${HOTSTORAGE_PASSWORD}", "${HOTSTORAGE_NAME}", "--eval", "db"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # RADAR REST API                                                            #
@@ -203,7 +238,7 @@ services:
     volumes:
       - "./etc/rest-api:/usr/local/tomcat/conf/radar"
     healthcheck:
-      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:8080/radar/api/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/radar/api/source/specification/ANDROID"]
       interval: 1m
       timeout: 5s
       retries: 3
@@ -260,6 +295,11 @@ services:
     environment:
       CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
       HDFS_CONF_dfs_replication: 2
+    healthcheck:
+      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   hdfs-datanode-2:
     image: uhopper/hadoop-datanode:2.7.2
@@ -271,6 +311,11 @@ services:
     environment:
       CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
       HDFS_CONF_dfs_replication: 2
+    healthcheck:
+      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   hdfs-namenode:
     build: hdfs-namenode
@@ -284,6 +329,11 @@ services:
     environment:
       CLUSTER_NAME: radar-cns
       HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
+    healthcheck:
+      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # Email server                                                              #
@@ -343,6 +393,12 @@ services:
       KAFKA_BROKERS: 3
       # For backwards compatibility
       TOPIC_LIST: "application_record_counts"
+    healthcheck:
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
 
   #---------------------------------------------------------------------------#
   # RADAR HDFS connector                                                     #
@@ -388,6 +444,12 @@ services:
       KAFKA_BROKERS: 3
       # For backwards compatibility
       TOPIC_LIST: "application_record_counts"
+    healthcheck:
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
 
   #---------------------------------------------------------------------------#
   # RADAR backend streams                                                     #
@@ -439,6 +501,8 @@ services:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
       KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
       KAFKA_BROKERS: 3
+      # For backwards compatibility
+      TOPIC_LIST: "application_record_counts"
 
   #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #
@@ -492,6 +556,9 @@ services:
       - certs:/etc/letsencrypt
       - certs-data:/data/letsencrypt
       - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
+    # healthcheck hard to do, however, it is possible to monitor this externally
+    # with
+    # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
 
   #---------------------------------------------------------------------------#
   # Management Portal                                                         #
@@ -517,6 +584,12 @@ services:
       JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
     volumes:
       - ./etc/managementportal/:/mp-includes/
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "localhost:8080/managementportal/oauth/token_key"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
 
   managementportal-postgresql:
     image: postgres:9.6.2
@@ -528,6 +601,11 @@ services:
       POSTGRES_DB: managementportal
     networks:
       - management
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U '${POSTGRES_USER}' managementportal -l || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # Kafka Manager                                                             #
@@ -543,6 +621,11 @@ services:
     environment:
       ZK_HOSTS: zookeeper-1:2181
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(curl localhost:9000/kafkamanager/api/health) = healthy ] || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
 
   #---------------------------------------------------------------------------#
   # RADAR Gateway                                                             #
@@ -558,3 +641,9 @@ services:
     volumes:
       - ./etc/gateway/radar-is.yml:/etc/radar-gateway/radar-is.yml
       - ./etc/gateway/classpath.xml:/usr/local/tomcat/conf/Catalina/localhost/radar-gateway.xml
+    healthcheck:
+      # should give an unauthenticated response, rather than a 404
+      test: ["CMD-SHELL", " wget --spider localhost:8080/radar-gateway 2>&1 | grep -q 401"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
