@@ -48,6 +48,14 @@ sudo systemctl disable radar-docker
 sudo systemctl disable radar-output
 ```
 
+## Data extraction
+
+If systemd integration is enabled, HDFS data will be extracted to the `./output` directory every hour. It can then be run directly by running
+```
+sudo systemctl start radar-output.service
+```
+Otherwise, the following manual commands can be invoked.
+
 Raw data can be extracted from this setup by running:
 
 ```shell
