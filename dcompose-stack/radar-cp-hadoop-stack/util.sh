@@ -15,7 +15,7 @@ check_command_exists() {
   if sudo-linux /bin/bash -c "command -v "$1" > /dev/null 2>&1"; then
     echo "$1 version: $(sudo-linux "$1" --version)"
   else
-    echo "RADAR-CNS cannot start without $1. Please, install $1 and then try again"
+    echo "RADAR Platform cannot start without $1. Please, install $1 and then try again"
     exit 1
   fi
 }
@@ -72,10 +72,11 @@ inline_variable() {
 # ".template") to intended configuration file, if the file does not
 # yet exist.
 copy_template_if_absent() {
+  template=${2:-${1}.template}
   if [ ! -e "$1" ]; then
-    sudo-linux cp -p "${1}.template" "$1"
-  elif [ "$1" -ot "${1}.template" ]; then
-    echo "Configuration file ${1} is older than its template ${1}.template."
+    sudo-linux cp -p "${template}" "$1"
+  elif [ "$1" -ot "${template}" ]; then
+    echo "Configuration file ${1} is older than its template ${template}."
     echo "Please edit ${1} to ensure it matches the template, remove it or"
     echo "run touch on it."
     exit 1

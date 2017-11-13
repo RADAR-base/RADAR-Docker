@@ -1,0 +1,23 @@
+[Unit]
+Description=RADAR-Docker service
+BindsTo=docker.service
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+TimeoutStopSec=90
+Restart=always
+RestartSec=10
+
+WorkingDirectory=
+
+ExecStart=./install-radar-stack.sh
+
+ExecReload=/usr/local/bin/docker-compose restart
+
+ExecStop=/usr/local/bin/docker-compose down
+
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
