@@ -48,6 +48,13 @@ sudo systemctl disable radar-docker
 sudo systemctl disable radar-output
 ```
 
+To clear all data from the platform, run
+```
+sudo systemctl stop radar-docker
+./docker-prune.sh
+sudo systemctl start radar-docker
+```
+
 ## Data extraction
 
 If systemd integration is enabled, HDFS data will be extracted to the `./output` directory every hour. It can then be run directly by running
