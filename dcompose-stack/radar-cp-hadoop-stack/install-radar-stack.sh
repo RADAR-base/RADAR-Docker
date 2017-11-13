@@ -89,6 +89,9 @@ else
   sudo-linux chmod 400 "${keystorefile}"
 fi
 
+echo "==> Configuring Management Portal"
+copy_template_if_absent etc/managementportal/config/liquibase/oauth_client_details.csv
+
 echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
