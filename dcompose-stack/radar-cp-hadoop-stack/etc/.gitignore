@@ -1,6 +1,6 @@
 /sink-mongo.properties
 /sink-hdfs.properties
-/nginx.conf
+/webserver/nginx.conf
 /radar.yml
 /smtp.env
 /rest-api/device-catalog.yml

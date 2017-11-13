@@ -555,7 +555,8 @@ services:
     volumes:
       - certs:/etc/letsencrypt
       - certs-data:/data/letsencrypt
-      - "./etc/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./etc/webserver/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
