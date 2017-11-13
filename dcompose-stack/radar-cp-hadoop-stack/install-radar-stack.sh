@@ -90,6 +90,9 @@ else
 fi
 
 echo "==> Configuring Management Portal"
+if [ ! -f etc/managementportal/config/liquibase/oauth_client_details.csv ]; then
+  echo "WARNING: The Management Portal configuration will be copied from its default template etc/managementportal/config/liquibase/oauth_client_details.csv.template. This may not result in a working configuration."
+fi
 copy_template_if_absent etc/managementportal/config/liquibase/oauth_client_details.csv
 
 echo "==> Configuring REST-API"
@@ -98,6 +101,9 @@ copy_template_if_absent etc/rest-api/device-catalog.yml
 copy_template_if_absent etc/rest-api/mp_info.yml
 
 echo "==> Configuring REDCap-Integration"
+if [ ! -f etc/redcap-integration/radar.yml ]; then
+  echo "WARNING: The REDCap-Integration configuration will be copied from its default template etc/redcap-integration/radar.yml.template. This may not result in a working configuration."
+fi
 copy_template_if_absent etc/redcap-integration/radar.yml
 
 # Set MongoDb credential
