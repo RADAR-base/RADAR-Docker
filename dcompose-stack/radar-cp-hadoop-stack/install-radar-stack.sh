@@ -20,10 +20,7 @@ check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
 check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 
-if [ ! -f etc/radar.yml ]; then
-  echo "etc/radar.yml is not present. Please initialize it from etc/radar.yml.template"
-  exit 1
-fi
+check_config_present etc/radar.yml
 
 if [ -z ${SERVER_NAME} ]; then
   echo "Set SERVER_NAME variable in .env"
@@ -76,11 +73,15 @@ if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
 fi
 inline_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
 
-echo "==> Generating keystore to hold RSA keypair for JWT signing"
+echo "==> Configuring Management Portal"
+
+check_config_present etc/managementportal/config/liquibase/oauth_client_details.csv 
+
 keystorefile=etc/managementportal/config/keystore.jks
 if [ -f "$keystorefile" ]; then
-  echo "Keystore already exists. Not creating a new one."
+  echo "--> Keystore for signing JWTs already exists. Not creating a new one."
 else
+  echo "--> Generating keystore to hold RSA keypair for JWT signing"
   if [ -n "${MANAGEMENTPORTAL_KEY_DNAME}" ]; then
     sudo-linux keytool -genkeypair -dname "${MANAGEMENTPORTAL_KEY_DNAME}" -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
   else
@@ -89,30 +90,21 @@ else
   sudo-linux chmod 400 "${keystorefile}"
 fi
 
-echo "==> Configuring Management Portal"
-if [ ! -f etc/managementportal/config/liquibase/oauth_client_details.csv ]; then
-  echo "WARNING: The Management Portal configuration will be copied from its default template etc/managementportal/config/liquibase/oauth_client_details.csv.template. This may not result in a working configuration."
-fi
-copy_template_if_absent etc/managementportal/config/liquibase/oauth_client_details.csv
-
 echo "==> Configuring REST-API"
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
-copy_template_if_absent etc/rest-api/mp_info.yml
-
-echo "==> Configuring REDCap-Integration"
-if [ ! -f etc/redcap-integration/radar.yml ]; then
-  echo "WARNING: The REDCap-Integration configuration will be copied from its default template etc/redcap-integration/radar.yml.template. This may not result in a working configuration."
-fi
-copy_template_if_absent etc/redcap-integration/radar.yml
+check_config_present etc/rest-api/mp_info.yml
 
 # Set MongoDb credential
-inline_variable 'usr:[[:space:]]' $HOTSTORAGE_USERNAME etc/rest-api/radar.yml
-inline_variable 'pwd:[[:space:]]' $HOTSTORAGE_PASSWORD etc/rest-api/radar.yml
-inline_variable 'db:[[:space:]]' $HOTSTORAGE_NAME etc/rest-api/radar.yml
+inline_variable 'usr:[[:space:]]' "$HOTSTORAGE_USERNAME" etc/rest-api/radar.yml
+inline_variable 'pwd:[[:space:]]' "$HOTSTORAGE_PASSWORD" etc/rest-api/radar.yml
+inline_variable 'db:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/radar.yml
 
 # Set variable for Swagger
 inline_variable 'host:[[:space:]]*' "${SERVER_NAME}" etc/rest-api/radar.yml
+
+echo "==> Configuring REDCap-Integration"
+check_config_present etc/redcap-integration/radar.yml
 
 echo "==> Configuring nginx"
 copy_template_if_absent etc/webserver/nginx.conf

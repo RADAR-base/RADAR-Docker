@@ -5,7 +5,8 @@
 /smtp.env
 /rest-api/device-catalog.yml
 /rest-api/radar.yml
+/rest-api/mp_info.yml
 /redcap-integration/radar.yml
-/managementportal/config/keystore.jks
-/managementportal/config/liquibase/oauth_client_details.csv
+/managementportal/changelogs/config/keystore.jks
+/managementportal/changelogs/config/liquibase/oauth_client_details.csv
 

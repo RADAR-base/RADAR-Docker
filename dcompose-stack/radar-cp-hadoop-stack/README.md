@@ -1,4 +1,6 @@
-# RADAR-CNS platform
+# RADAR platform
+
+This docker-compose stack contains the full operational RADAR platform. Once configured, it is meant to run on a single server with at least 16 GB memory and 4 CPU cores. It is tested on Ubuntu 16.04 and on macOS 11.1 with Docker 17.06.
 
 ## Configuration
 
@@ -6,8 +8,7 @@
 
 2. Copy `etc/smtp.env.template` to `etc/smtp.env` and configure your email settings. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
 
-3. Copy `etc/redcap-integration/radar.yml.template` to `etc/redcap-integration/radar.yml` and modify it to configure the properties of Redcap instance and the management portal. For reference on configuration of this file look at the Readme file here - https://github.com/RADAR-CNS/RADAR-RedcapIntegration#configuration
-In the REDcap portal under Project Setup, define the Data Trigger as `https://<YOUR_HOST_URL>/redcapint/trigger`
+3. Copy `etc/redcap-integration/radar.yml.template` to `etc/redcap-integration/radar.yml` and modify it to configure the properties of Redcap instance and the management portal. For reference on configuration of this file look at the Readme file here - <https://github.com/RADAR-CNS/RADAR-RedcapIntegration#configuration>. In the REDcap portal under Project Setup, define the Data Trigger as `https://<YOUR_HOST_URL>/redcapint/trigger`
 
 4. Copy `etc/managementportal/config/liquibase/oauth_client_details.csv.template` to `etc/managementportal/config/liquibase/oauth_client_details.csv` and change OAuth client credentials for production MP. (Except ManagementPortalapp)
 
@@ -34,58 +35,6 @@ In the REDcap portal under Project Setup, define the Data Trigger as `https://<Y
 		CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
 	```
 
-### cAdvisor
-
-cAdvisor (Container Advisor) provides container users an understanding of the resource usage and performance characteristics of their running containers.
-
-To view current resource performance,if running locally, try [http://localhost:8181](http://localhost:8181). This will bring up the built-in Web UI. Clicking on `/docker` in `Subcontainers` takes you to a new window with all of the Docker containers listed individually.
-
-### Portainer
-
-Portainer provides simple interactive UI-based docker management. If running locally, try [http://localhost:8182](http://localhost:8182) for portainer's UI. To set-up portainer follow this [link](https://www.ostechnix.com/portainer-an-easiest-way-to-manage-docker/).
-
-### Kafka Manager
-The [kafka-manager](https://github.com/yahoo/kafka-manager) is an interactive web based tool for managing Apache Kafka. Kafka manager has beed integrated in the stack. However, the following istructions are included so that its easy for someone in the futuer to update the stack or for using kafka-manager in other projects.
-Instructions for deploying kafka-manager in a docker container and proxied through nginx-
-
-
-1. Clone the GitHub repo - `$ git clone https://github.com/yahoo/kafka-manager.git`
-2. Change the working directory - `$ cd kafka-manager`
-3. Create a zip distribution using scala - `$ ./sbt clean dist`
-4. Note the path of the zip file created.
-5. Unzip the zip file to the stack location at `RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/`
-6. change directory to unzipped folder (in my case `$ cd kafka-manager-1.3.3.14/`)
-7. Create a file named Dockerfile for specifying the docker build - `$ sudo vim Dockerfile`
-8. Add the following content to the Dockerfile -
-```dockerfile
-	FROM hseeberger/scala-sbt
-
-	RUN mkdir /kafka-manager-1.3.3.14
-	ADD . /kafka-manager-1.3.3.14
-	ENV ZK_HOSTS=zookeeper-1:2181
-
-	WORKDIR /kafka-manager-1.3.3.14
-
-	EXPOSE 9000
-	ENTRYPOINT ["./bin/kafka-manager","-Dconfig.file=conf/application.conf"]
- ```
-9. Note- Change the version of `kafka-manger-{Version}` in the Dockerfile above according to the version you cloned and specified by the unzipped folder.
-10. Change the `play.http.context` parameter in the conf/application.conf file to point to the location path you are going to specify in the nginx.conf file later. In my case it was - `play.http.context = "/kafkamanager/“`
-11. Now edit the `etc/nginx.conf.template` file to include the path to kafka-manager so that it is accessible from the browser. Add the following inside the server tag of nginx.conf file -
-```nginx
-	location /kafkamanager/{
-		proxy_pass         http://kafka-manager:9000;
-		proxy_set_header   Host $host;
-	}
-```
-12. Now start the stack with ./install-radar-stack.sh. This will build a docker image for kafka and start it in a container. You can access it with a browser at `https://host/kafkamanager/`. Open the link and add all the information. In this case the zookeeper host is at `zookeeper-1:2181`. This will look something like the image -
-
-![Add a Cluster](/img/add_cluster.png)
-
-Note- You can also take the easy route and just pull the docker image from docker hub located at `radarcns/kafka-manager`. But remember that the context path is `/kafka-manager` so you will need to specify this in your `nginx.conf` file
-
-
-
 ## Usage
 
 Run
@@ -109,3 +58,18 @@ CSV-structured data can be gotten from HDFS by running
 This will put all CSV files in the destination directory, with subdirectory structure `PatientId/SensorType/Date_Hour.csv`.
 
 If `SELF_SIGNED_CERT=no` in `./.env`, be sure to run `./renew_ssl_certificate.sh` daily to ensure that your certificate does not expire.
+
+
+### cAdvisor
+
+cAdvisor (Container Advisor) provides container users an understanding of the resource usage and performance characteristics of their running containers.
+
+To view current resource performance,if running locally, try <http://localhost:8080>. This will bring up the built-in Web UI. Clicking on `/docker` in `Subcontainers` takes you to a new window with all of the Docker containers listed individually.
+
+### Portainer
+
+Portainer provides simple interactive UI-based docker management. If running locally, try <http://localhost/portainer/> for portainer's UI. To set-up portainer follow this [link](https://www.ostechnix.com/portainer-an-easiest-way-to-manage-docker/).
+
+### Kafka Manager
+
+The [kafka-manager](https://github.com/yahoo/kafka-manager) is an interactive web based tool for managing Apache Kafka. Kafka manager has beed integrated in the stack. It is accessible at <http://localhost/kafkamanager/>
