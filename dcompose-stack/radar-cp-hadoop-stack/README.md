@@ -43,6 +43,48 @@ Run
 ```
 to start all the RADAR services. Use the `(start|stop|reboot)-radar-stack.sh` to start, stop or reboot it. Note: whenever `.env` or `docker-compose.yml` are modified, this script needs to be called again. To start a reduced set of containers, call `install-radar-stack.sh` with the intended containers as arguments.
 
+To enable a `systemd` service to control the platform, run
+```shell
+./install-systemd-wrappers.sh
+```
+After that command, the RADAR platform should be controlled via `systemctl`.
+```shell
+# query the latest status and logs
+sudo systemctl status radar-docker
+
+# Stop radar-docker
+sudo systemctl stop radar-docker
+
+# Restart all containers
+sudo systemctl reload radar-docker
+
+# Start radar-docker
+sudo systemctl start radar-docker
+
+# Full radar-docker system logs
+sudo journalctl -u radar-docker
+```
+The control scripts in this directory should preferably not be used if `systemctl` is used. To remove `systemctl` integration, run
+```
+sudo systemctl disable radar-docker
+sudo systemctl disable radar-output
+```
+
+To clear all data from the platform, run
+```
+sudo systemctl stop radar-docker
+./docker-prune.sh
+sudo systemctl start radar-docker
+```
+
+## Data extraction
+
+If systemd integration is enabled, HDFS data will be extracted to the `./output` directory every hour. It can then be run directly by running
+```
+sudo systemctl start radar-output.service
+```
+Otherwise, the following manual commands can be invoked.
+
 Raw data can be extracted from this setup by running:
 
 ```shell

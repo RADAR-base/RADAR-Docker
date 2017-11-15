@@ -13,7 +13,7 @@ check_command_exists() {
   if sudo-linux /bin/bash -c "command -v "$1" > /dev/null 2>&1"; then
     echo "$1 version: $(sudo-linux "$1" --version)"
   else
-    echo "RADAR-CNS cannot start without $1. Please, install $1 and then try again"
+    echo "RADAR Platform cannot start without $1. Please, install $1 and then try again"
     exit 1
   fi
 }
