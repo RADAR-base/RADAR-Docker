@@ -97,9 +97,8 @@ check_config_present() {
     fi
     exit 1
   elif [ "$1" -ot "${template}" ]; then
-    echo "Configuration file ${1} is older than its template"
-    echo "${template}. Please edit ${1}"
-    echo "to ensure it matches the template, remove it or run touch on it."
+    echo "Configuration file ${1} is older than its template ${template}."
+    echo "Please edit ${1} to ensure it matches the template or run touch on it."
     exit 1
   fi
 }

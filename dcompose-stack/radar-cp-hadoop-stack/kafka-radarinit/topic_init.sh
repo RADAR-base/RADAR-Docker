@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Create topics
 echo "Creating RADAR-CNS topics..."
@@ -17,7 +17,7 @@ tries=10
 timeout=1
 max_timeout=32
 while true; do
-  if wget --spider -q "${KAFKA_SCHEMA_REGISTRY}" 2>/dev/null; then
+  if curl -Ifs "${KAFKA_SCHEMA_REGISTRY}" > /dev/null; then
     break;
   fi
   tries=$((tries - 1))
@@ -27,7 +27,9 @@ while true; do
   fi
   echo "Failed to reach schema registry. Retrying in ${timeout} seconds."
   sleep $timeout
-  timeout=$((timeout * 2 < max_timeout ? timeout * 2 : max_timeout))
+  if [ $timeout -lt $max_timeout ]; then
+    timeout=$((timeout * 2))
+  fi
 done
 
 if ! radar-schemas-tools register "${KAFKA_SCHEMA_REGISTRY}" merged; then

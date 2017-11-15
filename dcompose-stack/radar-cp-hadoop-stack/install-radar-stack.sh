@@ -10,6 +10,8 @@ else
   sudo-linux mkdir -m 0700 ./output
 fi
 
+check_config_present .env etc/env.template
+
 . ./.env
 
 # Check provided directories and configurations
