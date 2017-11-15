@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # this will trap any errors or commands with non-zero exit status
 # by calling function catch_errors()
 trap catch_errors ERR;
@@ -73,12 +71,35 @@ inline_variable() {
 # yet exist.
 copy_template_if_absent() {
   template=${2:-${1}.template}
-  if [ ! -e "$1" ]; then
-    sudo-linux cp -p "${template}" "$1"
+  if [ ! -f "$1" ]; then
+    if [ -e "$1" ]; then
+      echo "Configuration file ${1} is not a regular file."
+      exit 1
+    else
+      sudo-linux cp -p "${template}" "$1"
+    fi
   elif [ "$1" -ot "${template}" ]; then
-    echo "Configuration file ${1} is older than its template ${template}."
-    echo "Please edit ${1} to ensure it matches the template, remove it or"
-    echo "run touch on it."
+    echo "Configuration file ${1} is older than its template"
+    echo "${template}. Please edit ${1}"
+    echo "to ensure it matches the template, remove it or run touch on it."
+    exit 1
+  fi
+}
+
+check_config_present() {
+  template=${2:-${1}.template}
+  if [ ! -f "$1" ]; then
+    if [ -e "$1" ]; then
+      echo "Configuration file ${1} is not a regular file."
+    else
+      echo "Configuration file ${1} is not present."
+      echo "Please copy it from ${template} and modify it as needed."
+    fi
+    exit 1
+  elif [ "$1" -ot "${template}" ]; then
+    echo "Configuration file ${1} is older than its template"
+    echo "${template}. Please edit ${1}"
+    echo "to ensure it matches the template, remove it or run touch on it."
     exit 1
   fi
 }

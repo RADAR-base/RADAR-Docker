@@ -14,10 +14,10 @@ RUN mkdir -p /schema/merged
 
 WORKDIR /schema
 
-ADD https://github.com/RADAR-CNS/RADAR-Schemas/archive/v0.2.tar.gz /schema/
-RUN tar xzf v0.2.tar.gz && mv RADAR-Schemas-0.2 original && rm v0.2.tar.gz
+ADD https://github.com/RADAR-CNS/RADAR-Schemas/archive/v0.2.tar.gz /schema/RADAR-Schemas-0.2.tar.gz
+RUN tar xzf RADAR-Schemas-0.2.tar.gz && mv RADAR-Schemas-0.2 original && rm RADAR-Schemas-0.2.tar.gz
 
-ADD https://github.com/RADAR-CNS/RADAR-Schemas/releases/download/v0.2/radar-schemas-tools-0.2.tar.gz /schema/
+ADD https://github.com/RADAR-CNS/RADAR-Schemas/releases/download/v0.2/radar-schemas-tools-0.2.tar.gz /schema/radar-schemas-tools-0.2.tar.gz
 RUN tar xzf radar-schemas-tools-0.2.tar.gz --strip-components=1 -C /usr && rm radar-schemas-tools-0.2.tar.gz
 
 VOLUME /schema/conf

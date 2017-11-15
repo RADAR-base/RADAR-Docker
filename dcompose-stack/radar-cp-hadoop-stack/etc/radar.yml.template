@@ -40,7 +40,7 @@ schema_registry:
 battery_monitor:
   level: CRITICAL
   email_address:
-    - notifiersemail
+    - notifier@email
     - notifier2@email
   email_host: smtp
   email_port: 25
