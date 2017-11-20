@@ -11,19 +11,19 @@
 # limitations under the License.
 
 
-FROM confluentinc/cp-kafka-connect:3.1.2-1
+FROM confluentinc/cp-kafka-connect:3.2.1
 
-MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl> , Francesco N <francesco.nobilia@kcl.ac.uk>
+MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl>
 
 LABEL description="RADAR-CNS Backend- HDFS Sink Connector"
 
 # Install RADAR-Backend
 RUN echo "==> Installing Components" \
     # Download Git RADAR-Backend release
-    && echo "==> Downloading RADAR-CNS/RADAR-HDFS-Sink-Connector 0.1-alpha.1 release from GitHub"
+    && echo "==> Downloading RADAR-CNS/RADAR-HDFS-Sink-Connector 0.1 release from GitHub"
 
 # Deploy RADAR-Backend - HDFS Sink Connector
-ADD  https://github.com/RADAR-CNS/RADAR-HDFS-Sink-Connector/releases/download/0.1-alpha.1/radar-hdfs-sink-connector-0.1-alpha.1-sources.jar /etc/kafka-connect/jars/
+ADD  https://github.com/RADAR-CNS/RADAR-HDFS-Sink-Connector/releases/download/0.1/radar-hdfs-sink-connector-0.1-sources.jar /etc/kafka-connect/jars/
 
 # Load topics validator
 COPY ./kafka_status.sh /home/kafka_status.sh
