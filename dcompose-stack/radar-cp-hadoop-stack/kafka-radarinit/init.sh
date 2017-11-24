@@ -6,7 +6,7 @@ rsync -a /schema/original/commons /schema/original/specifications /schema/merged
 rsync -a /schema/conf/ /schema/merged
 
 # Compiling updated schemas
-(>&2 echo "Compiling schemas...")
+echo "Compiling schemas..." >&2
 # Separate enums so that they can be referenced in later files
 IFS=$'\n' read -r -a enums <<< $(find merged/commons -name "*.avsc" -exec grep -q '^  "type": "enum"' "{}" \; -print)
 IFS=$'\n' read -r -a notenums <<< $(find merged/commons -name "*.avsc" -exec grep -qv '^  "type": "enum"' "{}" \; -print)
