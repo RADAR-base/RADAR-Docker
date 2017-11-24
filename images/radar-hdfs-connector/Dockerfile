@@ -23,7 +23,7 @@ RUN echo "==> Installing Components" \
     && echo "==> Downloading RADAR-CNS/RADAR-HDFS-Sink-Connector 0.1 release from GitHub"
 
 # Deploy RADAR-Backend - HDFS Sink Connector
-ADD  https://github.com/RADAR-CNS/RADAR-HDFS-Sink-Connector/releases/download/0.1/radar-hdfs-sink-connector-0.1-sources.jar /etc/kafka-connect/jars/
+ADD  https://github.com/RADAR-CNS/RADAR-HDFS-Sink-Connector/releases/download/v0.1/radar-hdfs-sink-connector-0.1-sources.jar /etc/kafka-connect/jars/
 
 # Load topics validator
 COPY ./kafka_status.sh /home/kafka_status.sh
