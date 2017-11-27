@@ -18,7 +18,7 @@ topics=($($LS_CMD))
 
 # consumer command to run
 KACC_CMD="kafka-avro-console-consumer --zookeeper zookeeper-1:2181 --property schema.registry.url=http://schema-registry-1:8081 --property print.key=true --topic ${args[0]} ${args[@]:1}"
-DOCKER_CMD="docker exec -it radarcphadoopstack_schema-registry-1_1"
+DOCKER_CMD="docker-compose exec schema-registry-1"
 
 # check if <topic name> is valid topic
 array_contains () {
@@ -43,6 +43,6 @@ fi
 
 # run consumer
 echo $DOCKER_CMD $KACC_CMD
-$DOCKER_CMD $KACC_CMD
+exec $DOCKER_CMD $KACC_CMD
 
 
