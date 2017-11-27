@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 . ./util.sh
 . ./.env
