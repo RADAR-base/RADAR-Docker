@@ -4,6 +4,8 @@
 
 if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" || $1 == "--"* ]]; then
    printf "Usage: $0 <topic name> [passthrough options]\n"
+   printf "\nkafka-avro-console-consumer passthrough options:\n"
+   docker-compose exec schema-registry-1 kafka-avro-console-consumer
    exit 1
 fi
 
@@ -12,7 +14,7 @@ fi
 args=("$@")
 
 # get list of available topics
-LS_CMD="docker exec -it radarcphadoopstack_kafka-1_1 kafka-topics --zookeeper zookeeper-1:2181 --list"
+LS_CMD="docker-compose exec kafka-1 kafka-topics --zookeeper zookeeper-1:2181 --list"
 topics=($($LS_CMD))
 #printf "%s\n" "${topics[@]}"
 
