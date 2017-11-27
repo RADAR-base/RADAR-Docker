@@ -128,3 +128,5 @@ Then just add a cron job to run the `check-health.sh` script periodically like -
 2. Add your job and time interval. For example, add the following for checking health every 5 mins - 
 
 ```*/5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/check-health.sh```
+
+You can check the logs of CRON by typing `$ grep CRON /var/log/syslog`
