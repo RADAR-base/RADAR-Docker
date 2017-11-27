@@ -130,3 +130,54 @@ Then just add a cron job to run the `check-health.sh` script periodically like -
 ```*/5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/check-health.sh```
 
 You can check the logs of CRON by typing `$ grep CRON /var/log/syslog`
+Also you will need to change the relative paths of `util.sh` and `.env` to their absolute paths if ypu want to run it as a cron job. And also add -f argument to each docker-compose statement with the absolute path of the `docker-compose.yml` file
+as stated here - https://docs.docker.com/compose/reference/overview/#use--f-to-specify-name-and-path-of-one-or-more-compose-files 
+In the end your file will look something like this - 
+```sh
+#!/bin/bash
+# Check whether services are healthy. If not, restart them and notify the maintainer.
+
+. /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/util.sh
+. /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/.env
+
+unhealthy=()
+
+# get all human-readable service names
+# see last line of loop
+while read service; do
+    # check if a container was started for the service
+    container=$(sudo-linux docker-compose -f /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/docker-compose.yml ps -q $service)
+    if [ -z "${container}" ]; then
+        # no container means no running service
+        continue
+    fi
+    health=$(sudo-linux docker inspect --format '{{.State.Health.Status}}' $container 2>/dev/null || echo "null")
+    if [ "$health" = "unhealthy" ]; then
+        echo "Service $service is unhealthy. Restarting."
+        unhealthy+=("${service}")
+        sudo-linux docker-compose -f /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/docker-compose.yml restart ${service}
+    fi
+done <<< "$(sudo-linux docker-compose -f /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/docker-compose.yml config --services)"
+
+if [ "${#unhealthy[@]}" -eq 0 ]; then
+    echo "All services are healthy"
+else
+    echo "$unhealthy services were unhealthy and have been restarted."
+
+    # Send notification to MAINTAINER
+    # start up the mail container if not already started
+    sudo-linux docker-compose -f /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/docker-compose.yml up -d smtp
+    # save the container, so that we can use exec to send an email later
+    container=$(sudo-linux docker-compose -f /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/docker-compose.yml ps -q smtp)
+    SAVEIFS=$IFS
+    IFS=, 
+    display_services="[${unhealthy[*]}]"
+    IFS=$SAVEIFS
+    display_host="${SERVER_NAME} ($(hostname -f), $(curl -s http://ipecho.net/plain))"
+    body="Services on $display_host are unhealthy. Services $display_services have been restarted. Please log in for further information."
+    echo "Sent notification to $MAINTAINER_EMAIL"
+    echo "$body" | sudo-linux docker exec -i ${container} mail -aFrom:$FROM_EMAIL "-s[RADAR] Services on ${SERVER_NAME} unhealthy" $MAINTAINER_EMAIL
+    exit 1
+fi
+
+```
