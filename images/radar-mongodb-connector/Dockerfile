@@ -11,16 +11,11 @@
 # limitations under the License.
 
 
-FROM confluentinc/cp-kafka-connect:3.1.2-1
+FROM confluentinc/cp-kafka-connect:3.2.1
 
 MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl> , Francesco N <francesco.nobilia@kcl.ac.uk>
 
 LABEL description="RADAR-CNS Backend- MongoDB Sink Connector"
-
-# Install RADAR-Backend
-RUN echo "==> Installing Components" \
-    # Download Git RADAR-Backend release
-    && echo "==> Downloading RADAR-CNS/RADAR-MongoDB-Sink-Connector 0.1-alpha.1 release from GitHub"
 
 # Deploy RADAR-Backend - Mongodb Sink Connector
 ADD  https://github.com/RADAR-CNS/RADAR-MongoDB-Sink-Connector/releases/download/0.1-alpha.1/radar-mongodb-sink-connector-0.1-alpha.1.jar /etc/kafka-connect/jars/
