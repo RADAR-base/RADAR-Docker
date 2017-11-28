@@ -17,11 +17,6 @@ MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl>
 
 LABEL description="RADAR-CNS Backend- HDFS Sink Connector"
 
-# Install RADAR-Backend
-RUN echo "==> Installing Components" \
-    # Download Git RADAR-Backend release
-    && echo "==> Downloading RADAR-CNS/RADAR-HDFS-Sink-Connector 0.1 release from GitHub"
-
 # Deploy RADAR-Backend - HDFS Sink Connector
 ADD  https://github.com/RADAR-CNS/RADAR-HDFS-Sink-Connector/releases/download/v0.1/radar-hdfs-sink-connector-0.1-sources.jar /etc/kafka-connect/jars/
 
