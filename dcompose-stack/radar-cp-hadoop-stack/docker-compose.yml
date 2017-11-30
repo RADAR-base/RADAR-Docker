@@ -633,7 +633,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarcns/radar-gateway
+    image: radarcns/radar-gateway:0.1.2
     networks:
       - api
       - kafka
