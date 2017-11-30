@@ -17,13 +17,8 @@ MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl> , Fra
 
 LABEL description="RADAR-CNS Backend- MongoDB Sink Connector"
 
-# Install RADAR-Backend
-RUN echo "==> Installing Components" \
-    # Download Git RADAR-Backend release
-    && echo "==> Downloading RADAR-CNS/RADAR-MongoDB-Sink-Connector 0.1-alpha.1 release from GitHub"
-
 # Deploy RADAR-Backend - Mongodb Sink Connector
-ADD  https://github.com/RADAR-CNS/RADAR-MongoDB-Sink-Connector/releases/download/0.1-alpha.1/radar-mongodb-sink-connector-0.1-alpha.1.jar /etc/kafka-connect/jars/
+ADD  https://github.com/RADAR-CNS/RADAR-MongoDB-Sink-Connector/releases/download/0.1/radar-mongodb-sink-connector-0.1.jar /etc/kafka-connect/jars/
 
 # Load topics validator
 COPY ./kafka_status.sh /home/kafka_status.sh
