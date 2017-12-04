@@ -11,7 +11,7 @@
 # limitations under the License.
 
 
-FROM confluentinc/cp-base:3.1.2-1
+FROM confluentinc/cp-base:3.2.1
 
 MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl> , Francesco N <francesco.nobilia@kcl.ac.uk>
 
