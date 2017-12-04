@@ -23,7 +23,7 @@ RUN echo "==> Installing Components" \
     && echo "==> Downloading RADAR-CNS/RADAR-Backend 0.1 release from GitHub" \
     && cd /usr/local && mkdir RADAR-Backend
 
-ADD https://github.com/RADAR-CNS/RADAR-Backend/releases/download/0.1/radar-backend-0.1.jar /usr/share/java/
+ADD https://github.com/RADAR-CNS/RADAR-Backend/releases/download/0.1/radar-backend-0.1-all.jar /usr/share/java/
 
 # Load topics validator
 COPY ["./init.sh", "./kafka_status.sh", "/home/"]
