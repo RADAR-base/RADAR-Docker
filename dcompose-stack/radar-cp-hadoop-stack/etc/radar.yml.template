@@ -8,13 +8,13 @@ mode: standalone
 #============================== Zookeeper ==============================#
 #List of Zookeeper instances
 zookeeper:
-    - host: localhost
+    - host: zookeeper-1
       port: 2181
 
 #================================ Kafka ================================#
 #List of Kafka brokers
 broker:
-    - host: localhost
+    - host: kafka-1
       port: 9092
 
 #Kafka internal parameters
@@ -32,12 +32,12 @@ stream_priority:
 #=========================== Schema Registry ===========================#
 #List of Schema Registry instances
 schema_registry:
-    - host: localhost
+    - host: schema-registry-1
       port: 8081
       protocol: http
 
 rest_proxy:
-    host: radar-test.thehyve.net
+    host: rest-proxy-1
     port: 8082
     protocol: http
 
@@ -45,20 +45,22 @@ rest_proxy:
 battery_monitor:
   level: LOW
   email_address:
-    - radar@thehyve.nl
+    - notifier@email
+    - notifier2@email
   email_host: localhost
   email_port: 25
-  email_user: no-reply@radarcns.org
+  email_user: user@example.com
   topics:
     - android_empatica_e4_battery_level
 
 #======================= Disconnection monitor==========================#
 disconnect_monitor:
   email_address:
-    - test@thehyve.nl
+    - notifier@email
+    - notifier2@email
   email_host: localhost
   email_port: 25
-  email_user: no-reply@radarcns.org
+  email_user: user@example.com
   topics:
     - android_empatica_e4_temperature
   timeout: 1800  # seconds after which a stream is set disconnected
