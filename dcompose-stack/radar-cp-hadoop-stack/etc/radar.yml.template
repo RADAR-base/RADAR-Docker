@@ -2,7 +2,6 @@ version: 1.0
 released: 2016-11-27
 
 #============================= Application =============================#
-log_path:
 #Possible value are standalone or high_performance
 mode: standalone
 
@@ -19,8 +18,9 @@ broker:
       port: 9092
 
 #Kafka internal parameters
-auto_commit_interval_ms: 1000
-session_timeout_ms: 10000
+stream_properties:
+  auto_commit_interval_ms: 1000
+  session_timeout_ms: 10000
 
 #============================ Kafka Streams ============================#
 #The number of threads that a stream must be run according is priority
@@ -36,13 +36,18 @@ schema_registry:
       port: 8081
       protocol: http
 
-#========================= Battery level monitor=========================#
+rest_proxy:
+    host: rest-proxy-1
+    port: 8082
+    protocol: http
+
+#======================== Battery level monitor ========================#
 battery_monitor:
-  level: CRITICAL
+  level: LOW
   email_address:
     - notifier@email
     - notifier2@email
-  email_host: smtp
+  email_host: localhost
   email_port: 25
   email_user: user@example.com
   topics:
@@ -53,9 +58,15 @@ disconnect_monitor:
   email_address:
     - notifier@email
     - notifier2@email
-  email_host: smtp
+  email_host: localhost
   email_port: 25
   email_user: user@example.com
   topics:
-    - android_empatica_e4_battery_level
-  timeout: 300000
+    - android_empatica_e4_temperature
+  timeout: 1800  # seconds after which a stream is set disconnected
+  alert_repetitions: 2  # number of additional emails to send after the first
+
+#========================= Kafka stream ================================#
+stream_masters:
+  - org.radarcns.stream.empatica.E4StreamMaster
+  - org.radarcns.stream.phone.PhoneStreamMaster

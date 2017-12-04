@@ -120,3 +120,23 @@ Portainer provides simple interactive UI-based docker management. If running loc
 ### Kafka Manager
 
 The [kafka-manager](https://github.com/yahoo/kafka-manager) is an interactive web based tool for managing Apache Kafka. Kafka manager has beed integrated in the stack. It is accessible at <http://localhost/kafkamanager/>
+
+### Check Health
+Each of the containers in the stack monitor their own health and show the output as healthy or unhealthy. A script called check-health.sh is used to check this output and send an email to the maintainer if a container is unhealthy.
+
+First check that the `MAINTAINER_EMAIL` in the .env file is correct.
+
+Then make sure that the SMTP server is configured properly and running.
+
+Then just add a cron job to run the `check-health.sh` script periodically like -
+1. Edit the crontab file for the current user by typing `$ crontab -e`
+2. Add your job and time interval. For example, add the following for checking health every 5 mins - 
+
+```*/5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/check-health.sh```
+
+You can check the logs of CRON by typing `$ grep CRON /var/log/syslog`
+Also you will need to change the directory. So just add the following to the top of the check-health.sh script - 
+```sh
+cd "$( dirname "${BASH_SOURCE[0]}" )"
+```
+
