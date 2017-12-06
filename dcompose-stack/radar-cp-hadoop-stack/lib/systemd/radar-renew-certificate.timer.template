@@ -4,7 +4,7 @@ BindsTo=radar-docker.service
 
 [Timer]
 OnCalendar=daily
-RandomizedDelaySec=2min
+RandomizedDelaySec=12h
 Persistent=true
 Unit=radar-check-health.service
 

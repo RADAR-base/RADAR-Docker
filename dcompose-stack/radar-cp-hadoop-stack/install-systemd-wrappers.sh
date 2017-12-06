@@ -33,3 +33,6 @@ sudo systemctl enable radar-output.timer
 sudo systemctl enable radar-check-health.timer
 sudo systemctl enable radar-renew-certificate.timer
 sudo systemctl start radar-docker
+sudo systemctl start radar-output.timer
+sudo systemctl start radar-check-health.timer
+sudo systemctl start radar-renew-certificate.timer
