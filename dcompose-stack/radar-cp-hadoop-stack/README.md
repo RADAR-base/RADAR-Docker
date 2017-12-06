@@ -73,6 +73,8 @@ The control scripts in this directory should preferably not be used if `systemct
 ```
 sudo systemctl disable radar-docker
 sudo systemctl disable radar-output
+sudo systemctl disable radar-check-health
+sudo systemctl disable radar-renew-certificate
 ```
 
 To clear all data from the platform, run
@@ -104,6 +106,13 @@ CSV-structured data can be gotten from HDFS by running
 ```
 This will put all CSV files in the destination directory, with subdirectory structure `PatientId/SensorType/Date_Hour.csv`.
 
+## Cerificate
+
+If systemd integration is enabled, the ssl certificate will be renewed daily. It can then be run directly by running
+```
+sudo systemctl start radar-renew-certificate.service
+```
+Otherwise, the following manual commands can be invoked.
 If `SELF_SIGNED_CERT=no` in `./.env`, be sure to run `./renew_ssl_certificate.sh` daily to ensure that your certificate does not expire.
 
 
@@ -127,6 +136,12 @@ Each of the containers in the stack monitor their own health and show the output
 First check that the `MAINTAINER_EMAIL` in the .env file is correct.
 
 Then make sure that the SMTP server is configured properly and running.
+
+If systemd integration is enabled, the check-health.sh script will check health of containers every five minutes. It can then be run directly by running
+```
+sudo systemctl start radar-check-health.service
+```
+Otherwise, the following manual commands can be invoked.
 
 Then just add a cron job to run the `check-health.sh` script periodically like -
 1. Edit the crontab file for the current user by typing `$ crontab -e`
