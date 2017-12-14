@@ -1,8 +1,30 @@
 #!/bin/bash
 # Check whether services are healthy. If not, restart them and notify the maintainer.
 
-. ./util.sh
-. ./.env
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. "$DIR/util.sh"
+. .env
+
+function hipchat_notify() {
+    # Send notification via HipChat, if configured.
+    if [ "$HEALTHCHECK_HIPCHAT_NOTIFY" == "yes" ] ; then
+        if [ -z "$HEALTHCHECK_HIPCHAT_ROOM_ID" ] ; then
+            echo "Error: HipChat notifications are enabled, but \$HEALTHCHECK_HIPCHAT_ROOM_ID is undefined. Unable to send HipChat notification."
+            exit 1
+        fi
+
+        if [ -z "$HEALTHCHECK_HIPCHAT_TOKEN" ] ; then
+            echo "Error: HipChat notifications are enabled, but \$HEALTHCHECK_HIPCHAT_TOKEN is undefined. Unable to send HipChat notification."
+            exit 1
+        fi
+
+        color=$1
+        body=$2
+        curl -X POST -H "Content-Type: application/json" --header "Authorization: Bearer $HEALTHCHECK_HIPCHAT_TOKEN" \
+             -d "{\"color\": \"$color\", \"message_format\": \"text\", \"message\": \"$body\" }" \
+             https://api.hipchat.com/v2/room/$HEALTHCHECK_HIPCHAT_ROOM_ID/notification
+    fi
+}
 
 unhealthy=()
 
@@ -24,6 +46,10 @@ while read service; do
 done <<< "$(sudo-linux docker-compose config --services)"
 
 if [ "${#unhealthy[@]}" -eq 0 ]; then
+    if [ -f .unhealthy ]; then
+         rm -f .unhealthy
+         hipchat_notify green "All services are healthy again"
+    fi
     echo "All services are healthy"
 else
     echo "$unhealthy services were unhealthy and have been restarted."
@@ -34,7 +60,7 @@ else
     # save the container, so that we can use exec to send an email later
     container=$(sudo-linux docker-compose ps -q smtp)
     SAVEIFS=$IFS
-    IFS=, 
+    IFS=,
     display_services="[${unhealthy[*]}]"
     IFS=$SAVEIFS
     display_host="${SERVER_NAME} ($(hostname -f), $(curl -s http://ipecho.net/plain))"
@@ -42,22 +68,9 @@ else
     echo "Sent notification to $MAINTAINER_EMAIL"
     echo "$body" | sudo-linux docker exec -i ${container} mail -aFrom:$FROM_EMAIL "-s[RADAR] Services on ${SERVER_NAME} unhealthy" $MAINTAINER_EMAIL
 
-    # Send notification via HipChat, if configured.
-    if [ "$HEALTHCHECK_HIPCHAT_NOTIFY" == "yes" ] ; then
-        if [ -z "$HEALTHCHECK_HIPCHAT_ROOM_ID" ] ; then
-            echo "Error: HipChat notifications are enabled, but \$HEALTHCHECK_HIPCHAT_ROOM_ID is undefined. Unable to send HipChat notification."
-            exit 1
-        fi
+    echo "${unhealthy[@]}" > .unhealthy
 
-        if [ -z "$HEALTHCHECK_HIPCHAT_TOKEN" ] ; then
-            echo "Error: HipChat notifications are enabled, but \$HEALTHCHECK_HIPCHAT_TOKEN is undefined. Unable to send HipChat notification."
-            exit 1
-        fi
-
-        curl -X POST -H "Content-Type: application/json" --header "Authorization: Bearer $HEALTHCHECK_HIPCHAT_TOKEN" \
-             -d "{\"color\": \"red\", \"message_format\": \"text\", \"message\": \"$body\" }" \
-             https://api.hipchat.com/v2/room/$HEALTHCHECK_HIPCHAT_ROOM_ID/notification
-    fi
+    hipchat_notify red "$body"
 
     exit 1
 fi
