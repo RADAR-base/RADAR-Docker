@@ -70,3 +70,5 @@ disconnect_monitor:
 stream_masters:
   - org.radarcns.stream.empatica.E4StreamMaster
   - org.radarcns.stream.phone.PhoneStreamMaster
+
+persistence_path: /var/lib/radar/data

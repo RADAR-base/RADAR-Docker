@@ -30,13 +30,13 @@ volumes:
   kafka-1-data: {}
   kafka-2-data: {}
   kafka-3-data: {}
+  radar-backend-monitor-disconnect-data: {}
   certs:
     external: true
   certs-data:
     external: true
 
 services:
-
   #---------------------------------------------------------------------------#
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
@@ -450,7 +450,6 @@ services:
       timeout: 5s
       retries: 3
 
-
   #---------------------------------------------------------------------------#
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
@@ -461,6 +460,8 @@ services:
     networks:
       - zookeeper
       - kafka
+      # for getting the play store category
+      - default
     depends_on:
       - zookeeper-1
       - kafka-1
@@ -496,6 +497,7 @@ services:
       - smtp
     volumes:
       - ./etc/radar.yml:/etc/radar.yml
+      - radar-backend-monitor-disconnect-data:/var/lib/radar/data
     restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
