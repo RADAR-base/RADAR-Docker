@@ -30,13 +30,13 @@ volumes:
   kafka-1-data: {}
   kafka-2-data: {}
   kafka-3-data: {}
+  radar-backend-monitor-disconnect-data: {}
   certs:
     external: true
   certs-data:
     external: true
 
 services:
-
   #---------------------------------------------------------------------------#
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
@@ -80,10 +80,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/1 || exit 1"]
       interval: 1m30s
-      timeout: 5s
+      timeout: 10s
       retries: 3
 
   kafka-2:
@@ -102,6 +103,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
       interval: 1m30s
@@ -124,6 +126,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
       interval: 1m30s
@@ -341,8 +344,8 @@ services:
   smtp:
     image: namshi/smtp:latest
     networks:
-      - default
       - mail
+      - default
     volumes:
       - /var/spool/exim
     restart: always
@@ -450,7 +453,6 @@ services:
       timeout: 5s
       retries: 3
 
-
   #---------------------------------------------------------------------------#
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
@@ -461,6 +463,8 @@ services:
     networks:
       - zookeeper
       - kafka
+      # for getting the play store category
+      - default
     depends_on:
       - zookeeper-1
       - kafka-1
@@ -496,6 +500,7 @@ services:
       - smtp
     volumes:
       - ./etc/radar.yml:/etc/radar.yml
+      - radar-backend-monitor-disconnect-data:/var/lib/radar/data
     restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
@@ -628,7 +633,7 @@ services:
       ZK_HOSTS: zookeeper-1:2181
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "[ $$(curl localhost:9000/kafkamanager/api/health) = healthy ] || exit 1"]
+      test: ["CMD-SHELL", "[ $$(wget -q -O - localhost:9000/kafkamanager/api/health) = healthy ] || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
@@ -649,7 +654,7 @@ services:
       - ./etc/gateway/classpath.xml:/usr/local/tomcat/conf/Catalina/localhost/radar-gateway.xml
     healthcheck:
       # should give an unauthenticated response, rather than a 404
-      test: ["CMD-SHELL", " wget --spider localhost:8080/radar-gateway 2>&1 | grep -q 401"]
+      test: ["CMD-SHELL", "wget --spider localhost:8080/radar-gateway 2>&1 | grep -q 401 || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
