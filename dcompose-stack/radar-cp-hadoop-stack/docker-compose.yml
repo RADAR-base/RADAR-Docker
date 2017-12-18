@@ -107,7 +107,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
       interval: 1m30s
-      timeout: 5s
+      timeout: 10s
       retries: 3
 
   kafka-3:
@@ -130,7 +130,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
       interval: 1m30s
-      timeout: 5s
+      timeout: 10s
       retries: 3
 
   #---------------------------------------------------------------------------#
