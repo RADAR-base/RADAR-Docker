@@ -65,113 +65,19 @@ In addition to Confluent Kafka platform components, RADAR-CNS platform offers
 * RADAR-Monitor - Status monitors,
 * [RADAR-HotStorage](https://github.com/RADAR-CNS/RADAR-HotStorage) via MongoDB, 
 * [RADAR-REST API](https://github.com/RADAR-CNS/RADAR-RestApi),
-* a Hadoop cluster, and
-* an email server.
-
+* A Hadoop cluster, and
+* An email server.
+* Management Portal - A web portal to manage patient monitoring studies.
+* RADAR-Gateway - A validating gateway to allow only valid and authentic data to the platform
+* Catalog server - A Service to share source-types configured in the platform.
 To run RADAR-CNS stack in a single node setup:
 
-1. Navigate to `radar-hadoop-cp-stack`:
+1. Navigate to `radar-cp-hadoop-stack`:
 
     ```shell
-    cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
+    cd RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/
     ```
-2. Configure monitor settings in `radar.yml`:
- 
-    ```yaml
-    battery_monitor:
-      level: CRITICAL
-      email_address:
-       - notify-1@example.com
-       - notify-2@example.com
-      email_host: smtp
-      email_port: 25
-      email_user: user@example.com
-      topics:
-        - android_empatica_e4_battery_level
-	
-    disconnect_monitor:
-      # timeout in milliseconds -> 5 minutes
-      timeout: 300000
-      email_address:
-       - notify-1@example.com
-       - notify-2@example.com      
-      email_host: smtp
-      email_port: 25
-      email_user: user@example.com
-      # temperature readings are sent very regularly, but
-      # not too often.
-      topics:
-        - android_empatica_e4_temperature
-     ```
-3. Create `smtp.env` and configure your email settings following `smtp.env.template`. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
-4. (Optional) Modify flush.size and HDFS direcotory for Cold storage in `sink-hdfs.properties`
-
-    ```ini
-    flush.size=
-    topics.dir=/path/to/data
-    ```
-	Note: To have different flush.size for different topics, you can create multipe property configurations for a single connector. To do that,
-	
-	4.1 Create multipe property files that have different `flush.size` for given topics. 
-	Examples [sink-hdfs-high.properties](https://github.com/RADAR-CNS/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-CNS/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/sink-hdfs-low.properties)
-	
-	4.2 Add `CONNECTOR_PROPERTY_FILE_PREFIX: <prefix-value>` enviornment variable to `radar-hdfs-connector` service in `docker-compose` file.  
-	
-	4.3 Add created property files to the `radar-hdfs-connector` service in `docker-compose` with name abides to prefix-value mentioned in `CONNECTOR_PROPERTY_FILE_PREFIX`
-
-	```ini
-	    radar-hdfs-connector:
-	      image: radarcns/radar-hdfs-connector-auto:0.2
-	      restart: on-failure
-	      volumes:
-		- ./sink-hdfs-high.properties:/etc/kafka-connect/sink-hdfs-high.properties
-		- ./sink-hdfs-low.properties:/etc/kafka-connect/sink-hdfs-low.properties
-	      environment:
-		CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092	      
-		CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
-	```
- 
-5. Configure Hot Storage settings in `.env` file
- 
-    ```ini
-    HOTSTORAGE_USERNAME=mongodb-user
-    HOTSTORAGE_PASSWORD=XXXXXXXX
-    HOTSTORAGE_NAME=mongodb-database
-    ```   
-6. To install the stack
- 
-    ```shell
-    sudo ./install-radar-stack.sh
-    ```
-
-To stop RADAR-CNS stack on a single node setup, run
-
-```shell
-cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
-sudo ./stop-radar-stack.sh 
-```
-To reboot RADAR-CNS stack on a single node setup, run
-
-```shell
-cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
-sudo ./reboot-radar-stack.sh
-```
-To start RADAR-CNS stack on a single node setup after installing, run
-
-```shell
-cd RADAR-Docker/dcompose-stack/radar-hadoop-cp-stack/
-sudo ./start-radar-stack.sh
-```
-
-#### cAdvisor 
-
-cAdvisor (Container Advisor) provides container users an understanding of the resource usage and performance characteristics of their running containers.
-
-To view current resource performance,if running locally, try [http://localhost:8181](http://localhost:8181). This will bring up the built-in Web UI. Clicking on `/docker` in `Subcontainers` takes you to a new window with all of the Docker containers listed individually.
-
-#### Portainer
-
-Portainer provides simple interactive UI-based docker management. If running locally, try [http://localhost:8182](http://localhost:8182) for portainer's UI. To set-up portainer follow this [link](https://www.ostechnix.com/portainer-an-easiest-way-to-manage-docker/).
+2. Follow the README instructions there for correct configuration.
 
 ### Logging
 

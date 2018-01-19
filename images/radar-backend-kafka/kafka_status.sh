@@ -2,43 +2,57 @@
 
 # Check if variables exist
 if [ -z "$KAFKA_REST_PROXY" ]; then
-        echo "KAFKA_REST_PROXY is not defined"
-        exit 2
+    echo "KAFKA_REST_PROXY is not defined"
+    exit 2
 fi
 
-if [ -z "$TOPIC_LIST" ]; then
-        echo "TOPIC_LIST is not defined"
-        exit 2
+if [ -z "$KAFKA_SCHEMA_REGISTRY" ]; then
+    echo "KAFKA_SCHEMA_REGISTRY is not defined"
+    exit 4
 fi
 
-# Fetch env topic list
-IFS=', ' read -r -a needed <<< $TOPIC_LIST
+KAFKA_BROKERS=${KAFKA_BROKERS:-3}
 
-# Fetch env topic list
-count=0
-interval=1
-while [ "$count" != "${#needed[@]}" ] ; do
+max_timeout=32
 
-    echo "Waiting $interval second before retrying ..."
-    sleep $interval
-    if (( interval < 30 )); then
-        ((interval=interval*2))
+tries=10
+timeout=1
+while true; do
+    IFS=, read -r -a array <<< $(curl -s "${KAFKA_REST_PROXY}/brokers" | sed 's/^.*\[\(.*\)\]\}/\1/')
+    LENGTH=${#array[@]}
+    if [ "$LENGTH" -eq "$KAFKA_BROKERS" ]; then
+        echo "Kafka brokers available."
+        break
     fi
-
-    count=0
-    TOPICS=$(curl -sSX GET -H "Content-Type: application/json" "$KAFKA_REST_PROXY/topics")
-    TOPICS="$(echo -e "${TOPICS}" | tr -d '"'  | tr -d '['  | tr -d ']' | tr -d '[:space:]' )"
-
-    IFS=',' read -r -a array <<< $TOPICS
-    for topic in "${array[@]}"
-    do
-        for need in "${needed[@]}"
-        do
-            if [ "$topic" = "$need" ] ; then
-                ((count++))
-            fi
-        done
-    done
+    tries=$((tries - 1))
+    if [ $tries -eq 0 ]; then
+        echo "FAILED: KAFKA BROKERs NOT READY."
+        exit 5
+    fi
+    echo "Kafka brokers or Kafka REST proxy not ready. Retrying in ${timeout} seconds."
+    sleep $timeout
+    if [ $timeout -lt $max_timeout ]; then
+        timeout=$((timeout * 2))
+    fi
 done
 
-echo "All topics are now available. Ready to go!"
+tries=10
+timeout=1
+while true; do
+    if wget --spider -q "${KAFKA_SCHEMA_REGISTRY}/subjects" 2>/dev/null; then
+        break
+    fi
+    tries=$((tries - 1))
+    if [ $tries -eq 0 ]; then
+        echo "FAILED TO REACH SCHEMA REGISTRY. SCHEMAS NOT REGISTERED."
+        exit 6
+    fi
+    echo "Failed to reach schema registry. Retrying in ${timeout} seconds."
+    sleep $timeout
+    if [ $timeout -lt $max_timeout ]; then
+        timeout=$((timeout * 2))
+    fi
+done
+
+
+echo "Kafka is available. Ready to go!"

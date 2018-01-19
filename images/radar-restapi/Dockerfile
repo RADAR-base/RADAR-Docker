@@ -13,6 +13,8 @@
 
 FROM tomcat:8.0.44-jre8
 
+ENV JAVA_OPTS=-Djava.security.egd=file:/dev/urandom
+
 MAINTAINER @fnobilia, @afolarin
 
 LABEL description="RADAR-CNS Rest Api docker container"

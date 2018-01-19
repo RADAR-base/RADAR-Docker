@@ -5,8 +5,6 @@ events {
 }
 
 http {
-  index    index.html index.htm index.php;
-
   default_type application/octet-stream;
   log_format   main '$remote_addr - $remote_user [$time_local]  $status '
     '"$request" $body_bytes_sent "$http_referer" '
@@ -60,12 +58,25 @@ http {
     error_log                 /var/log/nginx/error.log;
 
     location /kafka/ {
-      proxy_pass         http://rest-proxy-1:8082/;
+      include cors.conf;
+      proxy_pass         http://gateway:8080/radar-gateway/;
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
     }
+    location ^~ /kafka/consumers {
+      deny all;
+    }
+    location ^~ /kafka/brokers {
+      deny all;
+    }
+    location ~* /kafka/topics/.+/partitions {
+      deny all;
+    }
     location /schema/ {
+      limit_except GET {
+        deny all;
+      }
       proxy_pass         http://schema-registry-1:8081/;
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
@@ -87,6 +98,7 @@ http {
       proxy_http_version 1.1;
     }
     location /api/ {
+      include cors.conf;
       proxy_pass         http://rest-api:8080/radar/api/;
       proxy_set_header   Host $host;
     }
@@ -98,10 +110,14 @@ http {
       proxy_pass         http://rest-api:8080/radar/frontend/;
       proxy_set_header   Host $host;
     }
-
-    location /managementportal/{
-          proxy_pass         http://managementportal-app:8080/;
-          proxy_set_header   Host $host;
+    location /managementportal/ {
+      include cors.conf;
+      proxy_pass         http://managementportal-app:8080/managementportal/;
+      proxy_set_header   Host $host;
+    }
+    location /kafkamanager/{
+      proxy_pass         http://kafka-manager:9000;
+      proxy_set_header   Host $host;
     }
   }
 }
