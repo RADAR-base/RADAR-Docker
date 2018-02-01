@@ -270,7 +270,7 @@ services:
   # RADAR Dashboard                                                           #
   #---------------------------------------------------------------------------#
   dashboard:
-    image: radarcns/radar-dashboard:2.0.5-beta-base-href
+    image: radarcns/radar-dashboard:2.1.0
     networks:
       - api
     depends_on:
@@ -407,7 +407,7 @@ services:
   # RADAR HDFS connector                                                     #
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
-    image: radarcns/radar-hdfs-connector-auto:0.1
+    image: radarcns/radar-hdfs-connector-auto:0.2.1
     restart: on-failure
     volumes:
       - ./etc/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
@@ -457,7 +457,7 @@ services:
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-stream:
-    image: radarcns/radar-backend-kafka-auto:0.1.2
+    image: radarcns/radar-backend:0.2.0
     command:
       - stream
     networks:
@@ -484,7 +484,7 @@ services:
   # RADAR backend monitor                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
-    image: radarcns/radar-backend-kafka-auto:0.1.2
+    image: radarcns/radar-backend:0.2.0
     command: monitor
     networks:
       - zookeeper
@@ -570,7 +570,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarcns/management-portal:0.3.1
+    image: radarcns/management-portal:0.3.3
     networks:
       - default
       - api
@@ -606,6 +606,8 @@ services:
     image: postgres:9.6.2
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
+      - "postgres-backup/backups/postgresql:/backups/database/postgresql/"
+      - "postgres-backup/scripts:/backup-scripts"
     environment:
       POSTGRES_USER : ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
