@@ -570,7 +570,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarcns/management-portal:0.3.3
+    image: radarcns/management-portal:0.3.4
     networks:
       - default
       - api
