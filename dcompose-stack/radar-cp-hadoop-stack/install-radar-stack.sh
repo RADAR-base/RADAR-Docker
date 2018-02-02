@@ -114,7 +114,7 @@ inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.
 sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/webserver/nginx.conf
 init_certificate "${SERVER_NAME}"
 
-echo "==> Starting RADAR-CNS Platform"
+echo "==> Starting RADAR-base Platform"
 sudo-linux docker-compose up -d "$@"
 
 request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERT:-yes}"

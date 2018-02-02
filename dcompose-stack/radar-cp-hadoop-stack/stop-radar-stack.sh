@@ -2,5 +2,5 @@
 
 . ./util.sh
 
-echo "==> Stopping RADAR-CNS Stack"
+echo "==> Stopping RADAR-base Stack"
 sudo-linux docker-compose stop

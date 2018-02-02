@@ -15,7 +15,7 @@ FROM confluentinc/cp-base:3.2.1
 
 MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl> , Francesco N <francesco.nobilia@kcl.ac.uk>
 
-LABEL description="RADAR-CNS Backend streams and monitor"
+LABEL description="RADAR-base Backend streams and monitor"
 
 # Install RADAR-Backend
 RUN echo "==> Installing Components" \

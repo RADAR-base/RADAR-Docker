@@ -1,12 +1,12 @@
 # RADAR-Docker
 
-The dockerized RADAR stack for deploying the RADAR-CNS platform. Component repositories can be found at [RADAR-CNS DockerHub org](https://hub.docker.com/u/radarcns/dashboard/)
+The dockerized RADAR stack for deploying the RADAR-base platform. Component repositories can be found at [RADAR-base DockerHub org](https://hub.docker.com/u/radarcns/dashboard/)
 
 ## Installation instructions 
-To install RADAR-CNS stack, do the following: 
+To install RADAR-base stack, do the following: 
 
 1. Install [Docker Engine](https://docs.docker.com/engine/installation/)
-2. Install `docker-compose` using the [installation guide](https://docs.docker.com/compose/install/) or by following our [wiki](https://github.com/RADAR-CNS/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu#install-docker-compose).
+2. Install `docker-compose` using the [installation guide](https://docs.docker.com/compose/install/) or by following our [wiki](https://github.com/RADAR-base/RADAR-Docker/wiki/How-to-set-up-docker-on-ubuntu#install-docker-compose).
 3. Verify the Docker installation by running on the command-line:
 
     ```shell
@@ -21,10 +21,10 @@ To install RADAR-CNS stack, do the following:
         sudo apt-get install git
         ```
 	
-5. Clone [RADAR-Docker](https://github.com/RADAR-CNS/RADAR-Docker) repository from GitHub.
+5. Clone [RADAR-Docker](https://github.com/RADAR-base/RADAR-Docker) repository from GitHub.
 
     ```shell
-    git clone https://github.com/RADAR-CNS/RADAR-Docker.git
+    git clone https://github.com/RADAR-base/RADAR-Docker.git
     ```
 
 6. Install required component stack following the instructions below.
@@ -34,7 +34,7 @@ To install RADAR-CNS stack, do the following:
 RADAR-Docker currently offers two component stacks to run.
 
 1. A Docker-compose for components from [Confluent Kafka Platform](http://docs.confluent.io/3.1.0/) community 
-2. A Docker-compose for components from RADAR-CNS platform.
+2. A Docker-compose for components from RADAR-base platform.
 
 > **Note**: on macOS, remove `sudo` from all `docker` and `docker-compose` commands in the usage instructions below.
 
@@ -54,23 +54,23 @@ To stop this stack, run:
 sudo docker-compose down
 ```
 
-### RADAR-CNS platform
+### RADAR-base platform
 
-In addition to Confluent Kafka platform components, RADAR-CNS platform offers
+In addition to Confluent Kafka platform components, RADAR-base platform offers
 
 * RADAR-HDFS-Connector - Cold storage of selected streams in Hadoop data storage,
 * RADAR-MongoDB-Connector - Hot storage of selected streams in MongoDB,
-* [RADAR-Dashboard](https://github.com/RADAR-CNS/RADAR-Dashboard),
+* [RADAR-Dashboard](https://github.com/RADAR-base/RADAR-Dashboard),
 * RADAR-Streams - real-time aggregated streams,
 * RADAR-Monitor - Status monitors,
-* [RADAR-HotStorage](https://github.com/RADAR-CNS/RADAR-HotStorage) via MongoDB, 
-* [RADAR-REST API](https://github.com/RADAR-CNS/RADAR-RestApi),
+* [RADAR-HotStorage](https://github.com/RADAR-base/RADAR-HotStorage) via MongoDB, 
+* [RADAR-REST API](https://github.com/RADAR-base/RADAR-RestApi),
 * A Hadoop cluster, and
 * An email server.
 * Management Portal - A web portal to manage patient monitoring studies.
 * RADAR-Gateway - A validating gateway to allow only valid and authentic data to the platform
 * Catalog server - A Service to share source-types configured in the platform.
-To run RADAR-CNS stack in a single node setup:
+To run RADAR-base stack in a single node setup:
 
 1. Navigate to `radar-cp-hadoop-stack`:
 

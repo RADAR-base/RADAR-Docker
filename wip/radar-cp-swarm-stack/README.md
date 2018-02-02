@@ -1,4 +1,4 @@
-# RADAR-CNS with multi-node cluster using Docker Swarm 
+# RADAR-base with multi-node cluster using Docker Swarm 
 
 # Run the full setup with
 ```shell
