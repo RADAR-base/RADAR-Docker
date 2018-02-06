@@ -45,10 +45,12 @@ while read service; do
     fi
 done <<< "$(sudo-linux docker-compose config --services)"
 
+display_host="${SERVER_NAME} ($(hostname -f), $(curl -s http://ipecho.net/plain))"
+
 if [ "${#unhealthy[@]}" -eq 0 ]; then
     if [ -f .unhealthy ]; then
          rm -f .unhealthy
-         hipchat_notify green "All services are healthy again"
+         hipchat_notify green "All services on ${display_host} are healthy again"
     fi
     echo "All services are healthy"
 else
@@ -57,14 +59,15 @@ else
     # Send notification to MAINTAINER
     # start up the mail container if not already started
     sudo-linux docker-compose up -d smtp
+    # ensure that all topics are available
+    sudo-linux docker-compose run --rm kafka-init
     # save the container, so that we can use exec to send an email later
     container=$(sudo-linux docker-compose ps -q smtp)
     SAVEIFS=$IFS
     IFS=,
     display_services="[${unhealthy[*]}]"
     IFS=$SAVEIFS
-    display_host="${SERVER_NAME} ($(hostname -f), $(curl -s http://ipecho.net/plain))"
-    body="Services on $display_host are unhealthy. Services $display_services have been restarted. Please log in for further information."
+    body="Services on ${display_host} are unhealthy. Services $display_services have been restarted. Please log in for further information."
     echo "Sent notification to $MAINTAINER_EMAIL"
     echo "$body" | sudo-linux docker exec -i ${container} mail -aFrom:$FROM_EMAIL "-s[RADAR] Services on ${SERVER_NAME} unhealthy" $MAINTAINER_EMAIL
 
