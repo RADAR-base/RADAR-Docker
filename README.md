@@ -65,9 +65,11 @@ In addition to Confluent Kafka platform components, RADAR-CNS platform offers
 * RADAR-Monitor - Status monitors,
 * [RADAR-HotStorage](https://github.com/RADAR-CNS/RADAR-HotStorage) via MongoDB, 
 * [RADAR-REST API](https://github.com/RADAR-CNS/RADAR-RestApi),
-* a Hadoop cluster, and
-* an email server.
-
+* A Hadoop cluster, and
+* An email server.
+* Management Portal - A web portal to manage patient monitoring studies.
+* RADAR-Gateway - A validating gateway to allow only valid and authentic data to the platform
+* Catalog server - A Service to share source-types configured in the platform.
 To run RADAR-CNS stack in a single node setup:
 
 1. Navigate to `radar-cp-hadoop-stack`:
