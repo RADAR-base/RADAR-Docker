@@ -1,6 +1,6 @@
 # RADAR-Docker
 
-The dockerized RADAR stack for deploying the RADAR-base platform. Component repositories can be found at [RADAR-base DockerHub org](https://hub.docker.com/u/radarcns/dashboard/)
+The dockerized RADAR stack for deploying the RADAR-base platform. Component repositories can be found at [RADAR-base DockerHub org](https://hub.docker.com/u/radarbase/dashboard/)
 
 ## Installation instructions 
 To install RADAR-base stack, do the following: 
