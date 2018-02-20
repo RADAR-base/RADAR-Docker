@@ -15,15 +15,15 @@ FROM confluentinc/cp-base:3.2.1
 
 MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl> , Francesco N <francesco.nobilia@kcl.ac.uk>
 
-LABEL description="RADAR-CNS Backend streams and monitor"
+LABEL description="RADAR-base Backend streams and monitor"
 
 # Install RADAR-Backend
 RUN echo "==> Installing Components" \
     # Download Git RADAR-Backend release
-    && echo "==> Downloading RADAR-CNS/RADAR-Backend 0.1.2 release from GitHub" \
+    && echo "==> Downloading RADAR-base/RADAR-Backend 0.1.2 release from GitHub" \
     && cd /usr/local && mkdir RADAR-Backend
 
-ADD https://github.com/RADAR-CNS/RADAR-Backend/releases/download/0.1.2/radar-backend-0.1.2-all.jar /usr/share/java/
+ADD https://github.com/RADAR-base/RADAR-Backend/releases/download/0.1.2/radar-backend-0.1.2-all.jar /usr/share/java/
 
 # Load topics validator
 COPY ["./init.sh", "./kafka_status.sh", "/home/"]

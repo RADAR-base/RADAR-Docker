@@ -14,7 +14,7 @@ JAR="restructurehdfs-all-${JAR_VERSION}.jar"
 
 if [ ! -e "lib/${JAR}" ]; then
   echo "Downloading HDFS restructuring JAR version ${JAR_VERSION}"
-  sudo-linux curl -L -# -o lib/${JAR} "https://github.com/RADAR-CNS/Restructure-HDFS-topic/releases/download/v${JAR_VERSION}/${JAR}"
+  sudo-linux curl -L -# -o lib/${JAR} "https://github.com/RADAR-base/Restructure-HDFS-topic/releases/download/v${JAR_VERSION}/${JAR}"
 fi
 
 # HDFS filename to get

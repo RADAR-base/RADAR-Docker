@@ -10,7 +10,7 @@ done
 
 if [ -f /data/db/.radar_hotstorage_set ]; then
 	echo "**********************************************"
-	echo "**  RADAR-CNS Hotstorage is up and running  **"
+	echo "**  RADAR-base Hotstorage is up and running  **"
 	echo "**********************************************"
     exit 0
 fi
@@ -32,7 +32,7 @@ fi
 
 echo "=> MongoDB is ready"
 
-echo "=> Creating DB and User for RADAR-CNS Hot Storage"
+echo "=> Creating DB and User for RADAR-base Hot Storage"
 
 mongo admin --eval 'db.createUser( { user: "'${RADAR_USER}'", pwd: "'${RADAR_PWD}'", roles: [ { role: "root", db: "admin" } ] } )'
 mongo admin -u $RADAR_USER -p $RADAR_PWD <<EOF
@@ -48,7 +48,7 @@ echo ""
 echo "*********************************************************"
 echo "*********************************************************"
 echo "**                                                     **"
-echo "**  Your RADAR-CNS Hotstorage is now ready to be used  **"
+echo "**  Your RADAR-base Hotstorage is now ready to be used  **"
 echo "**                                                     **"
 echo "*********************************************************"
 echo "*********************************************************"

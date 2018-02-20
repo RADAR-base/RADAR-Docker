@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Busy waiting loop that waits untill all topic are available 
-echo "===> Waiting RADAR-CNS topics ... "
+echo "===> Waiting RADAR-base topics ... "
 ./home/kafka_status.sh
 
 # Start streams

@@ -17,10 +17,10 @@ ENV JAVA_OPTS=-Djava.security.egd=file:/dev/urandom
 
 MAINTAINER @fnobilia, @afolarin
 
-LABEL description="RADAR-CNS Rest Api docker container"
+LABEL description="RADAR-base Rest Api docker container"
 
 # Install Rest API
-ADD https://github.com/RADAR-CNS/RADAR-RestApi/releases/download/v0.1.1/radar-0.1.1.war /usr/local/tomcat/webapps/radar.war
+ADD https://github.com/RADAR-base/RADAR-RestApi/releases/download/v0.1.1/radar-0.1.1.war /usr/local/tomcat/webapps/radar.war
 
 EXPOSE 8080
 

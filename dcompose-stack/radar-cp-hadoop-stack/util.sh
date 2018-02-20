@@ -26,7 +26,7 @@ check_parent_exists() {
   fi
   PARENT=$(dirname $2)
   if [ ! -d "${PARENT}" ]; then
-    echo "RADAR-CNS stores volumes at ${PARENT}. If this folder does not exist, please create the entire path and then try again"
+    echo "RADAR-base stores volumes at ${PARENT}. If this folder does not exist, please create the entire path and then try again"
     exit 1
   fi
   if [ -d "$2" ]; then

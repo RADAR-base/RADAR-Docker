@@ -15,10 +15,10 @@ FROM confluentinc/cp-kafka-connect:3.2.1
 
 MAINTAINER Nivethika M <nivethika@thehyve.nl> , Joris B <joris@thehyve.nl> , Francesco N <francesco.nobilia@kcl.ac.uk>
 
-LABEL description="RADAR-CNS Backend- MongoDB Sink Connector"
+LABEL description="RADAR-base Backend- MongoDB Sink Connector"
 
 # Deploy RADAR-Backend - Mongodb Sink Connector
-ADD  https://github.com/RADAR-CNS/RADAR-MongoDB-Sink-Connector/releases/download/0.1/radar-mongodb-sink-connector-0.1.jar /etc/kafka-connect/jars/
+ADD  https://github.com/RADAR-base/RADAR-MongoDB-Sink-Connector/releases/download/0.1/radar-mongodb-sink-connector-0.1.jar /etc/kafka-connect/jars/
 
 # Load topics validator
 COPY ./kafka_status.sh /home/kafka_status.sh

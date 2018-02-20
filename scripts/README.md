@@ -1,6 +1,6 @@
 ## Scripts
 
-This folder contains useful scripts to manage the server where the RADAR-CNS Platform is running.
+This folder contains useful scripts to manage the server where the RADAR-base Platform is running.
 
 - `check_radar_network.sh` checks if the machine is connected to internet. The script can be parametrised with
   - `nic` is the internet gateway

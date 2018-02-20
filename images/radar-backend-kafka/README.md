@@ -1,6 +1,6 @@
 # Dockerised RADAR-Backend-Kafka
 
-It runs the RADAR-CNS Backend Kafka solution based on Kafka Streams 3.1.2, for more details about Kafka Streams click [here](http://docs.confluent.io/3.1.2/streams/index.html).
+It runs the RADAR-base Backend Kafka solution based on Kafka Streams 3.1.2, for more details about Kafka Streams click [here](http://docs.confluent.io/3.1.2/streams/index.html).
 
 Create the docker image:
 ```
@@ -27,4 +27,4 @@ Before starting the streams, it waits until all topics inside TOPIC_LIST are ava
 
 ## How to run
 
-For a complete use case scenario, check the RADAR-CNS `docker-compose` file available [here](https://github.com/RADAR-CNS/RADAR-Docker/blob/backend-integration/dcompose-stack/radar-cp-hadoop-stack/docker-compose.yml)
+For a complete use case scenario, check the RADAR-base `docker-compose` file available [here](https://github.com/RADAR-base/RADAR-Docker/blob/backend-integration/dcompose-stack/radar-cp-hadoop-stack/docker-compose.yml)
