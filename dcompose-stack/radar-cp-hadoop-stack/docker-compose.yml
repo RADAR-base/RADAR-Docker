@@ -473,7 +473,7 @@ services:
       - schema-registry-1
       - kafka-init
     volumes:
-      - ./etc/radar.yml:/etc/radar.yml
+      - ./etc/radar-backend/radar.yml:/etc/radar.yml
     restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
@@ -499,7 +499,7 @@ services:
       - kafka-init
       - smtp
     volumes:
-      - ./etc/radar.yml:/etc/radar.yml
+      - ./etc/radar-backend/radar.yml:/etc/radar.yml
       - radar-backend-monitor-disconnect-data:/var/lib/radar/data
     restart: always
     environment:
