@@ -35,7 +35,6 @@ Instructions for deploying kafka-manager in a docker container and proxied throu
 ```
 12. Now start the stack with `dcompose-stack/radar-cp-hadoop-stack//install-radar-stack.sh`. This will build a docker image for kafka and start it in a container. You can access it with a browser at `https://host/kafkamanager/`. Open the link and add all the information. In this case the zookeeper host is at `zookeeper-1:2181`. This will look something like the image -
 
-![Add a Cluster](/img/add_cluster.png)
+![Add a Cluster](/images/kafka-manager/img/add_cluster.png)
 
 Note- You can also take the easy route and just pull the docker image from docker hub located at `radarcns/kafka-manager`. But remember that the context path is `/kafka-manager` so you will need to specify this in your `nginx.conf` file
-
