@@ -44,9 +44,13 @@ rest_proxy:
 #======================== Battery level monitor ========================#
 battery_monitor:
   level: LOW
-  email_address:
-    - notifier@email
-    - notifier2@email
+  notify: # Each project can have a number of email addresses
+    - project_id: s1
+      email_address:
+        - notifier1@email
+    - project_id: s2
+      email_address:
+        - notifier2@email
   email_host: localhost
   email_port: 25
   email_user: user@example.com
@@ -55,9 +59,13 @@ battery_monitor:
 
 #======================= Disconnection monitor==========================#
 disconnect_monitor:
-  email_address:
-    - notifier@email
-    - notifier2@email
+  notify: # Each project can have a number of email addresses
+    - project_id: s1
+      email_address:
+        - notifier1@email
+    - project_id: s2
+      email_address:
+        - notifier2@email
   email_host: localhost
   email_port: 25
   email_user: user@example.com
