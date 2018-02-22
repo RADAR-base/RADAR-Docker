@@ -35,7 +35,7 @@ script:
   - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > etc/smtp.env
   - sudo docker volume create certs
   - sudo docker volume create certs-data
-  - cp etc/radar.yml.template etc/radar.yml
+  - cp etc/radar-backend/radar.yml.template etc/radar-backend/radar.yml
   - cp etc/webserver/nginx.conf.template etc/webserver/nginx.conf
   - cp etc/sink-hdfs.properties.template etc/sink-hdfs.properties
   - cp etc/sink-mongo.properties.template etc/sink-mongo.properties

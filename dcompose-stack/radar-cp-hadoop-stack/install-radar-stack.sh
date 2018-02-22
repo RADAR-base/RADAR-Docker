@@ -12,7 +12,7 @@ fi
 
 # Initialize and check all config files
 check_config_present .env etc/env.template
-check_config_present etc/radar.yml
+check_config_present etc/radar-backend/radar.yml
 check_config_present etc/managementportal/config/oauth_client_details.csv
 check_config_present etc/rest-api/mp_info.yml
 check_config_present etc/redcap-integration/radar.yml
