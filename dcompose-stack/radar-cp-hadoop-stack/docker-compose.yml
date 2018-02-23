@@ -356,7 +356,7 @@ services:
   # RADAR mongo connector                                                     #
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
-    image: radarbase/radar-mongodb-connector-auto:0.1
+    image: radarbase/kafka-connect-mongodb-sink:0.2.0
     restart: on-failure
     volumes:
       - ./etc/mongodb-connector/sink-mongo.properties:/etc/kafka-connect/sink.properties
