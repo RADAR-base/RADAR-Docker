@@ -356,10 +356,10 @@ services:
   # RADAR mongo connector                                                     #
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
-    image: radarbase/radar-mongodb-connector-auto:0.1
+    image: radarbase/kafka-connect-mongodb-sink:0.2.0
     restart: on-failure
     volumes:
-      - ./etc/sink-mongo.properties:/etc/kafka-connect/sink.properties
+      - ./etc/mongodb-connector/sink-mongo.properties:/etc/kafka-connect/sink.properties
     networks:
       - zookeeper
       - kafka
@@ -410,7 +410,7 @@ services:
     image: radarbase/radar-hdfs-connector-auto:0.1
     restart: on-failure
     volumes:
-      - ./etc/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
+      - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
     networks:
       - zookeeper
       - kafka
@@ -457,7 +457,7 @@ services:
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-stream:
-    image: radarbase/radar-backend:0.2.0
+    image: radarbase/radar-backend:0.2.1
     command:
       - stream
     networks:
@@ -473,7 +473,7 @@ services:
       - schema-registry-1
       - kafka-init
     volumes:
-      - ./etc/radar.yml:/etc/radar.yml
+      - ./etc/radar-backend/radar.yml:/etc/radar.yml
     restart: always
     environment:
       KAFKA_REST_PROXY: http://rest-proxy-1:8082
@@ -484,7 +484,7 @@ services:
   # RADAR backend monitor                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
-    image: radarbase/radar-backend:0.2.0
+    image: radarbase/radar-backend:0.2.1
     command: monitor
     networks:
       - zookeeper
@@ -499,7 +499,7 @@ services:
       - kafka-init
       - smtp
     volumes:
-      - ./etc/radar.yml:/etc/radar.yml
+      - ./etc/radar-backend/radar.yml:/etc/radar.yml
       - radar-backend-monitor-disconnect-data:/var/lib/radar/data
     restart: always
     environment:

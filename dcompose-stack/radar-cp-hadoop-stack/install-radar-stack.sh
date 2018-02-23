@@ -12,12 +12,12 @@ fi
 
 # Initialize and check all config files
 check_config_present .env etc/env.template
-check_config_present etc/radar.yml
+check_config_present etc/radar-backend/radar.yml
 check_config_present etc/managementportal/config/oauth_client_details.csv
 check_config_present etc/rest-api/mp_info.yml
 check_config_present etc/redcap-integration/radar.yml
-copy_template_if_absent etc/sink-mongo.properties
-copy_template_if_absent etc/sink-hdfs.properties
+copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
+copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/rest-api/device-catalog.yml
 copy_template_if_absent etc/webserver/nginx.conf
@@ -59,9 +59,9 @@ sudo-linux docker-compose run --rm kafka-init
 
 echo "==> Configuring MongoDB Connector"
 # Update sink-mongo.properties
-inline_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/sink-mongo.properties
-inline_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/sink-mongo.properties
-inline_variable 'mongo.database=' $HOTSTORAGE_NAME etc/sink-mongo.properties
+inline_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/mongodb-connector/sink-mongo.properties
+inline_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sink-mongo.properties
+inline_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
 
 # Set topics
 if [ -z "${COMBINED_AGG_TOPIC_LIST}"]; then
@@ -70,7 +70,7 @@ if [ -z "${COMBINED_AGG_TOPIC_LIST}"]; then
     COMBINED_AGG_TOPIC_LIST="${RADAR_AGG_TOPIC_LIST},${COMBINED_AGG_TOPIC_LIST}"
   fi
 fi
-inline_variable 'topics=' "${COMBINED_AGG_TOPIC_LIST}" etc/sink-mongo.properties
+inline_variable 'topics=' "${COMBINED_AGG_TOPIC_LIST}" etc/mongodb-connector/sink-mongo.properties
 
 echo "==> Configuring HDFS Connector"
 if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
@@ -79,7 +79,7 @@ if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
     COMBINED_RAW_TOPIC_LIST="${RADAR_RAW_TOPIC_LIST},${COMBINED_RAW_TOPIC_LIST}"
   fi
 fi
-inline_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/sink-hdfs.properties
+inline_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-hdfs.properties
 
 echo "==> Configuring Management Portal"
 
