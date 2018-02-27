@@ -393,9 +393,9 @@ services:
       CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS: 300000
       CONNECT_CONSUMER_SESSION_TIMEOUT_MS: 10000
       CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
+      CONNECT_PLUGIN_PATH: /usr/share/java/kafka-connect/plugins
       KAFKA_BROKERS: 3
-      # For backwards compatibility
-      TOPIC_LIST: "application_record_counts"
+      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
     healthcheck:
       test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
       interval: 1m
