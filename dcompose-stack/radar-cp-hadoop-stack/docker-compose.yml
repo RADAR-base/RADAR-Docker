@@ -241,7 +241,7 @@ services:
     volumes:
       - "./etc/rest-api:/usr/local/tomcat/conf/radar"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/radar/api/source/specification/ANDROID"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/radar/api/swagger.json"]
       interval: 1m
       timeout: 5s
       retries: 3
@@ -280,7 +280,7 @@ services:
       API_URI: https://${SERVER_NAME}/api
       BASE_HREF: /dashboard/
     healthcheck:
-      test: ["CMD", "curl", "-IX", "HEAD", "http://localhost:80/"]
+      test: ["CMD", "wget", "-s", "http://localhost:80/"]
       interval: 1m
       timeout: 5s
       retries: 3

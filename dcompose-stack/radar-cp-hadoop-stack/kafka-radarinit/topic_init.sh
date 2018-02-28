@@ -32,7 +32,7 @@ while true; do
   fi
 done
 
-if ! radar-schemas-tools register "${KAFKA_SCHEMA_REGISTRY}" merged; then
+if ! radar-schemas-tools register --force "${KAFKA_SCHEMA_REGISTRY}" merged; then
   echo "FAILED TO REGISTER SCHEMAS"
   exit 1
 fi
