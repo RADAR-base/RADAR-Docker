@@ -14,7 +14,7 @@ echo "Compiling schemas..." >&2
 DEPENDENT_REGEX='"(items|type)": (\[\s*"null",\s*)?"([A-Z]|[^".]*\.)'
 # Separate enums so that they can be referenced in later files
 read -r -a notdependent <<< $(find merged/commons -name "*.avsc" -exec grep -Eqv "$DEPENDENT_REGEX" "{}" \; -print | tr '\n' ' ')
-read -r -a dependent <<< $(find merged/commons -name "*.avsc" -exec grep -Eq "$DEPENDENT_REGEX" \; -print | tr '\n' ' ')
+read -r -a dependent <<< $(find merged/commons -name "*.avsc" -exec grep -Eq "$DEPENDENT_REGEX" "{}" \; -print | tr '\n' ' ')
 java -jar /usr/share/java/avro-tools.jar compile -string schema ${notdependent[@]} ${dependent[@]} java/src 2>/dev/null
 find java/src -name "*.java" -print0 | xargs -0 javac -cp /usr/lib/*:java/classes -d java/classes -sourcepath java/src 
 # Update the radar schemas so the tools find the new classes in classpath
