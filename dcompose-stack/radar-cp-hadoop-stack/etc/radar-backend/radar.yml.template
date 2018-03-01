@@ -93,7 +93,7 @@ statistics_monitors:
       - android_phone_contacts
       - android_phone_usage_event
       - android_phone_relative_location
-    output_topic: source_statistics_radar_prmt
+    output_topic: source_statistics_android_phone
 
 #========================= Kafka stream ================================#
 stream_masters:
