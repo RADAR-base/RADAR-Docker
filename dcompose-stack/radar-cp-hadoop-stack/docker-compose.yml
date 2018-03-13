@@ -80,6 +80,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/1 || exit 1"]
@@ -103,6 +104,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
@@ -126,6 +128,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
