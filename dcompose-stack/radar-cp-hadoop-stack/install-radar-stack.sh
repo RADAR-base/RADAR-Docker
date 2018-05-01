@@ -14,12 +14,10 @@ fi
 check_config_present .env etc/env.template
 check_config_present etc/radar-backend/radar.yml
 check_config_present etc/managementportal/config/oauth_client_details.csv
-check_config_present etc/rest-api/mp_info.yml
 check_config_present etc/redcap-integration/radar.yml
 copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
-copy_template_if_absent etc/rest-api/device-catalog.yml
 copy_template_if_absent etc/webserver/nginx.conf
 
 . ./.env
@@ -100,12 +98,9 @@ fi
 echo "==> Configuring REST-API"
 
 # Set MongoDb credential
-inline_variable 'usr:[[:space:]]' "$HOTSTORAGE_USERNAME" etc/rest-api/radar.yml
-inline_variable 'pwd:[[:space:]]' "$HOTSTORAGE_PASSWORD" etc/rest-api/radar.yml
-inline_variable 'db:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/radar.yml
-
-# Set variable for Swagger
-inline_variable 'host:[[:space:]]*' "${SERVER_NAME}" etc/rest-api/radar.yml
+inline_variable 'username:[[:space:]]' "$HOTSTORAGE_USERNAME" etc/rest-api/radar.yml
+inline_variable 'password:[[:space:]]' "$HOTSTORAGE_PASSWORD" etc/rest-api/radar.yml
+inline_variable 'database_name:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/radar.yml
 
 echo "==> Configuring REDCap-Integration"
 

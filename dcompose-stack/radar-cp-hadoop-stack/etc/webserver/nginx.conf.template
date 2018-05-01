@@ -99,7 +99,7 @@ http {
     }
     location /api/ {
       include cors.conf;
-      proxy_pass         http://rest-api:8080/radar/api/;
+      proxy_pass         http://rest-api:8080/api/;
       proxy_set_header   Host $host;
     }
     location /redcapint/ {
