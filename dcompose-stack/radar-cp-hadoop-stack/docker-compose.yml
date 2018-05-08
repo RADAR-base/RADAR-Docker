@@ -41,7 +41,7 @@ services:
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:3.2.1-5
+    image: confluentinc/cp-zookeeper:4.1.0
     networks:
       - zookeeper
     volumes:
@@ -65,7 +65,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:3.2.1-5
+    image: confluentinc/cp-kafka:4.1.0
     networks:
       - kafka
       - zookeeper
@@ -89,7 +89,7 @@ services:
       retries: 3
 
   kafka-2:
-    image: confluentinc/cp-kafka:3.2.1-5
+    image: confluentinc/cp-kafka:4.1.0
     networks:
       - kafka
       - zookeeper
@@ -113,7 +113,7 @@ services:
       retries: 3
 
   kafka-3:
-    image: confluentinc/cp-kafka:3.2.1-5
+    image: confluentinc/cp-kafka:4.1.0
     networks:
       - kafka
       - zookeeper
@@ -140,7 +140,7 @@ services:
   # Schema Registry                                                           #
   #---------------------------------------------------------------------------#
   schema-registry-1:
-    image: confluentinc/cp-schema-registry:3.2.1-5
+    image: confluentinc/cp-schema-registry:4.1.0
     networks:
       - kafka
       - zookeeper
@@ -164,7 +164,7 @@ services:
   # REST proxy                                                                #
   #---------------------------------------------------------------------------#
   rest-proxy-1:
-    image: confluentinc/cp-kafka-rest:3.2.1-5
+    image: confluentinc/cp-kafka-rest:4.1.0
     networks:
       - kafka
       - zookeeper
@@ -361,7 +361,7 @@ services:
   # RADAR mongo connector                                                     #
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
-    image: radarbase/kafka-connect-mongodb-sink:0.2.0
+    image: radarbase/kafka-connect-mongodb-sink:0.2.1
     restart: on-failure
     volumes:
       - ./etc/mongodb-connector/sink-mongo.properties:/etc/kafka-connect/sink.properties
@@ -400,6 +400,7 @@ services:
       CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
       CONNECT_PLUGIN_PATH: /usr/share/java/kafka-connect/plugins
       KAFKA_BROKERS: 3
+      CONNECT_LOG4J_ROOT_LOGLEVEL: WARN
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
     healthcheck:
       test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
@@ -450,6 +451,8 @@ services:
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
       KAFKA_BROKERS: 3
+      CONNECT_LOG4J_ROOT_LOGLEVEL: WARN
+      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
       # For backwards compatibility
       TOPIC_LIST: "application_record_counts"
     healthcheck:
@@ -462,7 +465,7 @@ services:
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-stream:
-    image: radarbase/radar-backend:0.2.1
+    image: radarbase/radar-backend:0.2.3
     command:
       - stream
     networks:
@@ -489,7 +492,7 @@ services:
   # RADAR backend monitor                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
-    image: radarbase/radar-backend:0.2.1
+    image: radarbase/radar-backend:0.2.3
     command: monitor
     networks:
       - zookeeper
@@ -575,7 +578,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.3.4
+    image: radarbase/management-portal:0.3.6
     networks:
       - default
       - api

@@ -21,5 +21,8 @@ mongo.database=
 # by the Kafka topic name.
 #mongo.collection.format={$topic}
 
+# Buffer Capacity for mogodb writer. Default value is 20000
+# buffer.capacity=20000
+
 # Factory class to do the actual record conversion
 record.converter.class=org.radarcns.connect.mongodb.serialization.RecordConverterFactory
