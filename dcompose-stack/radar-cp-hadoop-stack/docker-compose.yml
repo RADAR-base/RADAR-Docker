@@ -30,6 +30,12 @@ volumes:
   kafka-1-data: {}
   kafka-2-data: {}
   kafka-3-data: {}
+  zookeeper-1-data: {}
+  zookeeper-2-data: {}
+  zookeeper-3-data: {}
+  zookeeper-1-log: {}
+  zookeeper-2-log: {}
+  zookeeper-3-log: {}
   radar-backend-monitor-disconnect-data: {}
   certs:
     external: true
@@ -41,12 +47,12 @@ services:
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:3.2.1-5
+    image: confluentinc/cp-zookeeper:4.1.0
     networks:
       - zookeeper
     volumes:
-      - /var/lib/zookeeper/data
-      - /var/lib/zookeeper/logs
+      - zookeeper-1-data:/var/lib/zookeeper/data
+      - zookeeper-1-log:/var/lib/zookeeper/logs
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 1
@@ -54,7 +60,50 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:4.1.0
+    networks:
+      - zookeeper
+    volumes:
+      - zookeeper-2-data:/var/lib/zookeeper/data
+      - zookeeper-2-log:/var/lib/zookeeper/logs
+    restart: always
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+
+  zookeeper-3:
+    image: confluentinc/cp-zookeeper:4.1.0
+    networks:
+      - zookeeper
+    volumes:
+      - zookeeper-3-data:/var/lib/zookeeper/data
+      - zookeeper-3-log:/var/lib/zookeeper/logs
+    restart: always
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
     healthcheck:
       test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
       interval: 1m30s
@@ -65,7 +114,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:3.2.1-5
+    image: confluentinc/cp-kafka:4.1.0
     networks:
       - kafka
       - zookeeper
@@ -73,10 +122,12 @@ services:
       - kafka-1-data:/var/lib/kafka/data
     depends_on:
       - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     restart: always
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
@@ -89,18 +140,20 @@ services:
       retries: 3
 
   kafka-2:
-    image: confluentinc/cp-kafka:3.2.1-5
+    image: confluentinc/cp-kafka:4.1.0
     networks:
       - kafka
       - zookeeper
     volumes:
       - kafka-2-data:/var/lib/kafka/data
     depends_on:
-      - kafka-1
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     restart: always
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
@@ -113,18 +166,20 @@ services:
       retries: 3
 
   kafka-3:
-    image: confluentinc/cp-kafka:3.2.1-5
+    image: confluentinc/cp-kafka:4.1.0
     networks:
       - kafka
       - zookeeper
     volumes:
       - kafka-3-data:/var/lib/kafka/data
     depends_on:
-      - kafka-2
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     restart: always
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
@@ -140,7 +195,7 @@ services:
   # Schema Registry                                                           #
   #---------------------------------------------------------------------------#
   schema-registry-1:
-    image: confluentinc/cp-schema-registry:3.2.1-5
+    image: confluentinc/cp-schema-registry:4.1.0
     networks:
       - kafka
       - zookeeper
@@ -164,7 +219,7 @@ services:
   # REST proxy                                                                #
   #---------------------------------------------------------------------------#
   rest-proxy-1:
-    image: confluentinc/cp-kafka-rest:3.2.1-5
+    image: confluentinc/cp-kafka-rest:4.1.0
     networks:
       - kafka
       - zookeeper
@@ -361,7 +416,7 @@ services:
   # RADAR mongo connector                                                     #
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
-    image: radarbase/kafka-connect-mongodb-sink:0.2.0
+    image: radarbase/kafka-connect-mongodb-sink:0.2.1
     restart: on-failure
     volumes:
       - ./etc/mongodb-connector/sink-mongo.properties:/etc/kafka-connect/sink.properties
@@ -400,6 +455,7 @@ services:
       CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
       CONNECT_PLUGIN_PATH: /usr/share/java/kafka-connect/plugins
       KAFKA_BROKERS: 3
+      CONNECT_LOG4J_ROOT_LOGLEVEL: WARN
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
     healthcheck:
       test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
@@ -450,6 +506,8 @@ services:
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
       KAFKA_BROKERS: 3
+      CONNECT_LOG4J_ROOT_LOGLEVEL: WARN
+      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
       # For backwards compatibility
       TOPIC_LIST: "application_record_counts"
     healthcheck:
@@ -462,7 +520,7 @@ services:
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-stream:
-    image: radarbase/radar-backend:0.2.1
+    image: radarbase/radar-backend:0.2.3
     command:
       - stream
     networks:
@@ -489,7 +547,7 @@ services:
   # RADAR backend monitor                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
-    image: radarbase/radar-backend:0.2.1
+    image: radarbase/radar-backend:0.2.3
     command: monitor
     networks:
       - zookeeper
@@ -575,7 +633,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.3.4
+    image: radarbase/management-portal:0.3.6
     networks:
       - default
       - api
@@ -636,8 +694,11 @@ services:
       - api
     depends_on:
       - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
-      ZK_HOSTS: zookeeper-1:2181
+      ZK_HOSTS: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "[ $$(wget -q -O - localhost:9000/kafkamanager/api/health) = healthy ] || exit 1"]
