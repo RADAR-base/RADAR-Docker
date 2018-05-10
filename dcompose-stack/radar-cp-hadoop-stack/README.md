@@ -5,6 +5,8 @@ This docker-compose stack contains the full operational RADAR platform. Once con
 ## Configuration
 
 1. First copy `etc/env.template` file to `./.env` and check and modify all its variables.
+   
+   
    1.1. To have a valid HTTPS connection for a public host, set `SELF_SIGNED_CERT=no`. You need to provide a public valid DNS name as `SERVER_NAME` for SSL certificate to work. IP addresses will not work. 
  
    1.2. Set `MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET` to a secret to be used by the Management Portal frontend.
@@ -13,16 +15,16 @@ This docker-compose stack contains the full operational RADAR platform. Once con
 
 2. Copy `etc/smtp.env.template` to `etc/smtp.env` and configure your email settings. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
 
-3. Copy `etc/redcap-integration/radar.yml.template` to `etc/redcap-integration/radar.yml` and modify it to configure the properties of Redcap instance and the management portal. For reference on configuration of this file look at the Readme file here - <https://github.com/RADAR-CNS/RADAR-RedcapIntegration#configuration>. In the REDcap portal under Project Setup, define the Data Trigger as `https://<YOUR_HOST_URL>/redcapint/trigger`
+3. Copy `etc/redcap-integration/radar.yml.template` to `etc/redcap-integration/radar.yml` and modify it to configure the properties of Redcap instance and the management portal. For reference on configuration of this file look at the Readme file here - <https://github.com/RADAR-base/RADAR-RedcapIntegration#configuration>. In the REDcap portal under Project Setup, define the Data Trigger as `https://<YOUR_HOST_URL>/redcapint/trigger`
 
 4. Copy `etc/managementportal/config/oauth_client_details.csv.template` to `etc/managementportal/config/oauth_client_details.csv` and change OAuth client credentials for production MP. The OAuth client for the frontend will be loaded automatically and does not need to be listed in this file. This file will be read at each startup. The current implementation overwrites existing clients with the same client ID, so be aware of this if you have made changes to a client listed in this file using the Management Portal frontend. This behaviour might change in the future.
 
-5. Finally, copy `etc/radar.yml.template` to `etc/radar.yml` and edit it, especially concerning the monitor email address configuration.
+5. Finally, copy `etc/radar-backend/radar.yml.template` to `etc/radar-backend/radar.yml` and edit it, especially concerning the monitor email address configuration.
 
 6. (Optional) Note: To have different flush.size for different topics, you can create multipe property configurations for a single connector. To do that,
 
 	6.1 Create multipe property files that have different `flush.size` for given topics.
-	Examples [sink-hdfs-high.properties](https://github.com/RADAR-CNS/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-CNS/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-low.properties)
+	Examples [sink-hdfs-high.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-low.properties)
 
 	6.2 Add `CONNECTOR_PROPERTY_FILE_PREFIX: <prefix-value>` environment variable to `radar-hdfs-connector` service in `docker-compose` file.
 
@@ -104,7 +106,7 @@ CSV-structured data can be gotten from HDFS by running
 ```shell
 ./hdfs_restructure.sh /topicAndroidNew <destination directory>
 ```
-This will put all CSV files in the destination directory, with subdirectory structure `PatientId/SensorType/Date_Hour.csv`.
+This will put all CSV files in the destination directory, with subdirectory structure `ProjectId/SubjectId/SensorType/Date_Hour.csv`.
 
 ## Cerificate
 
@@ -128,7 +130,7 @@ Portainer provides simple interactive UI-based docker management. If running loc
 
 ### Kafka Manager
 
-The [kafka-manager](https://github.com/yahoo/kafka-manager) is an interactive web based tool for managing Apache Kafka. Kafka manager has beed integrated in the stack. It is accessible at <http://localhost/kafkamanager/>
+The [kafka-manager](https://github.com/yahoo/kafka-manager) is an interactive web based tool for managing Apache Kafka. Kafka manager has beed integrated in the stack. It is accessible at `http://<your-host>/kafkamanager/`
 
 ### Check Health
 Each of the containers in the stack monitor their own health and show the output as healthy or unhealthy. A script called check-health.sh is used to check this output and send an email to the maintainer if a container is unhealthy.
@@ -137,13 +139,13 @@ First check that the `MAINTAINER_EMAIL` in the .env file is correct.
 
 Then make sure that the SMTP server is configured properly and running.
 
-If systemd integration is enabled, the check-health.sh script will check health of containers every five minutes. It can then be run directly by running
+If systemd integration is enabled, the check-health.sh script will check health of containers every five minutes. It can then be run directly by running if systemd wrappers have been installed
 ```
 sudo systemctl start radar-check-health.service
 ```
 Otherwise, the following manual commands can be invoked.
 
-Then just add a cron job to run the `check-health.sh` script periodically like -
+Add a cron job to run the `check-health.sh` script periodically like -
 1. Edit the crontab file for the current user by typing `$ crontab -e`
 2. Add your job and time interval. For example, add the following for checking health every 5 mins - 
 

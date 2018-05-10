@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create topics
-echo "Creating RADAR-CNS topics..."
+echo "Creating RADAR-base topics..."
 
 if ! radar-schemas-tools create -p $KAFKA_NUM_PARTITIONS -r $KAFKA_NUM_REPLICATION -b $KAFKA_NUM_BROKERS "${KAFKA_ZOOKEEPER_CONNECT}" merged; then
   echo "FAILED TO CREATE TOPICS"
@@ -11,7 +11,7 @@ fi
 
 echo "Topics created."
 
-echo "Registering RADAR-CNS schemas..."
+echo "Registering RADAR-base schemas..."
 
 tries=10
 timeout=1
@@ -32,7 +32,7 @@ while true; do
   fi
 done
 
-if ! radar-schemas-tools register "${KAFKA_SCHEMA_REGISTRY}" merged; then
+if ! radar-schemas-tools register --force "${KAFKA_SCHEMA_REGISTRY}" merged; then
   echo "FAILED TO REGISTER SCHEMAS"
   exit 1
 fi
@@ -40,5 +40,5 @@ fi
 echo "Schemas registered."
 
 echo "*******************************************"
-echo "**  RADAR-CNS topics and schemas ready   **"
+echo "**  RADAR-base topics and schemas ready   **"
 echo "*******************************************"

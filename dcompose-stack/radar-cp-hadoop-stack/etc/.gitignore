@@ -1,7 +1,7 @@
-/sink-mongo.properties
-/sink-hdfs.properties
+/mongodb-connector/sink-mongo.properties
+/hdfs-connector/sink-hdfs.properties
 /webserver/nginx.conf
-/radar.yml
+/radar-backend/radar.yml
 /smtp.env
 /rest-api/device-catalog.yml
 /rest-api/radar.yml
@@ -11,4 +11,3 @@
 /managementportal/config/liquibase/oauth_client_details.csv
 /schema/commons/
 /schema/specifications/
-
