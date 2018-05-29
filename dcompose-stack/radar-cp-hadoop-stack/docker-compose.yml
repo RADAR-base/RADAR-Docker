@@ -83,7 +83,7 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
     healthcheck:
-      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-2 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
@@ -105,7 +105,7 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
     healthcheck:
-      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-3 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
