@@ -88,7 +88,6 @@ services:
       timeout: 5s
       retries: 3
 
-
   zookeeper-3:
     image: confluentinc/cp-zookeeper:4.1.0
     networks:
@@ -361,7 +360,7 @@ services:
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-ls", "/"]
       interval: 1m
-      timeout: 5s
+      timeout: 10s
       retries: 3
 
   hdfs-datanode-2:
@@ -377,7 +376,7 @@ services:
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-ls", "/"]
       interval: 1m
-      timeout: 5s
+      timeout: 10s
       retries: 3
 
   hdfs-namenode:
@@ -395,7 +394,7 @@ services:
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-ls", "/"]
       interval: 1m
-      timeout: 5s
+      timeout: 10s
       retries: 3
 
   #---------------------------------------------------------------------------#
