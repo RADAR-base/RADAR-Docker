@@ -246,6 +246,7 @@ services:
       KAFKA_REST_LISTENERS: http://0.0.0.0:8082
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
       KAFKA_REST_HOST_NAME: rest-proxy-1
+      KAFKA_REST_COMPRESSION_TYPE: lz4
     healthcheck:
       test: ["CMD", "curl", "-f", "localhost:8082/topics"]
       interval: 1m30s
