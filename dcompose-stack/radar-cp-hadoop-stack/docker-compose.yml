@@ -133,6 +133,10 @@ services:
       KAFKA_LOG_RETENTION_HOURS: 730
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "1.1"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/1 || exit 1"]
       interval: 1m30s
@@ -159,6 +163,10 @@ services:
       KAFKA_LOG_RETENTION_HOURS: 730
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "1.1"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
       interval: 1m30s
@@ -185,6 +193,10 @@ services:
       KAFKA_LOG_RETENTION_HOURS: 730
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "1.1"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
       interval: 1m30s
