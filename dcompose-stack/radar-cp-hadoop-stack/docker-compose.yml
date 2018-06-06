@@ -678,7 +678,7 @@ services:
 
 
   managementportal-postgresql:
-    image: postgres:9.6.2
+    image: postgres:9.6-alpine
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
