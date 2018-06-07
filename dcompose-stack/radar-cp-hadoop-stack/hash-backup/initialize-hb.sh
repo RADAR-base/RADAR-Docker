@@ -1,10 +1,8 @@
 #!/bin/bash
+cd "$( dirname "${BASH_SOURCE[0]}" )"
+. "./backup.conf"
+. "../util.sh" > /dev/null
 
-#. ../.env
-. ./backup.conf
-. ../util.sh > /dev/null
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 IFS=',' read -r -a inputs <<< "$INPUTS"
 
 HB_VERSION="2115"
@@ -57,6 +55,7 @@ then
      copy_template_if_absent /etc/systemd/system/radar-hashbackup.service systemd/radar-hashbackup.service.template
      copy_template_if_absent /etc/systemd/system/radar-hashbackup.timer systemd/radar-hashbackup.timer.template
 
+     DIR="$( pwd )"
      inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-hashbackup.service
      inline_variable 'ExecStart=' "$DIR/run-backup.sh" /etc/systemd/system/radar-hashbackup.service
 
