@@ -56,6 +56,7 @@ then
      copy_template_if_absent /etc/systemd/system/radar-hashbackup.timer systemd/radar-hashbackup.timer.template
 
      DIR="$( pwd )"
+     sudo chmod +x $DIR/run-backup.sh
      inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-hashbackup.service
      inline_variable 'ExecStart=' "$DIR/run-backup.sh" /etc/systemd/system/radar-hashbackup.service
 
