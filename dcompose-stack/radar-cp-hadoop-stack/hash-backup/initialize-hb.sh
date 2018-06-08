@@ -36,7 +36,8 @@ do
      # Only init if the directory does not exist
      if [[ ! -d $finalPath ]]
      then
-          hb init -c ${finalPath} -k "${KEY}"
+          export HBPASS=${PASSPHRASE}
+          hb init -c ${finalPath} -k "${KEY}" -p "env"
           if [ ! -z ${LOCAL_SIZE} ]
           then
                hb config -c ${finalPath} cache-size-limit ${LOCAL_SIZE}
