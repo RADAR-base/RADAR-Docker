@@ -5,7 +5,6 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 IFS=',' read -r -a inputs <<< "$INPUTS"
 
-HB_VERSION="2115"
 # install hash backup if it does not exist
 if hash hb 2>/dev/null
 then
@@ -41,6 +40,10 @@ do
           if [ ! -z ${LOCAL_SIZE} ]
           then
                hb config -c ${finalPath} cache-size-limit ${LOCAL_SIZE}
+          fi
+          if [ ! -z ${ARC_SIZE} ]
+          then
+               hb config -c ${finalPath} arc-size-limit ${ARC_SIZE}
           fi
           cp dest.conf "${finalPath}"/dest.conf
           # Set up remote directory according to input path and remote root dir

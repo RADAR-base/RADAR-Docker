@@ -21,8 +21,8 @@ if [ ! -f $lockfile ]; then
      echo "Running backup for input: ${element}"
      backupSubpath=$(basename "${element}")
      finalPath="${OUTPUT}/${backupSubpath}"
-     hb log backup -c ${finalPath} ${element} ${DEDUPLICATE_MEMORY}
-     hb log retain -c ${finalPath} ${RETAIN} -x3m
+     hb log backup -c ${finalPath} ${element} ${DEDUPLICATE_MEMORY} -X
+     hb log retain -c ${finalPath} ${RETAIN} ${DELETED_RETAIN} -v
      hb log selftest -c ${finalPath} -v4 --inc 1d/30d
   done
   echo "Removing lock ..."

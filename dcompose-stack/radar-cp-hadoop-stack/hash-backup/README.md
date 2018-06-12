@@ -4,6 +4,7 @@ This directory contains a unified solution to create backups for different paths
 -
 
 - First configure all the parameters in the `backup.conf` file. Please note that the key and passphrase should be provided and be kept safe and backed up elsewhere.
+- The passphrase will be taken from the environment variable HBPASS whenever access to the backup is requested. A passphrase secures backup data: - for users in hosted or managed environments, like a VPS - when the backup directory is on USB thumb drives - when the backup directory is on mounted storage like Google Drive, Amazon Cloud Drive, Dropbox, etc. additional details here - [HashBackup Security](http://www.hashbackup.com/technical/security)
 - Then configure the remote destinations (if any) to send the backups to in the `dest.conf` file. Please look at the hashbackup documentation for more info on this. For a start FTP and Amazon s3 examples are included. Please note to leave the `dir` at any value since this will be eventually be replaced by the script based on the `ROOT_REMOTE_PATH` and `INPUTS` specified in the `backup.conf` file.
 - Then run the initialization scripts
 ```shell
@@ -39,7 +40,20 @@ sudo systemctl disable radar-hashbackup
 ```
 
 
-**Note**: If you want to run the backups once or manually, instead of using `systemd` or `CRON` you can just run the run backup script like -
+**Notes**:
+If you want to run the backups once or manually, instead of using `systemd` or `CRON` you can just run the run backup script like -
 ```shell
 sudo bash run-backup.sh
 ```
+
+Also remember to upgrade hash backup frequently (~ every 3 months) since it is stated in documentation that - `The compatibility goal is that backups created less than a year ago should be accessible with the latest version.`
+
+Currently, the hashbackups are configured to use input paths but for systems like databases, you should prefer first creating dump of the database on a filepath and then using that path in the hashbackup configuration.
+This can be easily done using a cron job for example -
+This is for creating a dump of the postgres db running inside a docker container on a directory on the host named `/localpostgresdump` every night at 12 -
+
+```
+00 00 * * * docker exec <container_name> pg_dump <schema_name> > /localpostgresdump/backup
+```
+
+You can then add the path `/localpostgresdump` in the `backup.conf` file in `INPUTS` which will create a backup of SQL dumps.
