@@ -12,7 +12,7 @@ sudo bash initialize-hb.sh
 ```
 - This should initialize the hashbackup output directories with the specified key and passphrase and apply any configurations.
 - If the `SET_UP_TIMER` parameter in `backup.conf` is set to `true` then the above command automatically configures a `systemd timer` to run the backups (`./run-bakup.sh` script) daily at 3am. This can be changed in `/etc/systemd/system/radar-hashbackup.timer`.
-- Alternatively, If you want to run this via CRON job just add the following to the crontab -
+- systemd timer is recommended but you may alternatively, run this via CRON job just add the following to the crontab -
 ```
 00 03 * * * root sudo bash /<YOUR RADAR-Docker path>/dcompose-stack/radar-cp-hadoop-stack/hash-backup/run-backup.sh
 ```
