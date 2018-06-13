@@ -53,7 +53,20 @@ This can be easily done using a cron job for example -
 This is for creating a dump of the postgres db running inside a docker container on a directory on the host named `/localpostgresdump` every night at 12 -
 
 ```
-00 00 * * * docker exec <container_name> pg_dump <schema_name> > /localpostgresdump/backup
+00 00 * * * docker exec <container_name> pg_dumpall > /localpostgresdump/backup
 ```
 
 You can then add the path `/localpostgresdump` in the `backup.conf` file in `INPUTS` which will create a backup of SQL dumps.
+
+
+## Important INFO
+Quoting the Hashbackup Docs from the download page -
+```
+Beta versions of HashBackup expire quarterly on the 15th of January, April, July, and October. Use hb upgrade to get the latest version and extend the expiration date.
+IMPORTANT: You can always access your backup data after the expiration date: everything continues to work except the backup command.
+```
+
+This means you will need to upgrade Hashbackup regularly. You can easily set up a CRON job to accomplish this. The following example shows how to upgrade every week at 1 AM on a Sunday.
+```
+0 1 * * 0 root hb upgrade
+```

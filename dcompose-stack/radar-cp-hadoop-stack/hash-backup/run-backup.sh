@@ -23,7 +23,7 @@ if [ ! -f $lockfile ]; then
      finalPath="${OUTPUT}/${backupSubpath}"
      hb log backup -c ${finalPath} ${element} ${DEDUPLICATE_MEMORY} -X
      hb log retain -c ${finalPath} ${RETAIN} ${DELETED_RETAIN} -v
-     hb log selftest -c ${finalPath} -v4 --inc 1d/30d
+     hb log selftest -c ${finalPath} -v4 --inc 1d/120d --sample 4
   done
   echo "Removing lock ..."
   rm $lockfile
