@@ -19,7 +19,7 @@ topics=($($LS_CMD))
 #printf "%s\n" "${topics[@]}"
 
 # consumer command to run
-KACC_CMD="kafka-avro-console-consumer --zookeeper zookeeper-1:2181 --property schema.registry.url=http://schema-registry-1:8081 --property print.key=true --topic ${args[0]} ${args[@]:1}"
+KACC_CMD="kafka-avro-console-consumer --broker-list kafka-1:9092,kafka-2:9092,kafka-3:9092 --property schema.registry.url=http://schema-registry-1:8081 --property print.key=true --topic ${args[0]} ${args[@]:1}"
 DOCKER_CMD="docker-compose exec schema-registry-1"
 
 # check if <topic name> is valid topic
@@ -46,5 +46,3 @@ fi
 # run consumer
 echo $DOCKER_CMD $KACC_CMD
 exec $DOCKER_CMD $KACC_CMD
-
-
