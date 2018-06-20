@@ -301,7 +301,7 @@ services:
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
   rest-api:
-    image: radarbase/radar-restapi:0.2.0
+    image: radarbase/radar-restapi:0.2.1
     networks:
       - hotstorage
       - api
@@ -722,7 +722,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.2.0
+    image: radarbase/radar-gateway:0.2.1
     networks:
       - api
       - kafka
