@@ -8,12 +8,6 @@ This folder contains useful scripts to manage the server where the RADAR-base Pl
   - `logfile` is the log file where the script logs each operation
   - `url` is the web site used to check the connectivity
 
-- `restracture_backup_hdfs.sh`
-  - `logfile` is the log file where the script logs each operation
-  - `working_directory` is the directory where the `hdfs_restructure.sh` script is located.
-  - `storage_directory` is the directory where the extracted data will be stored
-  - `lockfile` lock usefull to check whether there is a previous instance still running
-
 To add a script to `CRON` as `root`, run on the command-line `sudo crontab -e -u root` and add your task at the end of the file. The syntax is
 ```shell
 *     *     *     *     *  command to be executed

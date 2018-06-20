@@ -17,8 +17,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-docker.service
 inline_variable 'ExecStart=' "$DIR/lib/systemd/start-radar-stack.sh" /etc/systemd/system/radar-docker.service
 
-inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-output.service
-inline_variable 'ExecStart=' "$DIR/hdfs_restructure.sh /topicAndroidNew output" /etc/systemd/system/radar-output.service
+inline_variable 'WorkingDirectory=' "$DIR/hdfs-restructure" /etc/systemd/system/radar-output.service
+inline_variable 'ExecStart=' "$DIR/hdfs-restructure/restructure_backup_hdfs.sh" /etc/systemd/system/radar-output.service
 
 inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-check-health.service
 inline_variable 'ExecStart=' "$DIR/check-health.sh" /etc/systemd/system/radar-check-health.service

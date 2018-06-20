@@ -1,5 +1,7 @@
 # POSTGRES Backup Scripts
 
+**Note These Scripts Have been Deprecated. Please use the unified backup solution provided in `hash-backup` folder. This folder will be removed in the future.**
+
 The `scripts` directory contains a script for running roatated backups of a running postgres instance. In this case these scripts are mounted to the postgres container (using bind mounts)  and then run to create backups. These scripts are taken from the [postgres wiki](https://wiki.postgresql.org/wiki/Automated_Backup_on_Linux)
 
 The backups can be configured to create daily, weekly and monthly backups by configuring the `pg_backup.config` configuration file. Please note that if you change the `BACKUP_DIR` in the config file then make sure to change the bind mount in the postgres container in docker-compose.yml file as well.
