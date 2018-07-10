@@ -81,7 +81,7 @@ if [[ -z "$date_time_to_remove_before" ]]; then
   exit 1
 fi
 
-if [[ "${DELETE}" = "true" ]] && [[ -f "./tmp/hdfs.image" ]]; then
+if [[ -f "./tmp/hdfs.image" ]]; then
   if [[ $(find ./tmp/hdfs.image -mtime +1 -print) ]]; then
     echo "./tmp/hdfs.image is older than a day. Downloading a new FS image file. "
     ${DOCKER_COMMAND[@]} ${HDFS_COMMAND_IMAGE[@]}
@@ -118,7 +118,7 @@ if [[ "${DELETE}" = "true" ]]; then
   sleep 30
   if [[ -f "${FINAL_PATH}" ]]; then
     echo "READING AND REMOVING RELEVANT PATHS"
-    docker exec hdfs-delete bash -c 'apt-get -y install pv && pv -ptI /fsimage_tmp/final_paths/part-r-00000 | xargs -n 100 hdfs dfs -rm ${SKIP_TRASH}'
+    docker exec hdfs-delete bash -c 'apt-get -y install pv && pv -pte /fsimage_tmp/final_paths/part-r-00000 | xargs -n 100 hdfs dfs -rm ${SKIP_TRASH}'
   fi
   # Delete the image after delete operation is complete
   rm -r ./tmp/hdfs.*
