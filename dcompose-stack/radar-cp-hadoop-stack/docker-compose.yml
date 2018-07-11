@@ -370,6 +370,8 @@ services:
     environment:
       CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
       HDFS_CONF_dfs_replication: 2
+      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable: "false"
+      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_policy: "NEVER"
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-ls", "/"]
       interval: 1m
@@ -386,6 +388,8 @@ services:
     environment:
       CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
       HDFS_CONF_dfs_replication: 2
+      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable: "false"
+      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_policy: "NEVER"
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-ls", "/"]
       interval: 1m
@@ -404,6 +408,8 @@ services:
     environment:
       CLUSTER_NAME: radar-cns
       HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
+      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable: "false"
+      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_policy: "NEVER"
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-ls", "/"]
       interval: 1m
