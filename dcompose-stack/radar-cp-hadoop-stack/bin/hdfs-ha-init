@@ -13,13 +13,13 @@ select yn in "Yes" "No"; do
   esac
 done
 
-bin/radar-stack up -d zookeeper-1 zookeeper-2 zookeeper-3 hdfs-journalnode-1 hdfs-journalnode-2 hdfs-journalnode-3
-bin/radar-stack quit hdfs-namenode-1 hdfs-namenode-2
-bin/radar-stack run --rm hdfs-namenode-1 namenode-1 -initializeSharedEdits
-bin/radar-stack up -d hdfs-namenode-1
+bin/radar-docker up -d --remove-orphans zookeeper-1 zookeeper-2 zookeeper-3 hdfs-journalnode-1 hdfs-journalnode-2 hdfs-journalnode-3
+bin/radar-docker quit hdfs-namenode-1 hdfs-namenode-2
+bin/radar-docker run --rm hdfs-namenode-1 namenode-1 -initializeSharedEdits
+bin/radar-docker up -d hdfs-namenode-1
 echo "Waiting for HDFS namenode to come online..."
-while ! bin/radar-stack exec hdfs-namenode-1 hdfs dfs -test -e hdfs://hdfs-namenode-1/; do
+while ! bin/radar-docker exec hdfs-namenode-1 hdfs dfs -test -e hdfs://hdfs-namenode-1/; do
   sleep 1
 done
-bin/radar-stack run --rm --name hdfs-namenode-2 hdfs-namenode-2 namenode-2 -bootstrapStandby -force
-bin/radar-stack hdfs
+bin/radar-docker run --rm --name hdfs-namenode-2 hdfs-namenode-2 namenode-2 -bootstrapStandby -force
+bin/radar-docker hdfs
