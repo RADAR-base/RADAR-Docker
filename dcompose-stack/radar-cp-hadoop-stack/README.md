@@ -46,13 +46,13 @@ This docker-compose stack contains the full operational RADAR platform. Once con
 
 Run
 ```shell
-./install-radar-stack.sh
+bin/radar-docker install
 ```
-to start all the RADAR services. Use the `(start|stop|reboot)-radar-stack.sh` to start, stop or reboot it. Note: whenever `.env` or `docker-compose.yml` are modified, this script needs to be called again. To start a reduced set of containers, call `install-radar-stack.sh` with the intended containers as arguments.
+to start all the RADAR services. Use the `bin/radar-docker start|down|restart` to start, stop or reboot it. Note: whenever `.env` or `docker-compose.yml` are modified, this script needs to be called again. To start a reduced set of containers, call `bin/radar-docker install` with the intended containers as arguments.
 
 To enable a `systemd` service to control the platform, run
 ```shell
-./install-systemd-wrappers.sh
+bin/radar-systemd-wrappers
 ```
 After that command, the RADAR platform should be controlled via `systemctl`.
 ```shell
@@ -82,11 +82,18 @@ sudo systemctl disable radar-renew-certificate
 To clear all data from the platform, run
 ```
 sudo systemctl stop radar-docker
-./docker-prune.sh
+bin/docker-prune
 sudo systemctl start radar-docker
 ```
 
-## Data extraction
+### Monitoring a topic
+
+To see current data coming out of a Kafka topic, run
+```script
+bin/radar-kafka-consumer TOPIC
+```
+
+### Data extraction
 
 If systemd integration is enabled, HDFS data will be extracted to the `./output` directory every hour. It can then be run directly by running
 ```
@@ -97,25 +104,25 @@ Otherwise, the following manual commands can be invoked.
 Raw data can be extracted from this setup by running:
 
 ```shell
-hdfs/bin/hdfs-extract <hdfs file> <destination directory>
+bin/hdfs-extract <hdfs file> <destination directory>
 ```
 This command will not overwrite data in the destination directory.
 
 CSV-structured data can be gotten from HDFS by running
 
 ```shell
-hdfs/bin/hdfs-restructure /topicAndroidNew <destination directory>
+bin/hdfs-restructure /topicAndroidNew <destination directory>
 ```
 This will put all CSV files in the destination directory, with subdirectory structure `ProjectId/SubjectId/SensorType/Date_Hour.csv`.
 
-## Certificate
+### Certificate
 
 If systemd integration is enabled, the ssl certificate will be renewed daily. It can then be run directly by running
 ```
 sudo systemctl start radar-renew-certificate.service
 ```
 Otherwise, the following manual commands can be invoked.
-If `SELF_SIGNED_CERT=no` in `./.env`, be sure to run `./renew_ssl_certificate.sh` daily to ensure that your certificate does not expire.
+If `SELF_SIGNED_CERT=no` in `./.env`, be sure to run `bin/radar-cert-renew` daily to ensure that your certificate does not expire.
 
 
 ### cAdvisor
@@ -133,28 +140,30 @@ Portainer provides simple interactive UI-based docker management. If running loc
 The [kafka-manager](https://github.com/yahoo/kafka-manager) is an interactive web based tool for managing Apache Kafka. Kafka manager has beed integrated in the stack. It is accessible at `http://<your-host>/kafkamanager/`
 
 ### Check Health
-Each of the containers in the stack monitor their own health and show the output as healthy or unhealthy. A script called check-health.sh is used to check this output and send an email to the maintainer if a container is unhealthy.
+Each of the containers in the stack monitor their own health and show the output as healthy or unhealthy. A script called `bin/radar-health` is used to check this output and send an email to the maintainer if a container is unhealthy.
 
 First check that the `MAINTAINER_EMAIL` in the .env file is correct.
 
 Then make sure that the SMTP server is configured properly and running.
 
-If systemd integration is enabled, the check-health.sh script will check health of containers every five minutes. It can then be run directly by running if systemd wrappers have been installed
+If systemd integration is enabled, the `radar-health` script will check health of containers every five minutes. It can then be run directly by running if systemd wrappers have been installed
 ```
 sudo systemctl start radar-check-health.service
 ```
 Otherwise, the following manual commands can be invoked.
 
-Add a cron job to run the `check-health.sh` script periodically like -
+Add a cron job to run the `radar-health` script periodically like -
 1. Edit the crontab file for the current user by typing `$ crontab -e`
 2. Add your job and time interval. For example, add the following for checking health every 5 mins - 
 
-```*/5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/check-health.sh```
+```
+*/5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/bin/radar-health
+```
 
-You can check the logs of CRON by typing `$ grep CRON /var/log/syslog`
-Also you will need to change the directory. So just add the following to the top of the check-health.sh script - 
+You can check the logs of CRON by typing `grep CRON /var/log/syslog`
+Also you will need to change the directory. So just add the following to the top of the `radar-health` script - 
 ```sh
-cd "$( dirname "${BASH_SOURCE[0]}" )"
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 ```
 
 ### HDFS
@@ -176,7 +185,7 @@ This folder contains useful scripts to manage the extraction of data from HDFS i
   - `storage_directory` is the directory where the extracted data will be stored
   - `lockfile` lock useful to check whether there is a previous instance still running
 
-- A systemd timer for this script can be installed by running the `../install-systemd-wrappers.sh`. Or you can add a cron job like below.
+- A systemd timer for this script can be installed by running the `bin/radar-systemd-wrappers`. Or you can add a cron job like below.
 
 To add a script to `CRON` as `root`, run on the command-line `sudo crontab -e -u root` and add your task at the end of the file. The syntax is
 ```shell

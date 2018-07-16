@@ -5,7 +5,9 @@ if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
    exit 1
 fi
 
-. ./util.sh
+DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+
+. "$DIR/bin/util.sh"
 
 # HDFS restructure version
 JAR_VERSION=0.3.2
@@ -20,7 +22,7 @@ fi
 # HDFS filename to get
 HDFS_FILE=$1
 # Absolute directory to write output to
-OUTPUT_DIR=${2:-output}
+OUTPUT_DIR=${2:-$DIR/output}
 OUTPUT_DIR="$(cd "$(dirname "$OUTPUT_DIR")"; pwd)/$(basename "$OUTPUT_DIR")"
 # Internal docker directory to write output to
 HDFS_OUTPUT_DIR=/output

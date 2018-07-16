@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. ./util.sh
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+. bin/util.sh
 
 check_command_exists systemctl
 
@@ -12,19 +14,17 @@ copy_template_if_absent /etc/systemd/system/radar-check-health.timer lib/systemd
 copy_template_if_absent /etc/systemd/system/radar-renew-certificate.service lib/systemd/radar-renew-certificate.service.template
 copy_template_if_absent /etc/systemd/system/radar-renew-certificate.timer lib/systemd/radar-renew-certificate.timer.template
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+inline_variable 'WorkingDirectory=' "$PWD" /etc/systemd/system/radar-docker.service
+inline_variable 'ExecStart=' "$PWD/bin/radar-docker stack" /etc/systemd/system/radar-docker.service
 
-inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-docker.service
-inline_variable 'ExecStart=' "$DIR/lib/systemd/start-radar-stack.sh" /etc/systemd/system/radar-docker.service
+inline_variable 'WorkingDirectory=' "$PWD/hdfs" /etc/systemd/system/radar-output.service
+inline_variable 'ExecStart=' "$PWD/bin/hdfs-restructure-process" /etc/systemd/system/radar-output.service
 
-inline_variable 'WorkingDirectory=' "$DIR/hdfs" /etc/systemd/system/radar-output.service
-inline_variable 'ExecStart=' "$DIR/bin/hdfs-restructure-process" /etc/systemd/system/radar-output.service
-
-inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-check-health.service
-inline_variable 'ExecStart=' "$DIR/check-health.sh" /etc/systemd/system/radar-check-health.service
+inline_variable 'WorkingDirectory=' "$PWD" /etc/systemd/system/radar-check-health.service
+inline_variable 'ExecStart=' "$PWD/bin/radar-health" /etc/systemd/system/radar-check-health.service
 
 inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-renew-certificate.service
-inline_variable 'ExecStart=' "$DIR/renew_ssl_certificate.sh" /etc/systemd/system/radar-renew-certificate.service
+inline_variable 'ExecStart=' "$PWD/bin/radar-cert-renew" /etc/systemd/system/radar-renew-certificate.service
 
 
 sudo systemctl daemon-reload

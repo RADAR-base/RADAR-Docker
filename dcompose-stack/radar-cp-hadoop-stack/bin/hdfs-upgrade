@@ -4,13 +4,13 @@ if [ $# = 0 ]; then
   echo "Usage: $0 VERSION"
   exit 1
 fi
-  
-VERSION=$1
-STACK_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
-STACK="${STACK_DIR}/bin/radar-docker"
 
-. "${STACK_DIR}/.env"
-. "${STACK_DIR}/util.sh"
+VERSION=$1
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+stack=bin/radar-stack
+. ./.env
+. bin/util.sh
 
 echo "Are you sure you want to to upgrade HDFS from version ${HDFS_BASE_VERSION} to ${VERSION}?"
 
@@ -21,25 +21,25 @@ select yn in "Yes" "No"; do
     esac
 done
 
-"$STACK" quit hdfs-namenode-1 hdfs-namenode-2 radar-hdfs-connector
+$stack quit hdfs-namenode-1 hdfs-namenode-2 radar-hdfs-connector
 
 sed_i "s/HDFS_BASE_VERSION=.*/HDFS_BASE_VERSION=${VERSION}/" "${STACK_DIR}/.env"
 
-"$STACK" build
-"$STACK" up -d zookeeper-1 zookeeper-2 zookeeper-3 hdfs-journalnode-1 hdfs-journalnode-2 hdfs-journalnode-3
+$stack build
+$stack up -d zookeeper-1 zookeeper-2 zookeeper-3 hdfs-journalnode-1 hdfs-journalnode-2 hdfs-journalnode-3
 sleep 10
-NAME_1=$("$STACK" run --rm -d --name hdfs-namenode-1 hdfs-namenode-1 namenode-1 -upgrade)
+NAME_1=$($stack run --rm -d --name hdfs-namenode-1 hdfs-namenode-1 namenode-1 -upgrade)
 
 echo "Waiting for the upgrade to finalize..."
 while ! docker exec $NAME_1 hdfs dfs -test -e hdfs://hdfs-namenode-1/; do
   sleep 1
 done
 
-"$STACK" run --no-deps --rm --name hdfs-namenode-2 hdfs-namenode-2 namenode-2 -bootstrapStandby
-"$STACK" up --no-deps -d hdfs-namenode-2
+$stack run --no-deps --rm --name hdfs-namenode-2 hdfs-namenode-2 namenode-2 -bootstrapStandby
+$stack up --no-deps -d hdfs-namenode-2
 sleep 10
 docker exec $NAME_1 hdfs dfsadmin -finalizeUpgrade
 
 docker rm -vf $NAME_1
-"$STACK" hdfs
-"$STACK" up -d radar-hdfs-connector
+$stack hdfs
+$stack up -d radar-hdfs-connector

@@ -11,7 +11,7 @@ services:
   #---------------------------------------------------------------------------#
   hdfs-datanode-1:
     build:
-      context: ./hdfs/images/hdfs
+      context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
@@ -32,7 +32,7 @@ services:
       SERVICE_9866_NAME: datanode
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
+      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
@@ -46,7 +46,7 @@ services:
 
   hdfs-datanode-2:
     build:
-      context: ./hdfs/images/hdfs
+      context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
@@ -67,7 +67,7 @@ services:
       SERVICE_9866_NAME: datanode
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
+      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
@@ -78,10 +78,10 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
-  
+
   hdfs-datanode-3:
     build:
-      context: ./hdfs/images/hdfs
+      context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
@@ -102,7 +102,7 @@ services:
       SERVICE_9866_NAME: datanode
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
+      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
@@ -116,7 +116,7 @@ services:
 
   hdfs-namenode-1:
     build:
-      context: ./hdfs/images/hdfs
+      context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
@@ -137,7 +137,7 @@ services:
     environment:
       SERVICE_8020_NAME: namenode
       SERVICE_9870_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
+      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
@@ -148,10 +148,10 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
-      
+
   hdfs-namenode-2:
     build:
-      context: ./hdfs/images/hdfs
+      context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
@@ -173,7 +173,7 @@ services:
     environment:
       SERVICE_8020_NAME: namenode
       SERVICE_9870_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
+      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
@@ -188,7 +188,7 @@ services:
 
   hdfs-journalnode-1:
     build:
-      context: ./hdfs/images/hdfs
+      context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
@@ -202,7 +202,7 @@ services:
     environment:
       SERVICE_8485_NAME: journalnode
       SERVICE_8480_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
+      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:
@@ -210,10 +210,10 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
-    
+
   hdfs-journalnode-2:
     build:
-      context: ./hdfs/images/hdfs
+      context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
@@ -227,7 +227,7 @@ services:
     environment:
       SERVICE_8485_NAME: journalnode
       SERVICE_8480_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
+      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:
@@ -238,7 +238,7 @@ services:
 
   hdfs-journalnode-3:
     build:
-      context: ./hdfs/images/hdfs
+      context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
@@ -252,7 +252,7 @@ services:
     environment:
       SERVICE_8485_NAME: journalnode
       SERVICE_8480_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 
+      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:

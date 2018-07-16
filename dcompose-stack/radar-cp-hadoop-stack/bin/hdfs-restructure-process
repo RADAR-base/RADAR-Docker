@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "$( dirname "${BASH_SOURCE[0]}" )"
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
 # log file
 logfile=hdfs_output.log
@@ -13,7 +13,7 @@ lockfile=.LOCKFILE
 # involved HDFS directory
 hdfs_directory=/topicAndroidNew
 
-. ./util.sh
+. ./bin/lock-util.sh
 
 # extract file from hdfs to backup storage if no other instance is running
 if [ ! -f $lockfile ]; then

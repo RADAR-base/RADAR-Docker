@@ -1,30 +1,39 @@
 #!/bin/bash
-stack=(docker-compose -f docker-compose.yml -f docker-compose.hdfs.yml)
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+stack="docker-compose -f docker-compose.yml -f docker-compose.hdfs.yml"
 
 if [ $# != 0 ]; then
   CMD=$1
   shift
 
   case "${CMD}" in
+  "install")
+    . lib/perform-install.sh
+    ;;
   "rebuild")
-    ${stack[@]} build "$@" && \
-        ${stack[@]} stop "$@" && \
-        ${stack[@]} rm -vf "$@" && \
-        ${stack[@]} up -d "$@" && \
+    $stack build "$@" && \
+        $stack stop "$@" && \
+        $stack rm -vf "$@" && \
+        $stack up -d "$@" && \
         exit 0 || exit 1
     ;;
   "quit")
-    ${stack[@]} stop "$@" && \
-        ${stack[@]} rm -vf "$@" && \
+    $stack stop "$@" && \
+        $stack rm -vf "$@" && \
         exit 0 || exit 1
     ;;
   "hdfs")
-    exec ${stack[@]} up -d hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3
+    exec $stack up -d hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3
+    ;;
+  "stack")
+    . lib/perform-install.sh
+    exec $stack up
     ;;
   *)
-    exec ${stack[@]} "$CMD" "$@"
+    exec $stack "$CMD" "$@"
     ;;
   esac
 else
-  exec ${stack[@]}
+  exec $stack
 fi
