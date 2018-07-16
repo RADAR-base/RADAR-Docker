@@ -10,7 +10,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 stack=bin/radar-stack
 . ./.env
-. bin/util.sh
+. lib/util.sh
 
 echo "Are you sure you want to to upgrade HDFS from version ${HDFS_BASE_VERSION} to ${VERSION}?"
 

@@ -2,7 +2,7 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-. bin/util.sh
+. lib/util.sh
 
 sudo-linux chmod og-rw ./.env
 sudo-linux chmod og-rwx ./etc

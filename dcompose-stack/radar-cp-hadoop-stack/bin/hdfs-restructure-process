@@ -13,7 +13,7 @@ lockfile=.LOCKFILE
 # involved HDFS directory
 hdfs_directory=/topicAndroidNew
 
-. ./bin/lock-util.sh
+. ./lib/lock-util.sh
 
 # extract file from hdfs to backup storage if no other instance is running
 if [ ! -f $lockfile ]; then

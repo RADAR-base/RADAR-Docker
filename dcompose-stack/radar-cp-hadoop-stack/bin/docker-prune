@@ -2,7 +2,7 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-. bin/util.sh
+. lib/util.sh
 . ./.env
 
 check_command_exists docker
