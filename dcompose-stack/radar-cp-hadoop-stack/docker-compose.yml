@@ -1,5 +1,5 @@
 ---
-version: '2.1'
+version: '2.4'
 
 networks:
   zookeeper:
@@ -11,8 +11,6 @@ networks:
   api:
     driver: bridge
     internal: true
-  hadoop:
-    external: true
   mail:
     driver: bridge
     internal: true
@@ -358,65 +356,6 @@ services:
       retries: 3
 
   #---------------------------------------------------------------------------#
-  # RADAR Cold Storage                                                        #
-  #---------------------------------------------------------------------------#
-  hdfs-datanode-1:
-    image: uhopper/hadoop-datanode:2.7.2
-    networks:
-      - hadoop
-    volumes:
-      - "${HDFS_DATA_DIR_1}:/hadoop/dfs/data"
-    restart: always
-    environment:
-      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
-      HDFS_CONF_dfs_replication: 2
-      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable: "false"
-      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_policy: "NEVER"
-    healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-
-  hdfs-datanode-2:
-    image: uhopper/hadoop-datanode:2.7.2
-    networks:
-      - hadoop
-    volumes:
-      - "${HDFS_DATA_DIR_2}:/hadoop/dfs/data"
-    restart: always
-    environment:
-      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
-      HDFS_CONF_dfs_replication: 2
-      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable: "false"
-      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_policy: "NEVER"
-    healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-
-  hdfs-namenode:
-    build: hdfs-namenode
-    image: radarcns/hdfs-namenode:2.7.2
-    networks:
-      - hadoop
-    volumes:
-      - "${HDFS_NAME_DIR_1}:/hadoop/dfs/name/1"
-      - "${HDFS_NAME_DIR_2}:/hadoop/dfs/name/2"
-    restart: always
-    environment:
-      CLUSTER_NAME: radar-cns
-      HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
-      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable: "false"
-      HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_policy: "NEVER"
-    healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-
-  #---------------------------------------------------------------------------#
   # Email server                                                              #
   #---------------------------------------------------------------------------#
   smtp:
@@ -463,7 +402,7 @@ services:
       CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
       CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kcontext: ./images/hdfsonnect.json.JsonConverter"
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-mongodb-connector"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
@@ -481,60 +420,7 @@ services:
       timeout: 5s
       retries: 3
 
-
-  #---------------------------------------------------------------------------#
-  # RADAR HDFS connector                                                     #
-  #---------------------------------------------------------------------------#
-  radar-hdfs-connector:
-    image: radarbase/radar-hdfs-connector-auto:0.2.0
-    restart: on-failure
-    volumes:
-      - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
-    networks:
-      - zookeeper
-      - kafka
-      - hadoop
-    depends_on:
-      - zookeeper-1
-      - kafka-1
-      - kafka-2
-      - kafka-3
-      - schema-registry-1
-      - rest-proxy-1
-      - kafka-init
-      - hdfs-datanode-1
-      - hdfs-datanode-2
-      - hdfs-namenode
-    environment:
-      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
-      CONNECT_REST_PORT: 8083
-      CONNECT_GROUP_ID: "default"
-      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
-      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
-      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
-      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
-      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
-      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
-      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
-      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
-      CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
-      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
-      KAFKA_BROKERS: 3
-      CONNECT_LOG4J_ROOT_LOGLEVEL: WARN
-      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
-      # For backwards compatibility
-      TOPIC_LIST: "application_record_counts"
-    healthcheck:
-      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
-
-  #---------------------------------------------------------------------------#
+  #------------------------------------------------------------------context: ./images/hdfs---#
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-stream:
@@ -749,7 +635,7 @@ services:
   # Catalog server from radar-schemas                                         #
   #---------------------------------------------------------------------------#
   catalog-server:
-    build: kafka-radarinit
+    build: images/kafka-radarinit
     image: radarcns/kafka-init
     networks:
       - management

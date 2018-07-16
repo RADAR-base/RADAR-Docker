@@ -1,0 +1,26 @@
+#!/bin/bash
+
+DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+STACK="${DIR}/bin/radar-docker"
+
+. "$DIR/.env"
+
+echo "Are you sure you want to initialize HDFS?"
+
+select yn in "Yes" "No"; do
+  case $yn in
+    Yes ) break;;
+    No ) exit;;
+  esac
+done
+
+"$STACK" up -d zookeeper-1 zookeeper-2 zookeeper-3 hdfs-journalnode-1 hdfs-journalnode-2 hdfs-journalnode-3
+"$STACK" quit hdfs-namenode-1 hdfs-namenode-2
+"$STACK" run --rm hdfs-namenode-1 namenode-1 -initializeSharedEdits
+"$STACK" up -d hdfs-namenode-1
+echo "Waiting for HDFS namenode to come online..."
+while ! "$STACK" exec hdfs-namenode-1 hdfs dfs -test -e hdfs://hdfs-namenode-1/; do
+  sleep 1
+done
+"$STACK" run --rm --name hdfs-namenode-2 hdfs-namenode-2 namenode-2 -bootstrapStandby -force
+"$STACK" hdfs

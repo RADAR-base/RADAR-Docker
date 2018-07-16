@@ -97,18 +97,18 @@ Otherwise, the following manual commands can be invoked.
 Raw data can be extracted from this setup by running:
 
 ```shell
-./hdfs_extract.sh <hdfs file> <destination directory>
+hdfs/bin/hdfs-extract <hdfs file> <destination directory>
 ```
 This command will not overwrite data in the destination directory.
 
 CSV-structured data can be gotten from HDFS by running
 
 ```shell
-./hdfs_restructure.sh /topicAndroidNew <destination directory>
+hdfs/bin/hdfs-restructure /topicAndroidNew <destination directory>
 ```
 This will put all CSV files in the destination directory, with subdirectory structure `ProjectId/SubjectId/SensorType/Date_Hour.csv`.
 
-## Cerificate
+## Certificate
 
 If systemd integration is enabled, the ssl certificate will be renewed daily. It can then be run directly by running
 ```
@@ -156,4 +156,39 @@ Also you will need to change the directory. So just add the following to the top
 ```sh
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 ```
+
+### HDFS
+
+This folder contains useful scripts to manage the extraction of data from HDFS in the RADAR-base Platform.
+
+- `bin/hdfs-ha-init`
+  - This initializes the HDFS structure to use High Availability mode with two name nodes. This needs to be called after converting from
+    the older uhopper images.
+- `bin/hdfs-upgrade VERSION`
+  - Perform an upgrade from an older version of the [Smizy HDFS base image](https://hub.docker.com/r/smizy/hadoop-base/) to a newer one. E.g. from `2.7.6-alpine`, which is compatible with the `uhopper` image, to `3.0.3-alpine`.
+- `bin/hdfs-restructure`
+  - This script uses the Restructure-HDFS-topic to extracts records from HDFS and converts them from AVRO to specified format
+  - By default, the format is CSV, compression is set to gzip and deduplication is enabled.
+  - To change configurations and for more info look at the [README here](https://github.com/RADAR-base/Restructure-HDFS-topic)
+
+- `bin/hdfs-restructure-process` for running the above script in a controlled manner with rotating logs
+  - `logfile` is the log file where the script logs each operation
+  - `storage_directory` is the directory where the extracted data will be stored
+  - `lockfile` lock useful to check whether there is a previous instance still running
+
+- A systemd timer for this script can be installed by running the `../install-systemd-wrappers.sh`. Or you can add a cron job like below.
+
+To add a script to `CRON` as `root`, run on the command-line `sudo crontab -e -u root` and add your task at the end of the file. The syntax is
+```shell
+*     *     *     *     *  command to be executed
+-     -     -     -     -
+|     |     |     |     |
+|     |     |     |     +----- day of week (0 - 6) (Sunday=0)
+|     |     |     +------- month (1 - 12)
+|     |     +--------- day of month (1 - 31)
+|     +----------- hour (0 - 23)
++------------- min (0 - 59)
+```
+
+For example, `*/2 * * * * /absolute/path/to/script-name.sh` will execute `script-name.sh` every `2` minutes.
 

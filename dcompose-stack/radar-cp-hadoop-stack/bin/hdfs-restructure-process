@@ -19,7 +19,7 @@ hdfs_directory=/topicAndroidNew
 if [ ! -f $lockfile ]; then
   log_info "Creating lock ..."
   touch $lockfile
-  (./hdfs_restructure.sh $hdfs_directory $storage_directory >> $logfile 2>&1)
+  (./hdfs-restructure $hdfs_directory $storage_directory >> $logfile 2>&1)
   log_info "Removing lock ..."
   rm $lockfile
 else
