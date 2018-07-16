@@ -2,6 +2,7 @@
 
 set -e
 
+. ./util.sh
 
 . ./.env
 
@@ -30,7 +31,7 @@ mv "${MP_POSTGRES_DIR}/data/" "${MP_POSTGRES_DIR}/data-backup-$(date +%FT%TZ)/"
 mv "${POSTGRES_NEW_DIR}" "${MP_POSTGRES_DIR}/data/"
 
 # change postgres version
-sed -i "s| image: postgres:.*| image: postgres:${POSTGRES_NEW_VERSION}|" docker-compose.yml
+sed_i 's| image: postgres:.*| image: postgres:${POSTGRES_NEW_VERSION}|' docker-compose.yml
 
 echo "Starting postgres..."
 
