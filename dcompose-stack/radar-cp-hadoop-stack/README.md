@@ -86,7 +86,7 @@ bin/docker-prune
 sudo systemctl start radar-docker
 ```
 
-To rebuild an image and restart them, run `bin/radar-docker rebuild IMAGE`. To stop and remove an container, run `bin/radar-docker quit CONTAINER`. To start the HDFS cluster, run `bin/radar-docker hdfs`.
+To rebuild an image and restart them, run `bin/radar-docker rebuild IMAGE`. To stop and remove an container, run `bin/radar-docker quit CONTAINER`. To start the HDFS cluster, run `bin/radar-docker hdfs`. For a health check, run `bin/radar-docker health`.
 
 ### Monitoring a topic
 

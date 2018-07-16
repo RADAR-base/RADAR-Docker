@@ -41,7 +41,6 @@ script:
   - cp etc/mongodb-connector/sink-mongo.properties.template etc/mongodb-connector/sink-mongo.properties
   - sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo $HOME/bin/docker-compose down
-  - sudo docker network rm hadoop
 
   # With Docker Swarm support
   # NOT SUPPORTED: docker swarm and docker beta features are not available in Travis

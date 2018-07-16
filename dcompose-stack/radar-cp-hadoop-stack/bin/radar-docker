@@ -23,6 +23,9 @@ if [ $# != 0 ]; then
         $stack rm -vf "$@" && \
         exit 0 || exit 1
     ;;
+  "health")
+    . lib/radar-health.sh
+    ;;
   "hdfs")
     exec $stack up -d hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3
     ;;
