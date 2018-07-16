@@ -428,7 +428,7 @@ services:
   # RADAR mongo connector                                                     #
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
-    image: radarbase/kafka-connect-mongodb-sink:0.2.1
+    image: radarbase/kafka-connect-mongodb-sink:0.2.2
     restart: on-failure
     volumes:
       - ./etc/mongodb-connector/sink-mongo.properties:/etc/kafka-connect/sink.properties
@@ -480,7 +480,7 @@ services:
   # RADAR HDFS connector                                                     #
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
-    image: radarbase/radar-hdfs-connector-auto:0.1
+    image: radarbase/radar-connect-hdfs-sink:0.2.0
     restart: on-failure
     volumes:
       - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
