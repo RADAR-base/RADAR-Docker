@@ -48,7 +48,7 @@ Run
 ```shell
 bin/radar-docker install
 ```
-to start all the RADAR services. Use the `bin/radar-docker start|down|restart` to start, stop or reboot it. Note: whenever `.env` or `docker-compose.yml` are modified, this script needs to be called again. To start a reduced set of containers, call `bin/radar-docker install` with the intended containers as arguments.
+to start all the RADAR services. Use the `bin/radar-docker start|down|restart` to start, stop or reboot it. In general, `bin/radar-docker` is a convenience script to `docker-compose`, so all commands that work on docker-compose also work on `bin/radar-docker`. Note: whenever `.env` or `docker-compose.yml` are modified, the `install` command needs to be called again. To start a reduced set of containers, call `bin/radar-docker install` with the intended containers as arguments.
 
 To enable a `systemd` service to control the platform, run
 ```shell
@@ -85,6 +85,8 @@ sudo systemctl stop radar-docker
 bin/docker-prune
 sudo systemctl start radar-docker
 ```
+
+To rebuild an image and restart them, run `bin/radar-docker rebuild IMAGE`. To stop and remove an container, run `bin/radar-docker quit CONTAINER`. To start the HDFS cluster, run `bin/radar-docker hdfs`.
 
 ### Monitoring a topic
 
