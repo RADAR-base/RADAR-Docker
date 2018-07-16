@@ -1,16 +1,14 @@
 #!/bin/bash
+cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 # log file
-logfile=
+logfile=hdfs_output.log
 
-# working directory
-working_directory=
-
-# landing folder
-storage_directory=
+# landing folder. Specify if not
+storage_directory=output
 
 # lock file
-lockfile=
+lockfile=.LOCKFILE
 
 # involved HDFS directory
 hdfs_directory=/topicAndroidNew
@@ -21,7 +19,7 @@ hdfs_directory=/topicAndroidNew
 if [ ! -f $lockfile ]; then
   log_info "Creating lock ..."
   touch $lockfile
-  (cd $working_directory && ./hdfs_restructure.sh $hdfs_directory $storage_directory >> $logfile 2>&1)
+  (./hdfs_restructure.sh $hdfs_directory $storage_directory >> $logfile 2>&1)
   log_info "Removing lock ..."
   rm $lockfile
 else

@@ -41,4 +41,3 @@ RUN chmod +x /usr/bin/*.sh
 
 ENTRYPOINT ["init.sh"]
 CMD ["topic_init.sh"]
-
