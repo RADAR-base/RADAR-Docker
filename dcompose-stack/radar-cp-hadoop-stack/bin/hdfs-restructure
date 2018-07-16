@@ -9,6 +9,9 @@ DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
 
 . "$DIR/lib/util.sh"
 
+# Start HDFS if not started already
+sudo-linux "$DIR/bin/radar-docker" hdfs
+
 # HDFS restructure version
 DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.4.0
 

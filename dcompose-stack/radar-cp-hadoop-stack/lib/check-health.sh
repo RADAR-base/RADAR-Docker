@@ -4,7 +4,7 @@
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
 stack=bin/radar-docker
-. bin/util.sh
+. lib/util.sh
 . ./.env
 
 function hipchat_notify() {
