@@ -14,7 +14,7 @@ services:
       context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
     hostname: hdfs-datanode-1
     command: datanode
     networks:
@@ -35,7 +35,7 @@ services:
       HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
       HADOOP_DFS_REPLICATION: 2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -45,7 +45,7 @@ services:
       context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
     command: datanode
     hostname: hdfs-datanode-2
     networks:
@@ -66,7 +66,7 @@ services:
       HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
       HADOOP_DFS_REPLICATION: 2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -76,7 +76,7 @@ services:
       context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
     command: datanode
     hostname: hdfs-datanode-3
     networks:
@@ -97,7 +97,7 @@ services:
       HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
       HADOOP_DFS_REPLICATION: 2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -107,7 +107,7 @@ services:
       context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
     command: namenode-1
     hostname: hdfs-namenode-1
     networks:
@@ -133,7 +133,7 @@ services:
       HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
       HADOOP_QJOURNAL_ADDRESS: hdfs-journalnode-1:8485;hdfs-journalnode-2:8485;hdfs-journalnode-3:8485
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -143,7 +143,7 @@ services:
       context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
     command: namenode-2
     hostname: hdfs-namenode-2
     networks:
@@ -171,7 +171,7 @@ services:
       HADOOP_DFS_REPLICATION: 2
       HADOOP_QJOURNAL_ADDRESS: hdfs-journalnode-1:8485;hdfs-journalnode-2:8485;hdfs-journalnode-3:8485
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -181,7 +181,7 @@ services:
       context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
     command: journalnode
     networks:
       - hadoop
@@ -194,7 +194,7 @@ services:
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -204,7 +204,7 @@ services:
       context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
     command: journalnode
     networks:
       - hadoop
@@ -217,7 +217,7 @@ services:
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -227,7 +227,7 @@ services:
       context: ./images/hdfs
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
     command: journalnode
     networks:
       - hadoop
@@ -240,7 +240,7 @@ services:
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
       timeout: 10s
       retries: 3
