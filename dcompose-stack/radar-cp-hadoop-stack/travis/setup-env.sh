@@ -7,6 +7,9 @@ sudo docker network create hadoop
 sudo docker volume create certs
 sudo docker volume create certs-data
 
+# create folder for docker volumes
+mkdir -p /usr/local/var/lib/docker/
+
 # setup mock configs
 cp ./travis-env.template ../.env
 cp ./travis-smtp.template ../etc/smtp.env
