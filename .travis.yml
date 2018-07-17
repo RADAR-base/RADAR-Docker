@@ -30,6 +30,7 @@ script:
   - cd ../
   - ./install-radar-stack.sh && sleep 60 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo $HOME/bin/docker-compose down
+  - sudo rm -r /usr/local/var/lib/docker/
   - sudo docker network rm hadoop
 
   # With Docker Swarm support
