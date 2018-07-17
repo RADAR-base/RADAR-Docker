@@ -30,7 +30,7 @@ script:
   - cd ../
   - ./install-radar-stack.sh && sleep 60 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - ./stop-radar-stack.sh
-  - echo Yes | ./docker-prune.sh
+  - yes Y | ./docker-prune.sh
   - sudo rm -r /usr/local/var/lib/docker/
   - sudo docker network rm hadoop
 
