@@ -5,28 +5,31 @@ if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
    exit 1
 fi
 
-DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-. "$DIR/lib/util.sh"
+# Absolute directory to write output to
+OUTPUT_DIR=${2:-$DIR/output}
+OUTPUT_DIR="$(cd "$(dirname "$OUTPUT_DIR")"; pwd)/$(basename "$OUTPUT_DIR")"
+
+cd $DIR
+
+. lib/util.sh
 
 # Start HDFS if not started already
-sudo-linux "$DIR/bin/radar-docker" hdfs
+sudo-linux bin/radar-docker hdfs
 
 # HDFS restructure version
 DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.4.0
 
 # HDFS filename to get
 HDFS_FILE=$1
-# Absolute directory to write output to
-OUTPUT_DIR=${2:-$DIR/output}
-OUTPUT_DIR="$(cd "$(dirname "$OUTPUT_DIR")"; pwd)/$(basename "$OUTPUT_DIR")"
 # Internal docker directory to write output to
 HDFS_OUTPUT_DIR=/output
 # HDFS command to run
 HDFS_COMMAND=(
   --compression gzip
   --deduplicate
-  -u hdfs-namenode-1
+  -u hdfs://hdfs-namenode-1:8020
   -o "$HDFS_OUTPUT_DIR"
   "$HDFS_FILE" )
 
