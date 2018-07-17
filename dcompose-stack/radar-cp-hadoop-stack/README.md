@@ -86,6 +86,10 @@ sudo systemctl stop radar-docker
 sudo systemctl start radar-docker
 ```
 
+## Postgres Data Migration
+If a major Postgres version upgrade is planned, existing data need to be migrated to the new version. To do so, 
+1. Change the value for `POSTGRES_NEW_VERSION` at `.env`
+2. Run `./migrate-postgres-dats.sh`
 ## Data extraction
 
 If systemd integration is enabled, HDFS data will be extracted to the `./output` directory every hour. It can then be run directly by running
