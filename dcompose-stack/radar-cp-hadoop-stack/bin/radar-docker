@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-stack="docker-compose -f docker-compose.yml -f docker-compose.hdfs.yml"
+stack="docker-compose"
 
 function print_usage() {
   echo 'Control the RADAR-base platform directly'
