@@ -358,20 +358,6 @@ services:
       retries: 3
 
   #---------------------------------------------------------------------------#
-  # Email server                                                              #
-  #---------------------------------------------------------------------------#
-  smtp:
-    image: namshi/smtp:latest
-    networks:
-      - mail
-      - default
-    volumes:
-      - /var/spool/exim
-    restart: always
-    env_file:
-      - ./etc/smtp.env
-
-  #---------------------------------------------------------------------------#
   # RADAR Cold Storage                                                        #
   #---------------------------------------------------------------------------#
   hdfs-datanode-1:
@@ -485,55 +471,18 @@ services:
       retries: 3
 
   #---------------------------------------------------------------------------#
-  # RADAR HDFS connector                                                     #
+  # Email server                                                              #
   #---------------------------------------------------------------------------#
-  radar-hdfs-connector:
-    image: radarbase/radar-hdfs-connector-auto:0.2.0
-    restart: on-failure
-    volumes:
-      - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
+  smtp:
+    image: namshi/smtp:latest
     networks:
-      - zookeeper
-      - kafka
-      - hadoop
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
-      - kafka-1
-      - kafka-2
-      - kafka-3
-      - schema-registry-1
-      - kafka-init
-      - hdfs-datanode-1
-      - hdfs-datanode-2
-      - hdfs-datanode-3
-      - hdfs-namenode-1
-    environment:
-      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
-      CONNECT_REST_PORT: 8083
-      CONNECT_GROUP_ID: "default"
-      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
-      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
-      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
-      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
-      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
-      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
-      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
-      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
-      CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
-      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
-      KAFKA_BROKERS: 3
-      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
-    healthcheck:
-      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
+      - mail
+      - default
+    volumes:
+      - /var/spool/exim
+    restart: always
+    env_file:
+      - ./etc/smtp.env
 
   #---------------------------------------------------------------------------#
   # RADAR mongo connector                                                     #
@@ -582,6 +531,57 @@ services:
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
     healthcheck:
       test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR HDFS connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-hdfs-connector:
+    image: radarbase/radar-hdfs-connector-auto:0.2.0
+    restart: on-failure
+    volumes:
+      - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
+    networks:
+      - zookeeper
+      - kafka
+      - hadoop
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - kafka-init
+      - hdfs-datanode-1
+      - hdfs-datanode-2
+      - hdfs-datanode-3
+      - hdfs-namenode-1
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
+      KAFKA_BROKERS: 3
+      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
+    healthcheck:
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
       interval: 1m
       timeout: 5s
       retries: 3
