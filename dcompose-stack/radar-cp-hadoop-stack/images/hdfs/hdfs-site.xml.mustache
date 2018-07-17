@@ -17,6 +17,10 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>{{HADOOP_DFS_NAME_DIR}}</value>
+    </property>
 
     <property>
         <name>dfs.permissions.superusergroup</name>
@@ -83,7 +87,6 @@
         <name>dfs.ha.automatic-failover.enabled</name>
         <value>true</value>
     </property>
-
 {{/HADOOP_NAMENODE_HA}}
 
 {{^HADOOP_NAMENODE_HA}}
@@ -99,12 +102,12 @@
 {{/HADOOP_NAMENODE_HA}}
 
     <property>
-	<name>dfs.client.block.write.replace-datanode-on-failure.policy</name>
-	<value>NEVER</value>
+	    <name>dfs.client.block.write.replace-datanode-on-failure.policy</name>
+	    <value>NEVER</value>
     </property>
 
     <property>
-	<name>dfs.client.block.write.replace-datanode-on-failure.enable</name>
-	<value>false</value>
+      <name>dfs.client.block.write.replace-datanode-on-failure.enable</name>
+      <value>false</value>
     </property>
 </configuration>

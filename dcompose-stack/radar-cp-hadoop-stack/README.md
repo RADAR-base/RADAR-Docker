@@ -168,9 +168,6 @@ You can check the logs of CRON by typing `grep CRON /var/log/syslog`.
 
 This folder contains useful scripts to manage the extraction of data from HDFS in the RADAR-base Platform.
 
-- `bin/hdfs-ha-init`
-  - This initializes the HDFS structure to use High Availability mode with two name nodes. This needs to be called after converting from
-    the older uhopper images.
 - `bin/hdfs-upgrade VERSION`
   - Perform an upgrade from an older version of the [Smizy HDFS base image](https://hub.docker.com/r/smizy/hadoop-base/) to a newer one. E.g. from `2.7.6-alpine`, which is compatible with the `uhopper` image, to `3.0.3-alpine`.
 - `bin/hdfs-restructure`

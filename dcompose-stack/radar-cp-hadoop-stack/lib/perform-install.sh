@@ -112,7 +112,7 @@ sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' et
 init_certificate "${SERVER_NAME}"
 
 echo "==> Starting RADAR-base Platform"
-sudo-linux bin/radar-docker up -d "$@"
+sudo-linux bin/radar-docker up -d --remove-orphans "$@"
 
 request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERT:-yes}"
 echo "### SUCCESS ###"

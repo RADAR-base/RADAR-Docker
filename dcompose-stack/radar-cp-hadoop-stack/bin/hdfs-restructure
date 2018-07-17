@@ -13,7 +13,8 @@ DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
 sudo-linux "$DIR/bin/radar-docker" hdfs
 
 # HDFS restructure version
-DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.4.1-SNAPSHOT
+DOCKER_IMAGE=radarbase/radar-hdfs-restructure:dev
+docker pull $DOCKER_IMAGE
 
 # HDFS filename to get
 HDFS_FILE=$1
@@ -26,10 +27,7 @@ HDFS_OUTPUT_DIR=/output
 HDFS_COMMAND=(
   --compression gzip
   --deduplicate
-  -n hadoop
-  --namenode-1 hdfs-namenode-1
-  --namenode-2 hdfs-namenode-2
-  --namenode-ha nn1,nn2
+  -n hdfs-namenode-1
   -o "$HDFS_OUTPUT_DIR"
   "$HDFS_FILE" )
 

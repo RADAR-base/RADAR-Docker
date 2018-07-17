@@ -23,9 +23,7 @@ DOCKER_OPTS=(
   -i --rm
   --network hadoop
   -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR"
-  -e HADOOP_NAMENODE_HA=nn1,nn2
-  -e HADOOP_NAMENODE1_HOSTNAME=hdfs-namenode-1
-  -e HADOOP_NAMENODE2_HOSTNAME=hdfs-namenode-2)
+  -e HADOOP_NAMENODE1_HOSTNAME=hdfs-namenode-1)
 
 mkdir -p $OUTPUT_DIR
 

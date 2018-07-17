@@ -60,7 +60,7 @@ health)
   . lib/radar-health.sh
   ;;
 hdfs)
-  exec $stack up -d hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3
+  exec $stack up -d --remove-orphans hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3
   ;;
 foreground)
   . lib/perform-install.sh

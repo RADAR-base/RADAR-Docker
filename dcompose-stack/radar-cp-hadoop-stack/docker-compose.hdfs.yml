@@ -21,7 +21,6 @@ services:
       - hadoop
     depends_on:
       - hdfs-namenode-1
-      - hdfs-namenode-2
     volumes:
       - "${HDFS_DATA_DIR_1}:/hadoop/dfs/data"
     restart: always
@@ -30,9 +29,7 @@ services:
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
       HADOOP_HEAPSIZE: 1000
-      HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
-      HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
       HADOOP_DFS_REPLICATION: 2
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
@@ -52,7 +49,6 @@ services:
       - hadoop
     depends_on:
       - hdfs-namenode-1
-      - hdfs-namenode-2
     volumes:
       - "${HDFS_DATA_DIR_2}:/hadoop/dfs/data"
     restart: always
@@ -61,9 +57,7 @@ services:
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
       HADOOP_HEAPSIZE: 1000
-      HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
-      HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
       HADOOP_DFS_REPLICATION: 2
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
@@ -83,7 +77,6 @@ services:
       - hadoop
     depends_on:
       - hdfs-namenode-1
-      - hdfs-namenode-2
     volumes:
       - "${HDFS_DATA_DIR_3}:/hadoop/dfs/data"
     restart: always
@@ -92,9 +85,7 @@ services:
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
       HADOOP_HEAPSIZE: 1000
-      HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
-      HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
       HADOOP_DFS_REPLICATION: 2
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
@@ -112,133 +103,16 @@ services:
     hostname: hdfs-namenode-1
     networks:
       - hadoop
-      - zookeeper
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
-      - hdfs-journalnode-1
-      - hdfs-journalnode-2
-      - hdfs-journalnode-3
     volumes:
-      - "${HDFS_NAME_DIR_1}:/hadoop/dfs/name"
+      - "${HDFS_NAME_DIR_1}:/hadoop/dfs/name/1"
+      - "${HDFS_NAME_DIR_2}:/hadoop/dfs/name/2"
     restart: always
     environment:
       SERVICE_8020_NAME: namenode
       SERVICE_9870_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
-      HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
-      HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
-      HADOOP_QJOURNAL_ADDRESS: hdfs-journalnode-1:8485;hdfs-journalnode-2:8485;hdfs-journalnode-3:8485
-    healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-
-  hdfs-namenode-2:
-    build:
-      context: ./images/hdfs
-      args:
-        BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarbase/hdfs:${HDFS_BASE_VERSION}
-    command: namenode-2
-    hostname: hdfs-namenode-2
-    networks:
-      - hadoop
-      - zookeeper
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
-      - hdfs-journalnode-1
-      - hdfs-journalnode-2
-      - hdfs-journalnode-3
-      - hdfs-namenode-1
-    volumes:
-      - "${HDFS_NAME_DIR_2}:/hadoop/dfs/name"
-    restart: always
-    environment:
-      SERVICE_8020_NAME: namenode
-      SERVICE_9870_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
-      HADOOP_HEAPSIZE: 1000
-      HADOOP_NAMENODE_HA: nn1,nn2
-      HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
-      HADOOP_NAMENODE2_HOSTNAME: hdfs-namenode-2
-      HADOOP_DFS_REPLICATION: 2
-      HADOOP_QJOURNAL_ADDRESS: hdfs-journalnode-1:8485;hdfs-journalnode-2:8485;hdfs-journalnode-3:8485
-    healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-
-  hdfs-journalnode-1:
-    build:
-      context: ./images/hdfs
-      args:
-        BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarbase/hdfs:${HDFS_BASE_VERSION}
-    command: journalnode
-    networks:
-      - hadoop
-    volumes:
-      - "${HDFS_JOURNAL_DIR_1}:/hadoop/dfs/journal"
-    restart: always
-    environment:
-      SERVICE_8485_NAME: journalnode
-      SERVICE_8480_IGNORE: "true"
-      HADOOP_HEAPSIZE: 1000
-      HADOOP_NAMENODE_HA: nn1,nn2
-    healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-
-  hdfs-journalnode-2:
-    build:
-      context: ./images/hdfs
-      args:
-        BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarbase/hdfs:${HDFS_BASE_VERSION}
-    command: journalnode
-    networks:
-      - hadoop
-    volumes:
-      - "${HDFS_JOURNAL_DIR_2}:/hadoop/dfs/journal"
-    restart: always
-    environment:
-      SERVICE_8485_NAME: journalnode
-      SERVICE_8480_IGNORE: "true"
-      HADOOP_HEAPSIZE: 1000
-      HADOOP_NAMENODE_HA: nn1,nn2
-    healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-
-  hdfs-journalnode-3:
-    build:
-      context: ./images/hdfs
-      args:
-        BASE_VERSION: ${HDFS_BASE_VERSION}
-    image: radarbase/hdfs:${HDFS_BASE_VERSION}
-    command: journalnode
-    networks:
-      - hadoop
-    volumes:
-      - "${HDFS_JOURNAL_DIR_3}:/hadoop/dfs/journal"
-    restart: always
-    environment:
-      SERVICE_8485_NAME: journalnode
-      SERVICE_8480_IGNORE: "true"
-      HADOOP_HEAPSIZE: 1000
-      HADOOP_NAMENODE_HA: nn1,nn2
+      HADOOP_DFS_NAME_DIR: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
@@ -252,13 +126,15 @@ services:
     image: radarbase/radar-hdfs-connector-auto:0.2.0
     restart: on-failure
     volumes:
-      - ../etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
+      - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
     networks:
       - zookeeper
       - kafka
       - hadoop
     depends_on:
       - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
       - kafka-1
       - kafka-2
       - kafka-3
@@ -268,7 +144,6 @@ services:
       - hdfs-datanode-2
       - hdfs-datanode-3
       - hdfs-namenode-1
-      - hdfs-namenode-2
     environment:
       CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
       CONNECT_REST_PORT: 8083
@@ -288,7 +163,6 @@ services:
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
       KAFKA_BROKERS: 3
-      CONNECT_LOG4J_ROOT_LOGLEVEL: WARN
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
     healthcheck:
       test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]

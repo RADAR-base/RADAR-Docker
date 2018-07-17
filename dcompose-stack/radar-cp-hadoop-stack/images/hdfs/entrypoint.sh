@@ -26,6 +26,27 @@ wait_until() {
     fi
 }
 
+format_hdfs() {
+  NAME_DIR=$1
+  shift
+  IFS=',' read -r -a namedirs <<< $(echo "$NAME_DIR" | sed -e 's#file://##g')
+
+  for namedir in "${namedirs[@]}"; do
+    mkdir -p "$namedir"
+    if [ ! -d "$namedir" ]; then
+      echo "Namenode name directory not found: $namedir"
+      exit 2
+    fi
+
+    if [ ! -e "$namedir/current/VERSION" ]; then
+      echo "Formatting namenode name directory: $namedir is not yet formatted"
+      su-exec hdfs hdfs namenode $@
+      return 0
+    fi
+  done
+  return 1
+}
+
 # apply template
 for template in $(ls ${HADOOP_CONF_DIR}/*.mustache)
 do
@@ -48,11 +69,8 @@ case $CMD in
   exec su-exec hdfs hdfs journalnode "$@"
   ;;
 "namenode-1")
-  if [ ! -e "${HADOOP_TMP_DIR}/dfs/name/current/VERSION" ]; then
-      su-exec hdfs hdfs namenode -format -force
-      if [ "${HADOOP_NAMENODE_HA}" != "" ]; then
-          su-exec hdfs hdfs zkfc -formatZK -force
-      fi
+  if format_hdfs "$HADOOP_DFS_NAME_DIR" -format -force && [ "${HADOOP_NAMENODE_HA}" != "" ]; then
+    su-exec hdfs hdfs zkfc -formatZK -force
   fi
 #    wait_until ${HADOOP_QJOURNAL_ADDRESS%%:*} 8485
   if [ "${HADOOP_NAMENODE_HA}" != "" ]; then
@@ -61,10 +79,11 @@ case $CMD in
   exec su-exec hdfs hdfs namenode "$@"
   ;;
 "namenode-2")
-  if [ ! -e "${HADOOP_TMP_DIR}/dfs/name/current/VERSION" ]; then
-      wait_until ${HADOOP_NAMENODE1_HOSTNAME} 8020
-      su-exec hdfs hdfs namenode -bootstrapStandby
+  wait_until ${HADOOP_NAMENODE1_HOSTNAME} 8020
+  if format_hdfs "$HADOOP_DFS_NAME_DIR" -bootstrapStandby && [ "${HADOOP_NAMENODE_HA}" != "" ]; then
+    su-exec hdfs hdfs zkfc -formatZK -force
   fi
+
   su-exec hdfs hdfs zkfc &
   exec su-exec hdfs hdfs namenode "$@"
   ;;
