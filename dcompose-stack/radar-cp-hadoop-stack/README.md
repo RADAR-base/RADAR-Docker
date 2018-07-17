@@ -52,7 +52,7 @@ to start all the RADAR services. Use the `bin/radar-docker start|down|restart` t
 
 To enable a `systemd` service to control the platform, run
 ```shell
-bin/radar-systemd-wrappers
+bin/radar-docker install-systemd
 ```
 After that command, the RADAR platform should be controlled via `systemctl`.
 ```shell
@@ -142,24 +142,24 @@ Portainer provides simple interactive UI-based docker management. If running loc
 The [kafka-manager](https://github.com/yahoo/kafka-manager) is an interactive web based tool for managing Apache Kafka. Kafka manager has beed integrated in the stack. It is accessible at `http://<your-host>/kafkamanager/`
 
 ### Check Health
-Each of the containers in the stack monitor their own health and show the output as healthy or unhealthy. A script called `bin/radar-health` is used to check this output and send an email to the maintainer if a container is unhealthy.
+Each of the containers in the stack monitor their own health and show the output as healthy or unhealthy. A script called `bin/radar-docker health` is used to check this output and send an email to the maintainer if a container is unhealthy.
 
 First check that the `MAINTAINER_EMAIL` in the .env file is correct.
 
 Then make sure that the SMTP server is configured properly and running.
 
-If systemd integration is enabled, the `radar-health` script will check health of containers every five minutes. It can then be run directly by running if systemd wrappers have been installed
+If systemd integration is enabled, the `bin/radar-docker health` script will check health of containers every five minutes. It can then be run directly by running if systemd wrappers have been installed
 ```
 sudo systemctl start radar-check-health.service
 ```
 Otherwise, the following manual commands can be invoked.
 
-Add a cron job to run the `radar-health` script periodically like -
+Add a cron job to run the `bin/radar-docker health` script periodically like -
 1. Edit the crontab file for the current user by typing `$ crontab -e`
 2. Add your job and time interval. For example, add the following for checking health every 5 mins - 
 
 ```
-*/5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/bin/radar-health
+*/5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/bin/radar-docker health
 ```
 
 You can check the logs of CRON by typing `grep CRON /var/log/syslog`.
@@ -183,7 +183,7 @@ This folder contains useful scripts to manage the extraction of data from HDFS i
   - `storage_directory` is the directory where the extracted data will be stored
   - `lockfile` lock useful to check whether there is a previous instance still running
 
-- A systemd timer for this script can be installed by running the `bin/radar-systemd-wrappers`. Or you can add a cron job like below.
+- A systemd timer for this script can be installed by running the `bin/radar-docker install-systemd`. Or you can add a cron job like below.
 
 To add a script to `CRON` as `root`, run on the command-line `sudo crontab -e -u root` and add your task at the end of the file. The syntax is
 ```shell

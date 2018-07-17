@@ -1,5 +1,3 @@
-#!/bin/bash
-
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 . lib/util.sh
@@ -15,7 +13,7 @@ copy_template_if_absent /etc/systemd/system/radar-renew-certificate.service lib/
 copy_template_if_absent /etc/systemd/system/radar-renew-certificate.timer lib/systemd/radar-renew-certificate.timer.template
 
 inline_variable 'WorkingDirectory=' "$PWD" /etc/systemd/system/radar-docker.service
-inline_variable 'ExecStart=' "$PWD/bin/radar-docker stack" /etc/systemd/system/radar-docker.service
+inline_variable 'ExecStart=' "$PWD/bin/radar-docker foreground" /etc/systemd/system/radar-docker.service
 
 inline_variable 'WorkingDirectory=' "$PWD/hdfs" /etc/systemd/system/radar-output.service
 inline_variable 'ExecStart=' "$PWD/bin/hdfs-restructure-process" /etc/systemd/system/radar-output.service
@@ -24,7 +22,7 @@ inline_variable 'WorkingDirectory=' "$PWD" /etc/systemd/system/radar-check-healt
 inline_variable 'ExecStart=' "$PWD/bin/radar-docker health" /etc/systemd/system/radar-check-health.service
 
 inline_variable 'WorkingDirectory=' "$DIR" /etc/systemd/system/radar-renew-certificate.service
-inline_variable 'ExecStart=' "$PWD/bin/radar-cert-renew" /etc/systemd/system/radar-renew-certificate.service
+inline_variable 'ExecStart=' "$PWD/bin/radar-docker cert-renew" /etc/systemd/system/radar-renew-certificate.service
 
 sudo systemctl daemon-reload
 sudo systemctl enable radar-docker
