@@ -5,7 +5,7 @@ stack="docker-compose"
 
 function print_usage() {
   echo 'Control the RADAR-base platform directly'
-  echo "Usage: $0 [COMMAND] ..."
+  echo "Usage: $0 [COMMAND|-h|--help] ..."
   echo
   echo 'Commands:'
   echo '  cert-renew                Request or renew SSL certificate'
@@ -20,6 +20,9 @@ function print_usage() {
   echo '  health                    Check the health of the cluster and restart failing services.'
   echo '  quit SERVICE...           Stop and remove given services.'
   echo '  rebuild SERVICE...        Rebuild and restart given services.'
+  echo
+  echo 'Options:'
+  echo '  -h, --help                Print this usage information.'
   echo
   echo 'docker-compose commands and options are also accepted:'
   echo '======================================================'
