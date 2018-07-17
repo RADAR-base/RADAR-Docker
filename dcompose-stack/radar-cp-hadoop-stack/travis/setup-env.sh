@@ -1,11 +1,5 @@
 #!/bin/bash
 echo "Starting to configure mock configurations for test"
-# create hadoop netword
-sudo docker network create hadoop
-
-# create volumes
-sudo docker volume create certs
-sudo docker volume create certs-data
 
 # create folder for docker volumes
 sudo mkdir -p /usr/local/var/lib/docker/
