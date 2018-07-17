@@ -15,6 +15,7 @@ services:
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
+    hostname: hdfs-datanode-1
     command: datanode
     networks:
       - hadoop
@@ -51,6 +52,7 @@ services:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
     command: datanode
+    hostname: hdfs-datanode-2
     networks:
       - hadoop
       - zookeeper
@@ -86,6 +88,7 @@ services:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
     command: datanode
+    hostname: hdfs-datanode-3
     networks:
       - hadoop
       - zookeeper
@@ -121,6 +124,7 @@ services:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
     command: namenode-1
+    hostname: hdfs-namenode-1
     networks:
       - hadoop
       - zookeeper
@@ -156,6 +160,7 @@ services:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarcns/hdfs:${HDFS_BASE_VERSION}
     command: namenode-2
+    hostname: hdfs-namenode-2
     networks:
       - hadoop
       - zookeeper

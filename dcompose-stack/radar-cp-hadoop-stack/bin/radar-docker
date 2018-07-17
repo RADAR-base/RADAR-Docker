@@ -3,40 +3,65 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 stack="docker-compose -f docker-compose.yml -f docker-compose.hdfs.yml"
 
-if [ $# != 0 ]; then
-  CMD=$1
-  shift
+function print_usage() {
+  echo 'Control the RADAR-base platform directly'
+  echo "Usage: $0 [COMMAND] ..."
+  echo
+  echo 'Commands:'
+  echo '  install [SERVICE...]      install the RADAR-base platform, starting it in the background'
+  echo '                            if services are provided in the arguments, only those services'
+  echo '                            are actually started.'
+  echo '  hdfs                      start the HDFS cluster stack'
+  echo '  quit SERVICE...           stop and remove given services'
+  echo '  rebuild SERVICE...        rebuild and restart given services'
+  echo '  stack [SERVICE...]        install the RADAR-base platform and start it in the foreground'
+  echo '                            if services are provided in the arguments, only those services'
+  echo '                            are actually started.'
+  echo
+  echo 'docker-compose commands and options are also accepted:'
+  echo '======================================================'
+  echo
+}
 
-  case "${CMD}" in
-  "install")
-    . lib/perform-install.sh
-    ;;
-  "rebuild")
-    $stack build "$@" && \
-        $stack stop "$@" && \
-        $stack rm -vf "$@" && \
-        $stack up -d "$@" && \
-        exit 0 || exit 1
-    ;;
-  "quit")
-    $stack stop "$@" && \
-        $stack rm -vf "$@" && \
-        exit 0 || exit 1
-    ;;
-  "health")
-    . lib/radar-health.sh
-    ;;
-  "hdfs")
-    exec $stack up -d hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3
-    ;;
-  "stack")
-    . lib/perform-install.sh
-    exec $stack up
-    ;;
-  *)
-    exec $stack "$CMD" "$@"
-    ;;
-  esac
-else
+if [ $# = 0 ]; then
+  print_usage
   exec $stack
 fi
+
+
+CMD=$1
+shift
+
+# advanced pattern matching
+shopt -s extglob
+
+case "${CMD}" in
+install)
+  . lib/perform-install.sh
+  ;;
+rebuild)
+  exec $stack up -d --force-recreate --build -V "$@"
+  ;;
+quit)
+  $stack stop "$@" && \
+      $stack rm -vf "$@" && \
+      exit 0 || exit 1
+  ;;
+health)
+  . lib/radar-health.sh
+  ;;
+hdfs)
+  exec $stack up -d hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3
+  ;;
+stack)
+  . lib/perform-install.sh
+  exec $stack up "$@"
+  ;;
+@(--help|-h))
+  print_usage
+  exec $stack "$CMD" "$@"
+  ;;
+*)
+  exec $stack "$CMD" "$@"
+  ;;
+esac
