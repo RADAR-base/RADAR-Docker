@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "Starting to configure mock configurations for test"
 # create hadoop netword
 sudo docker network create hadoop
 
@@ -20,4 +20,4 @@ cp ../etc/mongodb-connector/sink-mongo.properties.template ../etc/mongodb-connec
 cp ../etc/managementportal/config/oauth_client_details.csv.template ../etc/managementportal/config/oauth_client_details.csv
 cp ../etc/redcap-integration/radar.yml.template ../etc/redcap-integration/radar.yml
 
-echo "Setup mock configurations are finished..."
+echo "Setting up mock configurations finished..."
