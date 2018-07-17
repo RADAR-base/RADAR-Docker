@@ -30,8 +30,10 @@ script:
   - export SERVER_NAME=localhost
   - export HDFS_DATA_DIR_1=$PWD/hdfs-data1
   - export HDFS_DATA_DIR_2=$PWD/hdfs-data2
+  - export HDFS_DATA_DIR_3=$PWD/hdfs-data3
   - export HDFS_NAME_DIR_1=$PWD/hdfs-name1
   - export HDFS_NAME_DIR_2=$PWD/hdfs-name2
+  - export HDFS_BASE_VERSION=3.0.3-alpine
   - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > etc/smtp.env
   - sudo docker volume create certs
   - sudo docker volume create certs-data
@@ -39,7 +41,6 @@ script:
   - cp etc/webserver/nginx.conf.template etc/webserver/nginx.conf
   - cp etc/hdfs-connector/sink-hdfs.properties.template etc/hdfs-connector/sink-hdfs.properties
   - cp etc/mongodb-connector/sink-mongo.properties.template etc/mongodb-connector/sink-mongo.properties
-  - echo "HDFS_BASE_VERSION=3.0.3-alpine" >> .env
   - sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo $HOME/bin/docker-compose down
 
