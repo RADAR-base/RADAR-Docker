@@ -162,11 +162,7 @@ Add a cron job to run the `radar-health` script periodically like -
 */5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/bin/radar-health
 ```
 
-You can check the logs of CRON by typing `grep CRON /var/log/syslog`
-Also you will need to change the directory. So just add the following to the top of the `radar-health` script - 
-```sh
-cd "$( dirname "${BASH_SOURCE[0]}" )/.."
-```
+You can check the logs of CRON by typing `grep CRON /var/log/syslog`.
 
 ### HDFS
 
