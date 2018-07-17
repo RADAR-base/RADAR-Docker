@@ -21,25 +21,39 @@ select yn in "Yes" "No"; do
     esac
 done
 
+echo "==> Stopping HDFS name nodes"
 $stack quit hdfs-namenode-1 hdfs-namenode-2 radar-hdfs-connector
 
-sed_i "s/HDFS_BASE_VERSION=.*/HDFS_BASE_VERSION=${VERSION}/" "${STACK_DIR}/.env"
+echo "==> Updating HDFS version to ${VERSION}"
+if grep -q HDFS_BASE_VERSION ./.env; then
+  sed_i "s/HDFS_BASE_VERSION=.*/HDFS_BASE_VERSION=${VERSION}/" ./.env
+else
+  echo "HDFS_BASE_VERSION=${VERSION}" >> ./.env
+fi
 
 $stack build
+
+echo "==> Starting updated HDFS HA Quorum"
 $stack up -d zookeeper-1 zookeeper-2 zookeeper-3 hdfs-journalnode-1 hdfs-journalnode-2 hdfs-journalnode-3
 sleep 10
+echo "==> Upgrading name node 1"
 NAME_1=$($stack run --rm -d --name hdfs-namenode-1 hdfs-namenode-1 namenode-1 -upgrade)
 
 echo "Waiting for the upgrade to finalize..."
 while ! docker exec $NAME_1 hdfs dfs -test -e hdfs://hdfs-namenode-1/; do
   sleep 1
 done
+sleep 5
 
+echo "==> Upgrading name node 2"
 $stack run --no-deps --rm --name hdfs-namenode-2 hdfs-namenode-2 namenode-2 -bootstrapStandby
+echo "==> Starting name node 2"
 $stack up --no-deps -d hdfs-namenode-2
 sleep 10
-docker exec $NAME_1 hdfs dfsadmin -finalizeUpgrade
-
+echo "==> Finalizing upgrade"
+docker exec $NAME_1 su-exec hdfs hdfs dfsadmin -finalizeUpgrade
 docker rm -vf $NAME_1
+
+echo "==> Bringing up HDFS cluster"
 $stack hdfs
 $stack up -d radar-hdfs-connector
