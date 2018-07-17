@@ -40,6 +40,7 @@ script:
   - cp etc/hdfs-connector/sink-hdfs.properties.template etc/hdfs-connector/sink-hdfs.properties
   - cp etc/mongodb-connector/sink-mongo.properties.template etc/mongodb-connector/sink-mongo.properties
   - . etc/env.template
+  - echo POSTGRES_NEW_VERSION="$POSTGRES_NEW_VERSION"
   - sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo $HOME/bin/docker-compose down
   - sudo docker network rm hadoop
