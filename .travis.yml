@@ -25,23 +25,10 @@ script:
   #- sudo $HOME/bin/docker-compose down
 
   # With email and HDFS support
-  - cd ../radar-cp-hadoop-stack
-  - sudo docker network create hadoop
-  - export SERVER_NAME=localhost
-  - export HDFS_DATA_DIR_1=$PWD/hdfs-data1
-  - export HDFS_DATA_DIR_2=$PWD/hdfs-data2
-  - export HDFS_NAME_DIR_1=$PWD/hdfs-name1
-  - export HDFS_NAME_DIR_2=$PWD/hdfs-name2
-  - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > etc/smtp.env
-  - sudo docker volume create certs
-  - sudo docker volume create certs-data
-  - cp etc/radar-backend/radar.yml.template etc/radar-backend/radar.yml
-  - cp etc/webserver/nginx.conf.template etc/webserver/nginx.conf
-  - cp etc/hdfs-connector/sink-hdfs.properties.template etc/hdfs-connector/sink-hdfs.properties
-  - cp etc/mongodb-connector/sink-mongo.properties.template etc/mongodb-connector/sink-mongo.properties
-  - . etc/env.template
-  - echo POSTGRES_NEW_VERSION="$POSTGRES_NEW_VERSION"
-  - sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
+  - cd ../radar-cp-hadoop-stack/travis
+  - ./setup-env.sh
+  - cd ../
+  - ./install-radar-stack.sh && sleep 60 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
   - sudo $HOME/bin/docker-compose down
   - sudo docker network rm hadoop
 
