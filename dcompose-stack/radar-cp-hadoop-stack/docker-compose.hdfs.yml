@@ -19,11 +19,7 @@ services:
     command: datanode
     networks:
       - hadoop
-      - zookeeper
     depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
       - hdfs-namenode-1
       - hdfs-namenode-2
     volumes:
@@ -33,7 +29,6 @@ services:
       SERVICE_9866_NAME: datanode
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
@@ -55,11 +50,7 @@ services:
     hostname: hdfs-datanode-2
     networks:
       - hadoop
-      - zookeeper
     depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
       - hdfs-namenode-1
       - hdfs-namenode-2
     volumes:
@@ -69,7 +60,6 @@ services:
       SERVICE_9866_NAME: datanode
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
@@ -91,11 +81,7 @@ services:
     hostname: hdfs-datanode-3
     networks:
       - hadoop
-      - zookeeper
     depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
       - hdfs-namenode-1
       - hdfs-namenode-2
     volumes:
@@ -105,7 +91,6 @@ services:
       SERVICE_9866_NAME: datanode
       SERVICE_9867_IGNORE: "true"
       SERVICE_9864_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
@@ -200,14 +185,12 @@ services:
     command: journalnode
     networks:
       - hadoop
-      - zookeeper
     volumes:
       - "${HDFS_JOURNAL_DIR_1}:/hadoop/dfs/journal"
     restart: always
     environment:
       SERVICE_8485_NAME: journalnode
       SERVICE_8480_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:
@@ -225,14 +208,12 @@ services:
     command: journalnode
     networks:
       - hadoop
-      - zookeeper
     volumes:
       - "${HDFS_JOURNAL_DIR_2}:/hadoop/dfs/journal"
     restart: always
     environment:
       SERVICE_8485_NAME: journalnode
       SERVICE_8480_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:
@@ -250,14 +231,12 @@ services:
     command: journalnode
     networks:
       - hadoop
-      - zookeeper
     volumes:
       - "${HDFS_JOURNAL_DIR_3}:/hadoop/dfs/journal"
     restart: always
     environment:
       SERVICE_8485_NAME: journalnode
       SERVICE_8480_IGNORE: "true"
-      HADOOP_ZOOKEEPER_QUORUM: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE_HA: nn1,nn2
     healthcheck:
