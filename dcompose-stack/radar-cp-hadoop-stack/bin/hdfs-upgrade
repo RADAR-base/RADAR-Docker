@@ -21,6 +21,9 @@ select yn in "Yes" "No"; do
     esac
 done
 
+# ensure that the image exists
+docker pull smizy/hadoop-base:$VERSION
+
 echo "==> Stopping HDFS name nodes"
 $stack quit hdfs-namenode-1 radar-hdfs-connector
 

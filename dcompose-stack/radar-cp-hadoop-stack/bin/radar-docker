@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-stack="docker-compose"
+stack=${DOCKER_COMPOSE:-docker-compose}
 
 function print_usage() {
   echo 'Control the RADAR-base platform directly'

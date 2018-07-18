@@ -539,7 +539,7 @@ services:
   # RADAR HDFS connector                                                     #
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
-    image: radarbase/radar-hdfs-connector-auto:0.2.0
+    image: radarbase/radar-connect-hdfs-sink:0.2.0
     restart: on-failure
     volumes:
       - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
@@ -703,7 +703,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.3.7
+    image: radarbase/management-portal:0.3.8
     networks:
       - default
       - api
@@ -736,7 +736,7 @@ services:
 
 
   managementportal-postgresql:
-    image: postgres:9.6.2
+    image: postgres:${POSTGRES_VERSION}
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
@@ -780,7 +780,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarcns/radar-gateway:0.1.2
+    image: radarbase/radar-gateway:0.2.1
     networks:
       - api
       - kafka
@@ -788,11 +788,11 @@ services:
       - rest-proxy-1
       - managementportal-app
     volumes:
-      - ./etc/gateway/radar-is.yml:/etc/radar-gateway/radar-is.yml
-      - ./etc/gateway/classpath.xml:/usr/local/tomcat/conf/Catalina/localhost/radar-gateway.xml
+      - ./etc/gateway:/etc/radar-gateway
+    command: ["radar-gateway", "/etc/radar-gateway/gateway.yml"]
     healthcheck:
       # should give an unauthenticated response, rather than a 404
-      test: ["CMD-SHELL", "wget --spider localhost:8080/radar-gateway 2>&1 | grep -q 401 || exit 1"]
+      test: ["CMD-SHELL", "wget --spider localhost:8080/radar-gateway/ 2>&1 | grep -q 401 || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3

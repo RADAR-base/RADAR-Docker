@@ -95,6 +95,9 @@ To see current data coming out of a Kafka topic, run
 bin/radar-kafka-consumer TOPIC
 ```
 
+### Postgres Data Migration
+If a major Postgres version upgrade is planned, existing data need to be migrated to the new version. To do so run `bin/postgres-upgrade NEW_VERSION`
+
 ### Data extraction
 
 If systemd integration is enabled, HDFS data will be extracted to the `./output` directory every hour. It can then be run directly by running
