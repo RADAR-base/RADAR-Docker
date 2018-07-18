@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 . "./backup.conf"
-. "../util.sh" > /dev/null
+. "../lib/util.sh" > /dev/null
 
 IFS=',' read -r -a inputs <<< "$INPUTS"
 

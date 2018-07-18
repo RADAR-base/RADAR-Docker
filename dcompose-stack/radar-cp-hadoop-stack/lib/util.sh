@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # this will trap any errors or commands with non-zero exit status
 # by calling function catch_errors()
 trap catch_errors ERR;

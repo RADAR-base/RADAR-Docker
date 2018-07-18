@@ -1,9 +1,11 @@
 #!/bin/bash
 # Check whether services are healthy. If not, restart them and notify the maintainer.
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. "$DIR/util.sh"
-. .env
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
+
+stack=bin/radar-docker
+. lib/util.sh
+. ./.env
 
 function hipchat_notify() {
     # Send notification via HipChat, if configured.
@@ -32,7 +34,7 @@ unhealthy=()
 # see last line of loop
 while read service; do
     # check if a container was started for the service
-    container=$(sudo-linux docker-compose ps -q $service)
+    container=$(sudo-linux $stack ps -q $service)
     if [ -z "${container}" ]; then
         # no container means no running service
         continue
@@ -41,9 +43,9 @@ while read service; do
     if [ "$health" = "unhealthy" ]; then
         echo "Service $service is unhealthy. Restarting."
         unhealthy+=("${service}")
-        sudo-linux docker-compose restart ${service}
+        sudo-linux $stack restart ${service}
     fi
-done <<< "$(sudo-linux docker-compose config --services)"
+done <<< "$(sudo-linux $stack config --services)"
 
 display_host="${SERVER_NAME} ($(hostname -f), $(curl -s http://ipecho.net/plain))"
 
@@ -58,11 +60,11 @@ else
 
     # Send notification to MAINTAINER
     # start up the mail container if not already started
-    sudo-linux docker-compose up -d smtp
+    sudo-linux $stack up -d smtp
     # ensure that all topics are available
-    sudo-linux docker-compose run --rm kafka-init
+    sudo-linux $stack run --rm kafka-init
     # save the container, so that we can use exec to send an email later
-    container=$(sudo-linux docker-compose ps -q smtp)
+    container=$(sudo-linux $stack ps -q smtp)
     SAVEIFS=$IFS
     IFS=,
     display_services="[${unhealthy[*]}]"

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. ./util.sh
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+. lib/util.sh
 
 sudo-linux chmod og-rw ./.env
 sudo-linux chmod og-rwx ./etc
@@ -53,10 +55,10 @@ fi
 
 # Initializing Kafka
 echo "==> Setting up topics"
-sudo-linux docker-compose run --rm kafka-init
+sudo-linux bin/radar-docker run --rm kafka-init
 KAFKA_SCHEMA_RETENTION_MS=${KAFKA_SCHEMA_RETENTION_MS:-5400000000}
 KAFKA_SCHEMA_RETENTION_CMD='kafka-configs --zookeeper "${KAFKA_ZOOKEEPER_CONNECT}" --entity-type topics --entity-name _schemas --alter --add-config min.compaction.lag.ms='${KAFKA_SCHEMA_RETENTION_MS}',cleanup.policy=compact'
-sudo-linux docker-compose exec kafka-1 bash -c "$KAFKA_SCHEMA_RETENTION_CMD"
+sudo-linux bin/radar-docker exec kafka-1 bash -c "$KAFKA_SCHEMA_RETENTION_CMD"
 
 echo "==> Configuring MongoDB Connector"
 # Update sink-mongo.properties
@@ -113,7 +115,7 @@ sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' et
 init_certificate "${SERVER_NAME}"
 
 echo "==> Starting RADAR-base Platform"
-sudo-linux docker-compose up -d "$@"
+sudo-linux bin/radar-docker up -d --remove-orphans "$@"
 
 request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERT:-yes}"
 echo "### SUCCESS ###"

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. ./util.sh
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+. lib/util.sh
 . ./.env
 
 check_command_exists docker
