@@ -19,10 +19,11 @@ broker:
 
 #Kafka internal parameters
 stream_properties:
-  auto_commit_interval_ms: 1000
   max.request.size: 3500042 #Set message.max.bytes for kafka brokers higher than or equal to this value
   retries: 15
-  session_timeout_ms: 20000
+  session.timeout.ms: 20000
+  commit.interval.ms: 300000
+  request.timeout.ms: 10860000
 #============================ Kafka Streams ============================#
 #The number of threads that a stream must be run according is priority
 stream_priority:
