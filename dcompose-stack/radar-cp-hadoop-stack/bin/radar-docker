@@ -52,7 +52,7 @@ install-systemd)
   . lib/install-systemd-wrappers.sh
   ;;
 rebuild)
-  exec $stack up -d --force-recreate --build -V "$@"
+  exec $stack up -d --force-recreate --build --no-deps -V "$@"
   ;;
 quit)
   $stack stop "$@" && \
