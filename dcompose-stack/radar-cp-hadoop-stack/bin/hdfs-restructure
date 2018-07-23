@@ -19,7 +19,7 @@ cd $DIR
 sudo-linux bin/radar-docker hdfs
 
 # HDFS restructure version
-DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.4.0
+DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.0-SNAPSHOT
 
 # HDFS filename to get
 HDFS_FILE=$1
@@ -29,9 +29,12 @@ HDFS_OUTPUT_DIR=/output
 HDFS_COMMAND=(
   --compression gzip
   --deduplicate
-  -u hdfs://hdfs-namenode-1:8020
+  -n hdfs-namenode-1
   -o "$HDFS_OUTPUT_DIR"
+  --num-threads 3
+  --timer
+  --tmp-dir "$HDFS_OUTPUT_DIR/+tmp"
   "$HDFS_FILE" )
 
 mkdir -p $OUTPUT_DIR
-sudo-linux docker run -t --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
+sudo-linux docker run -it --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
