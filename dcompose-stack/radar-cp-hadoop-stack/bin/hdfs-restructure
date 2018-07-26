@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# HDFS restructure version
+DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.0
+# HDFS restructure script flags
+HDFS_RESTRUCTURE_OPTS=(
+  --compression gzip
+  --deduplicate
+  --num-threads 3
+  --timer
+  )
+# HDFS restructure JVM flags
+RADAR_HDFS_RESTRUCTURE_OPTS="$JAVA_OPTS -Xmx2g"
+
+# Without DOCKER_OPTS, run in interactive mode.
+# From systemd or cron, override DOCKER_OPTS to remove
+# interactive mode, e.g., $ DOCKER_OPTS="" bin/hdfs-restructure /mydir
+DOCKER_OPTS=${DOCKER_OPTS:--i}
+
 if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
    printf "Usage:\n$0 <hdfs path> [<destination directory>]\nThe destination directory defaults to ./output\n"
    exit 1
@@ -18,23 +35,17 @@ cd $DIR
 # Start HDFS if not started already
 sudo-linux bin/radar-docker hdfs
 
-# HDFS restructure version
-DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.0-SNAPSHOT
-
 # HDFS filename to get
 HDFS_FILE=$1
 # Internal docker directory to write output to
 HDFS_OUTPUT_DIR=/output
 # HDFS command to run
 HDFS_COMMAND=(
-  --compression gzip
-  --deduplicate
+  "${HDFS_RESTRUCTURE_OPTS[@]}"
   -n hdfs-namenode-1
   -o "$HDFS_OUTPUT_DIR"
-  --num-threads 3
-  --timer
   --tmp-dir "$HDFS_OUTPUT_DIR/+tmp"
   "$HDFS_FILE" )
 
 mkdir -p $OUTPUT_DIR
-sudo-linux docker run -it --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
+sudo-linux docker run ${DOCKER_OPTS} -t --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" -e RADAR_HDFS_RESTRUCTURE_OPTS $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
