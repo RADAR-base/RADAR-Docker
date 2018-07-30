@@ -7,15 +7,21 @@ HDFS_RESTRUCTURE_OPTS=(
   --compression gzip
   --deduplicate
   --num-threads 3
-  --timer
   )
 # HDFS restructure JVM flags
-RADAR_HDFS_RESTRUCTURE_OPTS="$JAVA_OPTS -Xmx2g"
-
+export RADAR_HDFS_RESTRUCTURE_OPTS="$JAVA_OPTS -Xmx4g"
 # Without DOCKER_OPTS, run in interactive mode.
 # From systemd or cron, override DOCKER_OPTS to remove
 # interactive mode, e.g., $ DOCKER_OPTS="" bin/hdfs-restructure /mydir
 DOCKER_OPTS=${DOCKER_OPTS:--i}
+
+# For profiling, run e.g. jvisualvm and connect to localhost:$PROFILE_PORT:
+# PROFILE_PORT=9101 bin/hdfs-restructure /myTopic
+# Note that profiling the application makes it slower.
+if [ ! -z $PROFILE_PORT ]; then
+  export RADAR_HDFS_RESTRUCTURE_OPTS="$RADAR_HDFS_RESTRUCTURE_OPTS -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${PROFILE_PORT} -Dcom.sun.management.jmxremote.rmi.port=${PROFILE_PORT} -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+  DOCKER_OPTS="$DOCKER_OPTS -p ${PROFILE_PORT}:${PROFILE_PORT}"
+fi
 
 if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
    printf "Usage:\n$0 <hdfs path> [<destination directory>]\nThe destination directory defaults to ./output\n"
