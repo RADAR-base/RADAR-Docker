@@ -1,0 +1,4 @@
+# restrict access to only certain IPs
+allow 193.60.0.0/14; # KCL
+allow 91.206.81.2; # The Hyve
+deny all;

@@ -25,7 +25,7 @@ This docker-compose stack contains the full operational RADAR platform. Once con
 
 4. Copy `etc/managementportal/config/oauth_client_details.csv.template` to `etc/managementportal/config/oauth_client_details.csv` and change OAuth client credentials for production MP. The OAuth client for the frontend will be loaded automatically and does not need to be listed in this file. This file will be read at each startup. The current implementation overwrites existing clients with the same client ID, so be aware of this if you have made changes to a client listed in this file using the Management Portal frontend. This behaviour might change in the future.
 
-5. Next copy the `etc/webserver/nginx.conf.template` to  `etc/webserver/nginx.conf` and configure restriction of admin tools (like portainer and kafka-manager) to certain known IP addresses. For easy configuration two example subnet/IPs are included in the template. You can remove this restriction if not required.
+5. Next edit the `etc/webserver/ip-filter.whitelist` file and configure restriction of admin tools (like portainer and kafka-manager) to certain known IP addresses. For easy configuration two example subnet/IPs are included. You can remove this restriction if not required.
 
 6. Finally, copy `etc/radar-backend/radar.yml.template` to `etc/radar-backend/radar.yml` and edit it, especially concerning the monitor email address configuration.
 

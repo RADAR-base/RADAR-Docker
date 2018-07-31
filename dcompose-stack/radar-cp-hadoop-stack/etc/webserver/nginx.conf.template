@@ -87,20 +87,14 @@ http {
       proxy_set_header   Host $host;
     }
     location /portainer/ {
-      # restrict access to only certain IPs
-      allow 193.60.0.0/14; # KCL
-      allow 91.206.81.2; # The Hyve
-      deny all;
+      include ip-filter.whitelist;
 
       proxy_pass         http://portainer:9000/;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
     }
     location /portainer/api/websocket/ {
-      # restrict access to only certain IPs
-      allow 193.60.0.0/14; # KCL
-      allow 91.206.81.2; # The Hyve
-      deny all;
+      include ip-filter.whitelist;
       proxy_pass         http://portainer:9000/api/websocket/;
       proxy_set_header   Upgrade $http_upgrade;
       proxy_set_header   Connection "upgrade";
@@ -125,10 +119,7 @@ http {
       proxy_set_header   Host $host;
     }
     location /kafkamanager/{
-      # restrict access to only certain IPs
-      allow 193.60.0.0/14; # KCL
-      allow 91.206.81.2; # The Hyve
-      deny all;
+      include ip-filter.whitelist;
 
       proxy_pass         http://kafka-manager:9000;
       proxy_set_header   Host $host;
