@@ -663,7 +663,8 @@ services:
     restart: always
 
   portainer:
-    image: portainer/portainer:1.11.1
+    image: portainer/portainer:1.19.1
+    command: --admin-password '${PORTAINER_PASSWORD_HASH}'
     networks:
       - monitor
     volumes:
@@ -772,6 +773,9 @@ services:
       - kafka-3
     environment:
       ZK_HOSTS: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_MANAGER_AUTH_ENABLED: "true"
+      KAFKA_MANAGER_USERNAME: ${KAFKA_MANAGER_USERNAME}
+      KAFKA_MANAGER_PASSWORD: ${KAFKA_MANAGER_PASSWORD}
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "[ $$(wget -q -O - localhost:9000/kafkamanager/api/health) = healthy ] || exit 1"]

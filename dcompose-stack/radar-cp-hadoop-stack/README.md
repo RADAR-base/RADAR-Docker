@@ -5,13 +5,19 @@ This docker-compose stack contains the full operational RADAR platform. Once con
 ## Configuration
 
 1. First copy `etc/env.template` file to `./.env` and check and modify all its variables.
-   
-   
-   1.1. To have a valid HTTPS connection for a public host, set `SELF_SIGNED_CERT=no`. You need to provide a public valid DNS name as `SERVER_NAME` for SSL certificate to work. IP addresses will not work. 
- 
+
+
+   1.1. To have a valid HTTPS connection for a public host, set `SELF_SIGNED_CERT=no`. You need to provide a public valid DNS name as `SERVER_NAME` for SSL certificate to work. IP addresses will not work.
+
    1.2. Set `MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET` to a secret to be used by the Management Portal frontend.
-     
+
    1.3. If you want to enable auto import of source types from the catalog server set the variable `MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT` to `true`.
+
+   1.4. To better secure portainer create a hash for your desired password using the command
+        ```shell
+          htpasswd -nb -B admin <your-password> | cut -d ":" -f 2
+        ```
+        and just updating the `PORTAINER_PASSWORD_HASH` variable in .env file. The default hash is set using password `admin`
 
 2. Copy `etc/smtp.env.template` to `etc/smtp.env` and configure your email settings. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
 
@@ -19,16 +25,18 @@ This docker-compose stack contains the full operational RADAR platform. Once con
 
 4. Copy `etc/managementportal/config/oauth_client_details.csv.template` to `etc/managementportal/config/oauth_client_details.csv` and change OAuth client credentials for production MP. The OAuth client for the frontend will be loaded automatically and does not need to be listed in this file. This file will be read at each startup. The current implementation overwrites existing clients with the same client ID, so be aware of this if you have made changes to a client listed in this file using the Management Portal frontend. This behaviour might change in the future.
 
-5. Finally, copy `etc/radar-backend/radar.yml.template` to `etc/radar-backend/radar.yml` and edit it, especially concerning the monitor email address configuration.
+5. Next copy the `etc/webserver/nginx.conf.template` to  `etc/webserver/nginx.conf` and configure restriction of admin tools (like portainer and kafka-manager) to certain known IP addresses. You can remove this restriction if not required. For easy configuration two example subnet/IPs are included in the template.
 
-6. (Optional) Note: To have different flush.size for different topics, you can create multipe property configurations for a single connector. To do that,
+6. Finally, copy `etc/radar-backend/radar.yml.template` to `etc/radar-backend/radar.yml` and edit it, especially concerning the monitor email address configuration.
 
-	6.1 Create multipe property files that have different `flush.size` for given topics.
+7. (Optional) Note: To have different flush.size for different topics, you can create multipe property configurations for a single connector. To do that,
+
+	7.1 Create multipe property files that have different `flush.size` for given topics.
 	Examples [sink-hdfs-high.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-low.properties)
 
-	6.2 Add `CONNECTOR_PROPERTY_FILE_PREFIX: <prefix-value>` environment variable to `radar-hdfs-connector` service in `docker-compose` file.
+	7.2 Add `CONNECTOR_PROPERTY_FILE_PREFIX: <prefix-value>` environment variable to `radar-hdfs-connector` service in `docker-compose` file.
 
-	6.3 Add created property files to the `radar-hdfs-connector` service in `docker-compose` with name abides to prefix-value mentioned in `CONNECTOR_PROPERTY_FILE_PREFIX`
+	7.3 Add created property files to the `radar-hdfs-connector` service in `docker-compose` with name abides to prefix-value mentioned in `CONNECTOR_PROPERTY_FILE_PREFIX`
 
 	```ini
 	    radar-hdfs-connector:
@@ -159,7 +167,7 @@ Otherwise, the following manual commands can be invoked.
 
 Add a cron job to run the `bin/radar-docker health` script periodically like -
 1. Edit the crontab file for the current user by typing `$ crontab -e`
-2. Add your job and time interval. For example, add the following for checking health every 5 mins - 
+2. Add your job and time interval. For example, add the following for checking health every 5 mins -
 
 ```
 */5 * * * * /home/ubuntu/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/bin/radar-docker health
@@ -198,4 +206,3 @@ To add a script to `CRON` as `root`, run on the command-line `sudo crontab -e -u
 ```
 
 For example, `*/2 * * * * /absolute/path/to/script-name.sh` will execute `script-name.sh` every `2` minutes.
-
