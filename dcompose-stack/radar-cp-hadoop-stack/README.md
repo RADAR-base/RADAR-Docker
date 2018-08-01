@@ -17,7 +17,7 @@ This docker-compose stack contains the full operational RADAR platform. Once con
         ```shell
           htpasswd -nb -B admin <your-password> | cut -d ":" -f 2
         ```
-        then just update the `PORTAINER_PASSWORD_HASH` variable in .env file with the hash value generated above. The default hash set in the template was generated using the password `admin`
+        then just update the `PORTAINER_PASSWORD_HASH` variable in .env file with the hash value generated above.
 
 2. Copy `etc/smtp.env.template` to `etc/smtp.env` and configure your email settings. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
 

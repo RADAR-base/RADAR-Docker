@@ -668,7 +668,6 @@ services:
       - monitor
       - default
     depends_on:
-      - cadvisor
       - portainer
       - rest-api
       - schema-registry-1
