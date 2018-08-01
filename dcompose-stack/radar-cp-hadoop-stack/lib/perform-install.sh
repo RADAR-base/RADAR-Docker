@@ -38,6 +38,32 @@ if [ -z ${SERVER_NAME} ]; then
   exit 1
 fi
 
+# Checking provided passwords
+if [[ -z ${HOTSTORAGE_PASSWORD} ]]; then
+  echo "No Hotstorage Password specified in the .env file. Please enter the password now: "
+  read hotstorage_pass
+  inline_variable 'HOTSTORAGE_PASSWORD=' "${hotstorage_pass}" .env
+fi
+
+if [[ -z ${POSTGRES_PASSWORD} ]]; then
+  echo "No Postgres Password specified in the .env file. Please enter the password now: "
+  read postgres_pass
+  inline_variable 'POSTGRES_PASSWORD=' "${postgres_pass}" .env
+fi
+
+if [[ -z ${KAFKA_MANAGER_PASSWORD} ]]; then
+  echo "No Kafka Manager Password specified in the .env file. Please enter the password now: "
+  read kafkamanager_pass
+  inline_variable 'KAFKA_MANAGER_PASSWORD=' "${kafkamanager_pass}" .env
+fi
+
+if [[ -z ${PORTAINER_PASSWORD_HASH} ]]; then
+  echo "No Portainer Password specified in the .env file. Please enter the password now: "
+  read portainer_pass
+  portainer_pass_hash=`sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB admin ${portainer_pass} | cut -d ":" -f 2`
+  inline_variable 'PORTAINER_PASSWORD_HASH=' "${portainer_pass_hash}" .env
+fi
+
 # Create networks and volumes
 if ! sudo-linux docker network ls --format '{{.Name}}' | grep -q "^hadoop$"; then
   echo "==> Creating docker network - hadoop"
