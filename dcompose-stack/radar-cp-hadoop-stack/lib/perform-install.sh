@@ -21,6 +21,7 @@ copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/nginx.conf
+copy_template_if_absent etc/webserver/ip-access-control.conf
 
 . ./.env
 

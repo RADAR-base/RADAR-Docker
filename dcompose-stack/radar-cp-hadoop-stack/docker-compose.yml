@@ -699,7 +699,7 @@ services:
       - certs-data:/data/letsencrypt
       - "./etc/webserver/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
-      - "./etc/webserver/ip-filter.whitelist:/etc/nginx/ip-filter.whitelist:ro"
+      - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
