@@ -648,20 +648,6 @@ services:
   #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #
   #---------------------------------------------------------------------------#
-  cadvisor:
-    image: google/cadvisor:v0.24.1
-    networks:
-      - monitor
-      - default
-    ports:
-      - "8080:8080"
-    volumes:
-      - "/:/rootfs:ro"
-      - "/var/run:/var/run:rw"
-      - "/sys:/sys:ro"
-      - "/var/lib/docker/:/var/lib/docker:ro"
-    restart: always
-
   portainer:
     image: portainer/portainer:1.19.1
     command: --admin-password '${PORTAINER_PASSWORD_HASH}'
