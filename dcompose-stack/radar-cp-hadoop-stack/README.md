@@ -13,11 +13,7 @@ This docker-compose stack contains the full operational RADAR platform. Once con
 
    1.3. If you want to enable auto import of source types from the catalog server set the variable `MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT` to `true`.
 
-   1.4. To better secure portainer create a hash for your desired password using the command
-        ```shell
-          htpasswd -nb -B admin <your-password> | cut -d ":" -f 2
-        ```
-        then just update the `PORTAINER_PASSWORD_HASH` variable in .env file with the hash value generated above.
+   1.4. Leave the `PORTAINER_PASSWORD_HASH` variable in .env file empty and run the install script (`bin/radar-docker install`). This should query for a new password and set its hash in this variable. To update the password, just empty the variable again and run the install script.
 
 2. Copy `etc/smtp.env.template` to `etc/smtp.env` and configure your email settings. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
 
@@ -25,7 +21,7 @@ This docker-compose stack contains the full operational RADAR platform. Once con
 
 4. Copy `etc/managementportal/config/oauth_client_details.csv.template` to `etc/managementportal/config/oauth_client_details.csv` and change OAuth client credentials for production MP. The OAuth client for the frontend will be loaded automatically and does not need to be listed in this file. This file will be read at each startup. The current implementation overwrites existing clients with the same client ID, so be aware of this if you have made changes to a client listed in this file using the Management Portal frontend. This behaviour might change in the future.
 
-5. (Optional) Next mv the `etc/webserver/ip-access-control.conf.template` to `etc/webserver/ip-access-control.conf` and configure restriction of admin tools (like portainer and kafka-manager) to certain known IP addresses. For easy configuration two examples are included in the comments. By default all IPs are allowed.
+5. (Optional) Next copy the `etc/webserver/ip-access-control.conf.template` to `etc/webserver/ip-access-control.conf` and configure restriction of admin tools (like portainer and kafka-manager) to certain known IP addresses. For easy configuration two examples are included in the comments. By default all IPs are allowed.
 
 6. Finally, copy `etc/radar-backend/radar.yml.template` to `etc/radar-backend/radar.yml` and edit it, especially concerning the monitor email address configuration.
 
