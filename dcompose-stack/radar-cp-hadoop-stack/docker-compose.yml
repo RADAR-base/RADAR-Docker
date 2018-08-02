@@ -648,22 +648,9 @@ services:
   #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #
   #---------------------------------------------------------------------------#
-  cadvisor:
-    image: google/cadvisor:v0.24.1
-    networks:
-      - monitor
-      - default
-    ports:
-      - "8080:8080"
-    volumes:
-      - "/:/rootfs:ro"
-      - "/var/run:/var/run:rw"
-      - "/sys:/sys:ro"
-      - "/var/lib/docker/:/var/lib/docker:ro"
-    restart: always
-
   portainer:
-    image: portainer/portainer:1.11.1
+    image: portainer/portainer:1.19.1
+    command: --admin-password '${PORTAINER_PASSWORD_HASH}'
     networks:
       - monitor
     volumes:
@@ -681,7 +668,6 @@ services:
       - monitor
       - default
     depends_on:
-      - cadvisor
       - portainer
       - rest-api
       - schema-registry-1
@@ -698,6 +684,7 @@ services:
       - certs-data:/data/letsencrypt
       - "./etc/webserver/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
+      - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
@@ -772,6 +759,9 @@ services:
       - kafka-3
     environment:
       ZK_HOSTS: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_MANAGER_AUTH_ENABLED: "true"
+      KAFKA_MANAGER_USERNAME: ${KAFKA_MANAGER_USERNAME}
+      KAFKA_MANAGER_PASSWORD: ${KAFKA_MANAGER_PASSWORD}
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "[ $$(wget -q -O - localhost:9000/kafkamanager/api/health) = healthy ] || exit 1"]

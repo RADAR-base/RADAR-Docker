@@ -21,9 +21,10 @@ broker:
 stream_properties:
   max.request.size: 3500042 #Set message.max.bytes for kafka brokers higher than or equal to this value
   retries: 15
-  session.timeout.ms: 20000
+  session.timeout.ms: 500000
   commit.interval.ms: 300000
   request.timeout.ms: 10860000
+  state.cleanup.delay.ms: 10860000
 #============================ Kafka Streams ============================#
 #The number of threads that a stream must be run according is priority
 stream_priority:
@@ -75,7 +76,7 @@ disconnect_monitor:
     - android_empatica_e4_temperature
   timeout: 1800  # seconds after which a stream is set disconnected
   alert_repetitions: 2  # number of additional emails to send after the first
-  
+
 #====================== Source statistics monitor ======================#
 statistics_monitors:
   - name: Empatica E4

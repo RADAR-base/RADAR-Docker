@@ -87,11 +87,14 @@ http {
       proxy_set_header   Host $host;
     }
     location /portainer/ {
+      include ip-access-control.conf;
+
       proxy_pass         http://portainer:9000/;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
     }
     location /portainer/api/websocket/ {
+      include ip-access-control.conf;
       proxy_pass         http://portainer:9000/api/websocket/;
       proxy_set_header   Upgrade $http_upgrade;
       proxy_set_header   Connection "upgrade";
@@ -106,16 +109,14 @@ http {
       proxy_pass         http://radar-integration:8080/redcap/;
       proxy_set_header   Host $host;
     }
-    location /frontend/config/ {
-      proxy_pass         http://rest-api:8080/radar/frontend/;
-      proxy_set_header   Host $host;
-    }
     location /managementportal/ {
       include cors.conf;
       proxy_pass         http://managementportal-app:8080/managementportal/;
       proxy_set_header   Host $host;
     }
     location /kafkamanager/{
+      include ip-access-control.conf;
+
       proxy_pass         http://kafka-manager:9000;
       proxy_set_header   Host $host;
     }

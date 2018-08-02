@@ -21,6 +21,7 @@ copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/nginx.conf
+copy_template_if_absent etc/webserver/ip-access-control.conf
 
 . ./.env
 
@@ -35,6 +36,32 @@ check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 if [ -z ${SERVER_NAME} ]; then
   echo "Set SERVER_NAME variable in .env"
   exit 1
+fi
+
+# Checking provided passwords
+if [[ -z ${HOTSTORAGE_PASSWORD} ]]; then
+  echo "No Hotstorage Password specified in the .env file. Please enter the password now: "
+  read hotstorage_pass
+  inline_variable 'HOTSTORAGE_PASSWORD=' "${hotstorage_pass}" .env
+fi
+
+if [[ -z ${POSTGRES_PASSWORD} ]]; then
+  echo "No Postgres Password specified in the .env file. Please enter the password now: "
+  read postgres_pass
+  inline_variable 'POSTGRES_PASSWORD=' "${postgres_pass}" .env
+fi
+
+if [[ -z ${KAFKA_MANAGER_PASSWORD} ]]; then
+  echo "No Kafka Manager Password specified in the .env file. Please enter the password now: "
+  read kafkamanager_pass
+  inline_variable 'KAFKA_MANAGER_PASSWORD=' "${kafkamanager_pass}" .env
+fi
+
+if [[ -z ${PORTAINER_PASSWORD_HASH} ]]; then
+  echo "No Portainer Password specified in the .env file. Please enter the password now: "
+  read portainer_pass
+  portainer_pass_hash=`sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB admin ${portainer_pass} | cut -d ":" -f 2`
+  inline_variable 'PORTAINER_PASSWORD_HASH=' "${portainer_pass_hash}" .env
 fi
 
 # Create networks and volumes
