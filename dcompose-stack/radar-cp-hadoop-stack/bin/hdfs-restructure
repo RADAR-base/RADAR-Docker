@@ -1,5 +1,37 @@
 #!/bin/bash
 
+# HDFS restructure version
+DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.1
+# HDFS restructure script flags
+HDFS_RESTRUCTURE_OPTS=(
+  --compression gzip
+  --deduplicate
+  --num-threads 3
+  )
+# HDFS restructure JVM flags
+export RADAR_HDFS_RESTRUCTURE_OPTS="$JAVA_OPTS -Xmx4g"
+# Without DOCKER_OPTS, run in interactive mode.
+# From systemd or cron, override DOCKER_OPTS to remove
+# interactive mode, e.g.,
+# DOCKER_OPTS="" bin/hdfs-restructure /mydir
+DOCKER_OPTS=${DOCKER_OPTS--i}
+
+# For profiling, run e.g. jvisualvm and connect to localhost:$PROFILE_PORT
+# after running:
+# PROFILE_PORT=9101 bin/hdfs-restructure /mydir
+# Note that profiling the application makes it slower.
+if [ ! -z $PROFILE_PORT ]; then
+  export RADAR_HDFS_RESTRUCTURE_OPTS="$RADAR_HDFS_RESTRUCTURE_OPTS
+    -Djava.rmi.server.hostname=${PROFILE_HOST:-localhost}
+    -Dcom.sun.management.jmxremote
+    -Dcom.sun.management.jmxremote.port=${PROFILE_PORT}
+    -Dcom.sun.management.jmxremote.rmi.port=${PROFILE_PORT}
+    -Dcom.sun.management.jmxremote.local.only=false
+    -Dcom.sun.management.jmxremote.authenticate=false
+    -Dcom.sun.management.jmxremote.ssl=false"
+  DOCKER_OPTS="$DOCKER_OPTS -p ${PROFILE_PORT}:${PROFILE_PORT}"
+fi
+
 if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
    printf "Usage:\n$0 <hdfs path> [<destination directory>]\nThe destination directory defaults to ./output\n"
    exit 1
@@ -18,20 +50,17 @@ cd $DIR
 # Start HDFS if not started already
 sudo-linux bin/radar-docker hdfs
 
-# HDFS restructure version
-DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.4.0
-
 # HDFS filename to get
 HDFS_FILE=$1
 # Internal docker directory to write output to
 HDFS_OUTPUT_DIR=/output
 # HDFS command to run
 HDFS_COMMAND=(
-  --compression gzip
-  --deduplicate
-  -u hdfs://hdfs-namenode-1:8020
+  "${HDFS_RESTRUCTURE_OPTS[@]}"
+  -n hdfs-namenode-1
   -o "$HDFS_OUTPUT_DIR"
+  --tmp-dir "$HDFS_OUTPUT_DIR/+tmp"
   "$HDFS_FILE" )
 
 mkdir -p $OUTPUT_DIR
-sudo-linux docker run -t --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
+sudo-linux docker run ${DOCKER_OPTS} -t --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" -e RADAR_HDFS_RESTRUCTURE_OPTS $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
