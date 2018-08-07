@@ -82,10 +82,12 @@ fi
 
 # Initializing Kafka
 echo "==> Setting up topics"
+sudo-linux bin/radar-docker up -d zookeeper-1 zookeeper-2 zookeeper-3 kafka-1 kafka-2 kafka-3 schema-registry-1
+sleep 60
 sudo-linux bin/radar-docker run --rm kafka-init
 KAFKA_SCHEMA_RETENTION_MS=${KAFKA_SCHEMA_RETENTION_MS:-5400000000}
 KAFKA_SCHEMA_RETENTION_CMD='kafka-configs --zookeeper "${KAFKA_ZOOKEEPER_CONNECT}" --entity-type topics --entity-name _schemas --alter --add-config min.compaction.lag.ms='${KAFKA_SCHEMA_RETENTION_MS}',cleanup.policy=compact'
-sudo-linux bin/radar-docker exec kafka-1 bash -c "$KAFKA_SCHEMA_RETENTION_CMD"
+sudo-linux bin/radar-docker exec -T kafka-1 bash -c "$KAFKA_SCHEMA_RETENTION_CMD"
 
 echo "==> Configuring MongoDB Connector"
 # Update sink-mongo.properties

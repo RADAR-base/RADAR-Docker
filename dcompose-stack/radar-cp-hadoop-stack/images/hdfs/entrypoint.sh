@@ -40,7 +40,7 @@ format_hdfs() {
 
     if [ ! -e "$namedir/current/VERSION" ]; then
       echo "Formatting namenode name directory: $namedir is not yet formatted"
-      su-exec hdfs hdfs namenode $@
+      hdfs namenode $@
       return 0
     fi
   done
@@ -66,30 +66,30 @@ shift
 
 case $CMD in
 "journalnode")
-  exec su-exec hdfs hdfs journalnode "$@"
+  exec hdfs journalnode "$@"
   ;;
 "namenode-1")
   if format_hdfs "$HADOOP_DFS_NAME_DIR" -format -force && [ "${HADOOP_NAMENODE_HA}" != "" ]; then
-    su-exec hdfs hdfs zkfc -formatZK -force
+    hdfs zkfc -formatZK -force
   fi
 #    wait_until ${HADOOP_QJOURNAL_ADDRESS%%:*} 8485
   if [ "${HADOOP_NAMENODE_HA}" != "" ]; then
-      su-exec hdfs hdfs zkfc &
+      hdfs zkfc &
   fi
-  exec su-exec hdfs hdfs namenode "$@"
+  exec hdfs namenode "$@"
   ;;
 "namenode-2")
   wait_until ${HADOOP_NAMENODE1_HOSTNAME} 8020
   if format_hdfs "$HADOOP_DFS_NAME_DIR" -bootstrapStandby && [ "${HADOOP_NAMENODE_HA}" != "" ]; then
-    su-exec hdfs hdfs zkfc -formatZK -force
+    hdfs zkfc -formatZK -force
   fi
 
-  su-exec hdfs hdfs zkfc &
-  exec su-exec hdfs hdfs namenode "$@"
+  hdfs zkfc &
+  exec hdfs namenode "$@"
   ;;
 "datanode")
   wait_until ${HADOOP_NAMENODE1_HOSTNAME} 8020
-  exec su-exec hdfs hdfs datanode "$@"
+  exec hdfs datanode "$@"
   ;;
 "resourcemanager-1")
   exec su-exec yarn yarn resourcemanager "$@"
@@ -103,26 +103,26 @@ case $CMD in
 
   set +e -x
 
-  su-exec hdfs hdfs dfs -ls /tmp > /dev/null 2>&1
+  hdfs dfs -ls /tmp > /dev/null 2>&1
   if [ $? -ne 0 ]; then
-      su-exec hdfs hdfs dfs -mkdir -p /tmp
-      su-exec hdfs hdfs dfs -chmod 1777 /tmp
+      hdfs dfs -mkdir -p /tmp
+      hdfs dfs -chmod 1777 /tmp
   fi
 
-  su-exec hdfs hdfs dfs -ls /user > /dev/null 2>&1
+  hdfs dfs -ls /user > /dev/null 2>&1
   if [ $? -ne 0 ]; then
-      su-exec hdfs hdfs dfs -mkdir -p /user/hdfs
-      su-exec hdfs hdfs dfs -chmod 755 /user
+      hdfs dfs -mkdir -p /user/hdfs
+      hdfs dfs -chmod 755 /user
   fi
 
-  su-exec hdfs hdfs dfs -ls ${YARN_REMOTE_APP_LOG_DIR} > /dev/null 2>&1
+  hdfs dfs -ls ${YARN_REMOTE_APP_LOG_DIR} > /dev/null 2>&1
   if [ $? -ne 0 ]; then
       su-exec yarn hdfs dfs -mkdir -p ${YARN_REMOTE_APP_LOG_DIR}
       su-exec yarn hdfs dfs -chmod -R 1777 ${YARN_REMOTE_APP_LOG_DIR}
       su-exec yarn hdfs dfs -chown -R yarn:hadoop ${YARN_REMOTE_APP_LOG_DIR}
   fi
 
-  su-exec hdfs hdfs dfs -ls ${YARN_APP_MAPRED_STAGING_DIR} > /dev/null 2>&1
+  hdfs dfs -ls ${YARN_APP_MAPRED_STAGING_DIR} > /dev/null 2>&1
   if [ $? -ne 0 ]; then
       su-exec mapred hdfs dfs -mkdir -p ${YARN_APP_MAPRED_STAGING_DIR}
       su-exec mapred hdfs dfs -chmod -R 1777 ${YARN_APP_MAPRED_STAGING_DIR}
