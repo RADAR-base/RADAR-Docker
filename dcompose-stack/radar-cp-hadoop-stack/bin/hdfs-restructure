@@ -14,7 +14,7 @@ export RADAR_HDFS_RESTRUCTURE_OPTS="$JAVA_OPTS -Xmx4g"
 # From systemd or cron, override DOCKER_OPTS to remove
 # interactive mode, e.g.,
 # DOCKER_OPTS="" bin/hdfs-restructure /mydir
-DOCKER_OPTS=${DOCKER_OPTS:--i}
+DOCKER_OPTS=${DOCKER_OPTS--i}
 
 # For profiling, run e.g. jvisualvm and connect to localhost:$PROFILE_PORT
 # after running:
