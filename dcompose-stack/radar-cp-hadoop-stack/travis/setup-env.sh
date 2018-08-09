@@ -14,4 +14,6 @@ cp ../etc/mongodb-connector/sink-mongo.properties.template ../etc/mongodb-connec
 cp ../etc/managementportal/config/oauth_client_details.csv.template ../etc/managementportal/config/oauth_client_details.csv
 cp ../etc/redcap-integration/radar.yml.template ../etc/redcap-integration/radar.yml
 
+../bin/keystore-init
+
 echo "Setting up mock configurations finished..."
