@@ -53,14 +53,14 @@ fi
 
 if [[ -z ${KAFKA_MANAGER_PASSWORD} ]]; then
   echo "No Kafka Manager Password specified in the .env file. Please enter the password now: "
-  read kafkamanager_pass
-  inline_variable 'KAFKA_MANAGER_PASSWORD=' "${kafkamanager_pass}" .env
+  read KAFKA_MANAGER_PASSWORD
+  inline_variable 'KAFKA_MANAGER_PASSWORD=' "${KAFKA_MANAGER_PASSWORD}" .env
 fi
 
 if [[ -z ${PORTAINER_PASSWORD_HASH} ]]; then
   echo "No Portainer Password specified in the .env file. Please enter the password now: "
   read portainer_pass
-  portainer_pass_hash=`sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB admin ${portainer_pass} | cut -d ":" -f 2`
+  portainer_pass_hash=$(sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB admin ${portainer_pass} | cut -d ":" -f 2)
   inline_variable 'PORTAINER_PASSWORD_HASH=' "${portainer_pass_hash}" .env
 fi
 
@@ -136,7 +136,8 @@ inline_variable 'username:[[:space:]]' "$HOTSTORAGE_USERNAME" etc/rest-api/radar
 inline_variable 'password:[[:space:]]' "$HOTSTORAGE_PASSWORD" etc/rest-api/radar.yml
 inline_variable 'database_name:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/radar.yml
 
-echo "==> Configuring REDCap-Integration"
+echo "==> Configuring Kafka-manager"
+sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${KAFKA_MANAGER_USERNAME}" "${KAFKA_MANAGER_PASSWORD}" > etc/webserver/kafka-manager.passwd
 
 echo "==> Configuring nginx"
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
