@@ -4,14 +4,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 . lib/util.sh
 
-sudo-linux chmod og-rw ./.env
-sudo-linux chmod og-rwx ./etc
-if [ -e ./output ]; then
-  sudo-linux chmod og-rwx ./output
-else
-  sudo-linux mkdir -m 0700 ./output
-fi
-
 # Initialize and check all config files
 check_config_present .env etc/env.template
 check_config_present etc/radar-backend/radar.yml
@@ -23,6 +15,15 @@ copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/nginx.conf
 copy_template_if_absent etc/webserver/ip-access-control.conf
 
+# Set permissions
+sudo-linux chmod og-rw ./.env
+sudo-linux chmod og-rwx ./etc
+if [ -e ./output ]; then
+  sudo-linux chmod og-rwx ./output
+else
+  sudo-linux mkdir -m 0700 ./output
+fi
+
 . ./.env
 
 # Check provided directories and configurations
@@ -33,35 +34,21 @@ check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
 check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 
-if [ -z ${SERVER_NAME} ]; then
-  echo "Set SERVER_NAME variable in .env"
-  exit 1
-fi
+# Checking provided passwords and environment variables
+ensure_env_default SERVER_NAME localhost
 
-# Checking provided passwords
-if [[ -z ${HOTSTORAGE_PASSWORD} ]]; then
-  echo "No Hotstorage Password specified in the .env file. Please enter the password now: "
-  read hotstorage_pass
-  inline_variable 'HOTSTORAGE_PASSWORD=' "${hotstorage_pass}" .env
-fi
+ensure_env_default HOTSTORAGE_USERNAME hotstorage
+ensure_env_password HOTSTORAGE_PASSWORD "Hot storage (MongoDB) password not set in .env."
+ensure_env_default HOTSTORAGE_NAME hotstorage
 
-if [[ -z ${POSTGRES_PASSWORD} ]]; then
-  echo "No Postgres Password specified in the .env file. Please enter the password now: "
-  read postgres_pass
-  inline_variable 'POSTGRES_PASSWORD=' "${postgres_pass}" .env
-fi
+ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
+ensure_env_default KAFKA_MANAGER_USERNAME kafkamanager-user
+ensure_env_password KAFKA_MANAGER_PASSWORD "Kafka Manager password not set in .env."
 
-if [[ -z ${KAFKA_MANAGER_PASSWORD} ]]; then
-  echo "No Kafka Manager Password specified in the .env file. Please enter the password now: "
-  read KAFKA_MANAGER_PASSWORD
-  inline_variable 'KAFKA_MANAGER_PASSWORD=' "${KAFKA_MANAGER_PASSWORD}" .env
-fi
-
-if [[ -z ${PORTAINER_PASSWORD_HASH} ]]; then
-  echo "No Portainer Password specified in the .env file. Please enter the password now: "
-  read portainer_pass
-  portainer_pass_hash=$(sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB admin ${portainer_pass} | cut -d ":" -f 2)
-  inline_variable 'PORTAINER_PASSWORD_HASH=' "${portainer_pass_hash}" .env
+if [ -z ${PORTAINER_PASSWORD_HASH} ]; then
+  query_password PORTAINER_PASSWORD "Portainer password not set in .env."
+  PORTAINER_PASSWORD_HASH=$(sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB admin "${PORTAINER_PASSWORD}" | cut -d ":" -f 2)
+  ensure_variable 'PORTAINER_PASSWORD_HASH=' "${PORTAINER_PASSWORD_HASH}" .env
 fi
 
 # Create networks and volumes
@@ -83,7 +70,6 @@ fi
 # Initializing Kafka
 echo "==> Setting up topics"
 sudo-linux bin/radar-docker up -d zookeeper-1 zookeeper-2 zookeeper-3 kafka-1 kafka-2 kafka-3 schema-registry-1
-sleep 60
 sudo-linux bin/radar-docker run --rm kafka-init
 KAFKA_SCHEMA_RETENTION_MS=${KAFKA_SCHEMA_RETENTION_MS:-5400000000}
 KAFKA_SCHEMA_RETENTION_CMD='kafka-configs --zookeeper "${KAFKA_ZOOKEEPER_CONNECT}" --entity-type topics --entity-name _schemas --alter --add-config min.compaction.lag.ms='${KAFKA_SCHEMA_RETENTION_MS}',cleanup.policy=compact'
@@ -91,9 +77,9 @@ sudo-linux bin/radar-docker exec -T kafka-1 bash -c "$KAFKA_SCHEMA_RETENTION_CMD
 
 echo "==> Configuring MongoDB Connector"
 # Update sink-mongo.properties
-inline_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/mongodb-connector/sink-mongo.properties
-inline_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sink-mongo.properties
-inline_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
+ensure_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/mongodb-connector/sink-mongo.properties
+ensure_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sink-mongo.properties
+ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
 
 # Set topics
 if [ -z "${COMBINED_AGG_TOPIC_LIST}"]; then
@@ -102,7 +88,7 @@ if [ -z "${COMBINED_AGG_TOPIC_LIST}"]; then
     COMBINED_AGG_TOPIC_LIST="${RADAR_AGG_TOPIC_LIST},${COMBINED_AGG_TOPIC_LIST}"
   fi
 fi
-inline_variable 'topics=' "${COMBINED_AGG_TOPIC_LIST}" etc/mongodb-connector/sink-mongo.properties
+ensure_variable 'topics=' "${COMBINED_AGG_TOPIC_LIST}" etc/mongodb-connector/sink-mongo.properties
 
 echo "==> Configuring HDFS Connector"
 if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
@@ -111,7 +97,7 @@ if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
     COMBINED_RAW_TOPIC_LIST="${RADAR_RAW_TOPIC_LIST},${COMBINED_RAW_TOPIC_LIST}"
   fi
 fi
-inline_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-hdfs.properties
+ensure_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-hdfs.properties
 
 echo "==> Configuring Management Portal"
 
@@ -127,7 +113,7 @@ inline_variable 'password:[[:space:]]' "$HOTSTORAGE_PASSWORD" etc/rest-api/radar
 inline_variable 'database_name:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/radar.yml
 
 echo "==> Configuring Kafka-manager"
-sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${KAFKA_MANAGER_USERNAME}" "${KAFKA_MANAGER_PASSWORD}" > etc/webserver/kafka-manager.passwd
+sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${KAFKA_MANAGER_USERNAME}" "${KAFKA_MANAGER_PASSWORD}" > etc/webserver/kafka-manager.htpasswd
 
 echo "==> Configuring nginx"
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
