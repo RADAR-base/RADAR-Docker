@@ -4,6 +4,10 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 . lib/util.sh
 
+echo "OS version: $(uname -a)"
+check_command_exists docker
+check_command_exists docker-compose
+
 # Initialize and check all config files
 check_config_present .env etc/env.template
 check_config_present etc/radar-backend/radar.yml
@@ -101,9 +105,7 @@ ensure_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-h
 
 echo "==> Configuring Management Portal"
 
-. lib/keystore-util.sh
-
-sudo-linux init_mp_keystore
+bin/keystore-init
 
 echo "==> Configuring REST-API"
 

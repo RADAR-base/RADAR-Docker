@@ -214,6 +214,3 @@ ensure_env_password() {
   fi
 }
 
-echo "OS version: $(uname -a)"
-check_command_exists docker
-check_command_exists docker-compose
