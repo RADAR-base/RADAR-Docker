@@ -68,6 +68,14 @@ inline_variable() {
   sed_i 's|^\([[:space:]]*'"$1"'\).*$|\1'"$2"'|' "$3"
 }
 
+ensure_variable() {
+  if grep -q "$1" "$3"; then
+    inline_variable "$@"
+  else
+    echo "$1$2" >> "$3"
+  fi
+}
+
 # Copies the template (defined by the given config file with suffix
 # ".template") to intended configuration file, if the file does not
 # yet exist.
@@ -180,6 +188,30 @@ request_certificate() {
   fi
   echo "Reloading webserver configuration"
   sudo-linux docker-compose kill -s HUP webserver 1>/dev/null 2>&1
+}
+
+query_password() {
+  echo $2
+  stty -echo
+  printf "Password: "
+  read PASSWORD
+  stty echo
+  printf "\n"
+  eval "$1=$PASSWORD"
+}
+
+ensure_env_default() {
+  if eval '[ -z $'$1' ]'; then
+    ensure_variable "$1=" "$2" .env
+    eval "$1=$2"
+  fi
+}
+
+ensure_env_password() {
+  if eval '[ -z $'$1' ]'; then
+    query_password $1 "$2"
+    ensure_variable "$1=" "$PASSWORD" .env
+  fi
 }
 
 echo "OS version: $(uname -a)"

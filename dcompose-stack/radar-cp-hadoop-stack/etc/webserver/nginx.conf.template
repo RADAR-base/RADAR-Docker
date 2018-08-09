@@ -59,7 +59,7 @@ http {
 
     location /kafka/ {
       include cors.conf;
-      proxy_pass         http://gateway:8080/radar-gateway/;
+      proxy_pass         http://gateway/radar-gateway/;
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";

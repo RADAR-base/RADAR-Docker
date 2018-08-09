@@ -115,19 +115,9 @@ inline_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-h
 
 echo "==> Configuring Management Portal"
 
+. lib/keystore-util.sh
 
-keystorefile=etc/managementportal/config/keystore.jks
-if [ -f "$keystorefile" ]; then
-  echo "--> Keystore for signing JWTs already exists. Not creating a new one."
-else
-  echo "--> Generating keystore to hold RSA keypair for JWT signing"
-  if [ -n "${MANAGEMENTPORTAL_KEY_DNAME}" ]; then
-    sudo-linux keytool -genkeypair -dname "${MANAGEMENTPORTAL_KEY_DNAME}" -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
-  else
-    sudo-linux keytool -genkeypair -alias selfsigned -keyalg RSA -keystore "$keystorefile" -keysize 4096 -storepass radarbase -keypass radarbase
-  fi
-  sudo-linux chmod 400 "${keystorefile}"
-fi
+sudo-linux init_mp_keystore
 
 echo "==> Configuring REST-API"
 
