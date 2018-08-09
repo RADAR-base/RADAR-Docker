@@ -11,6 +11,7 @@ echo "This will delete all the data associated with RADAR in HDFS, MongoDB and P
 select yn in "Yes" "No"; do
   case $yn in
     Yes ) sudo-linux docker system prune --filter "label!=certs" "$@";
+          sudo-linux docker volume prune --filter "label!=certs" "$@";
           sudo-linux rm -rf "$HDFS_DATA_DIR_1";
           sudo-linux rm -rf "$HDFS_DATA_DIR_2";
           sudo-linux rm -rf "$HDFS_DATA_DIR_3";
