@@ -260,7 +260,7 @@ services:
   #---------------------------------------------------------------------------#
   kafka-init:
     build: images/radar-kafka-init
-    image: radarbase/kafka-init
+    image: radarbase/kafka-init:0.3.6
     networks:
       - kafka
       - zookeeper
@@ -685,6 +685,7 @@ services:
       - "./etc/webserver/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
       - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
+      - "./etc/webserver/kafka-manager.htpasswd:/etc/nginx/kafka-manager.htpasswd:ro"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
@@ -693,7 +694,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.3.8
+    image: radarbase/management-portal:0.4.1
     networks:
       - default
       - api
@@ -714,6 +715,8 @@ services:
       MANAGEMENTPORTAL_OAUTH_CLIENTS_FILE: /mp-includes/config/oauth_client_details.csv
       MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT: ${MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT}
       MANAGEMENTPORTAL_CATALOGUE_SERVER_SERVER_URL: http://catalog-server:9010/source-types
+      MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_0: ${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_0}
+      MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_1: ${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_1}
       JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
       JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
     volumes:
@@ -747,7 +750,7 @@ services:
   # Kafka Manager                                                             #
   #---------------------------------------------------------------------------#
   kafka-manager:
-    image: radarbase/kafka-manager
+    image: radarbase/kafka-manager:1.3.3.18
     networks:
       - zookeeper
       - kafka
@@ -759,9 +762,6 @@ services:
       - kafka-3
     environment:
       ZK_HOSTS: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
-      KAFKA_MANAGER_AUTH_ENABLED: "true"
-      KAFKA_MANAGER_USERNAME: ${KAFKA_MANAGER_USERNAME}
-      KAFKA_MANAGER_PASSWORD: ${KAFKA_MANAGER_PASSWORD}
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "[ $$(wget -q -O - localhost:9000/kafkamanager/api/health) = healthy ] || exit 1"]
@@ -773,19 +773,20 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.2.1
+    image: radarbase/radar-gateway:0.2.2
     networks:
       - api
       - kafka
     depends_on:
       - rest-proxy-1
-      - managementportal-app
     volumes:
       - ./etc/gateway:/etc/radar-gateway
     command: ["radar-gateway", "/etc/radar-gateway/gateway.yml"]
+    environment:
+      RADAR_IS_CONFIG_LOCATION: /etc/radar-gateway/radar-is.yml
     healthcheck:
       # should give an unauthenticated response, rather than a 404
-      test: ["CMD-SHELL", "wget --spider localhost:8080/radar-gateway/ 2>&1 | grep -q 401 || exit 1"]
+      test: ["CMD-SHELL", "wget --spider localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
@@ -795,7 +796,7 @@ services:
   #---------------------------------------------------------------------------#
   catalog-server:
     build: images/radar-kafka-init
-    image: radarbase/kafka-init
+    image: radarbase/kafka-init:0.3.6
     networks:
       - management
     command: radar-schemas-tools serve /schema/merged
