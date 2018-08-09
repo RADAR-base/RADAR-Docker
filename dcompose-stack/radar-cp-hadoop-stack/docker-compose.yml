@@ -750,7 +750,7 @@ services:
   # Kafka Manager                                                             #
   #---------------------------------------------------------------------------#
   kafka-manager:
-    image: radarbase/kafka-manager
+    image: radarbase/kafka-manager:1.3.3.18
     networks:
       - zookeeper
       - kafka

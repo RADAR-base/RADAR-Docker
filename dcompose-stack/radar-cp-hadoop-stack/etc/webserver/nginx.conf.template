@@ -116,6 +116,8 @@ http {
     }
     location /kafkamanager/{
       include ip-access-control.conf;
+      auth_basic         "Kafka manager";
+      auth_basic_user_file kafka-manager.htpasswd;
 
       proxy_pass         http://kafka-manager:9000;
       proxy_set_header   Host $host;
