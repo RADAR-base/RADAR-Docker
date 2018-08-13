@@ -43,6 +43,7 @@ shopt -s extglob
 
 case "${CMD}" in
 cert-renew)
+  . ./lib/util.sh
   request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERT:-yes}" force
   ;;
 install)
