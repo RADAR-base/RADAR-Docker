@@ -17,6 +17,9 @@ http {
   # add nosniff header (https://www.owasp.org/index.php/List_of_useful_HTTP_headers)
   add_header X-Content-Type-Options nosniff;
 
+  # For logins, make 2 requests per second at most
+  limit_req_zone $binary_remote_addr zone=login_limit:10m rate=2r/s;
+
   server {
     listen                    80 default_server;
     listen                    [::]:80 default_server;
@@ -112,6 +115,19 @@ http {
     location /managementportal/ {
       include cors.conf;
       proxy_pass         http://managementportal-app:8080/managementportal/;
+      proxy_set_header   Host $host;
+    }
+    location /managementportal/oauth/ {
+      # Allow 20 fast-following requests, like when authorizing a user.
+      limit_req zone=login_limit burst=20;
+      include cors.conf;
+      proxy_pass         http://managementportal-app:8080/managementportal/oauth/;
+      proxy_set_header   Host $host;
+    }
+    location /managementportal/api/meta-token/ {
+      limit_req zone=login_limit;
+      include cors.conf;
+      proxy_pass         http://managementportal-app:8080/managementportal/api/meta-token/;
       proxy_set_header   Host $host;
     }
     location /kafkamanager/{
