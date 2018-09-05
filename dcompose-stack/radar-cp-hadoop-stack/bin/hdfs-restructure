@@ -1,13 +1,16 @@
 #!/bin/bash
 
 # HDFS restructure version
-DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.1
+DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.2
 # HDFS restructure script flags
 HDFS_RESTRUCTURE_OPTS=(
   --compression gzip
   --deduplicate
   --num-threads 3
   )
+OUTPUT_USER=${OUTPUT_USER:-$(id -un)}
+OUTPUT_GROUP=${OUTPUT_GROUP:-$(id -gn)}
+
 # HDFS restructure JVM flags
 export RADAR_HDFS_RESTRUCTURE_OPTS="$JAVA_OPTS -Xmx4g"
 # Without DOCKER_OPTS, run in interactive mode.
@@ -56,11 +59,17 @@ HDFS_FILE=$1
 HDFS_OUTPUT_DIR=/output
 # HDFS command to run
 HDFS_COMMAND=(
-  "${HDFS_RESTRUCTURE_OPTS[@]}"
-  -n hdfs-namenode-1
-  -o "$HDFS_OUTPUT_DIR"
-  --tmp-dir "$HDFS_OUTPUT_DIR/+tmp"
-  "$HDFS_FILE" )
+    "${HDFS_RESTRUCTURE_OPTS[@]}"
+    -p local-uid=$(id -u ${OUTPUT_USER})
+    -p local-gid=$(grep "^${OUTPUT_GROUP}:" /etc/group | cut -d: -f3)
+    -n hdfs-namenode-1
+    -o "$HDFS_OUTPUT_DIR"
+    --tmp-dir "$HDFS_OUTPUT_DIR/+tmp"
+    "$HDFS_FILE"
+  )
 
-mkdir -p $OUTPUT_DIR
-sudo-linux docker run ${DOCKER_OPTS} -t --rm --network hadoop -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" -e RADAR_HDFS_RESTRUCTURE_OPTS $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
+sudo-linux docker run ${DOCKER_OPTS} \
+    -t --rm --network hadoop \
+    -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" \
+    -e RADAR_HDFS_RESTRUCTURE_OPTS \
+    $DOCKER_IMAGE "${HDFS_COMMAND[@]}"

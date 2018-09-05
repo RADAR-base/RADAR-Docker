@@ -41,7 +41,7 @@ check_parent_exists() {
 # sudo if on Linux, not on OS X
 # useful for docker, which doesn't need sudo on OS X
 sudo-linux() {
-  if [ $(uname) == "Darwin" ]; then
+  if [ $(uname) == "Darwin" ] || id -Gn | grep -qve '\<sudo\>'; then
     "$@"
   else
     sudo "$@"
@@ -53,7 +53,7 @@ sed_i() {
   if [ $(uname) == "Darwin" ]; then
     sed -i '' "$@"
   else
-    sudo sed -i -- "$@"
+    sudo-linux sed -i -- "$@"
   fi
 }
 
@@ -213,4 +213,3 @@ ensure_env_password() {
     ensure_variable "$1=" "$PASSWORD" .env
   fi
 }
-
