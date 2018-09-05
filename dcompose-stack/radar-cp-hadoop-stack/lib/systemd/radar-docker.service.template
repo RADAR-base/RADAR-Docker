@@ -1,7 +1,5 @@
 [Unit]
 Description=RADAR-Docker service
-BindsTo=docker.service
-After=docker.service
 
 [Service]
 TimeoutStartSec=0
@@ -20,4 +18,4 @@ ExecStop=/usr/local/bin/docker-compose down
 NotifyAccess=all
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

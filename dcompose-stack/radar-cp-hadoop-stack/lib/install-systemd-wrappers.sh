@@ -10,6 +10,7 @@ else
   BASE=$HOME/.config/systemd/user
   mkdir -p $BASE
   SYSTEMCTL_OPTS=(--user)
+  export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID}
 fi
 
 echo "==> Copying templates"

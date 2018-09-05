@@ -8,4 +8,4 @@ OnUnitActiveSec=5min
 Unit=radar-check-health.service
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
