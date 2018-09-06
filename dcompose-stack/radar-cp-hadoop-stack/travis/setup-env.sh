@@ -2,7 +2,7 @@
 echo "Starting to configure mock configurations for test"
 
 # create folder for docker volumes
-sudo mkdir -p /usr/local/var/lib/docker/
+mkdir -p /home/travis/data
 
 # setup mock configs
 cp ./travis-env.template ../.env
