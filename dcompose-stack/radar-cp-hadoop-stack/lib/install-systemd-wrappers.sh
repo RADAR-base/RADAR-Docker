@@ -2,6 +2,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 echo $(pwd)
 . lib/util.sh
+. .env
 
 if id -Gn | grep -qe '\<sudo\>'; then
   BASE=/etc/systemd/system
@@ -26,8 +27,8 @@ echo "==> Inlining variables"
 inline_variable 'WorkingDirectory=' "$PWD" $BASE/radar-docker.service
 inline_variable 'ExecStart=' "$PWD/bin/radar-docker foreground" $BASE/radar-docker.service
 
-inline_variable 'WorkingDirectory=' "$PWD/hdfs" $BASE/radar-output.service
-inline_variable 'ExecStart=' "$PWD/bin/hdfs-restructure-process" $BASE/radar-output.service
+inline_variable 'WorkingDirectory=' "$PWD" $BASE/radar-output.service
+inline_variable 'ExecStart=' "$PWD/bin/hdfs-restructure /topicAndroidNew ${RESTRUCTURE_OUTPUT_DIR:-output}" $BASE/radar-output.service
 
 inline_variable 'WorkingDirectory=' "$PWD" $BASE/radar-check-health.service
 inline_variable 'ExecStart=' "$PWD/bin/radar-docker health" $BASE/radar-check-health.service

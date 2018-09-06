@@ -10,6 +10,7 @@ check_command_exists docker-compose
 
 # Initialize and check all config files
 check_config_present .env etc/env.template
+check_config_present etc/smtp.env
 check_config_present etc/radar-backend/radar.yml
 check_config_present etc/managementportal/config/oauth_client_details.csv
 check_config_present etc/redcap-integration/radar.yml

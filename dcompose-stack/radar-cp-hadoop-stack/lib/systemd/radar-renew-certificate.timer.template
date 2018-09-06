@@ -10,7 +10,3 @@ Unit=radar-check-health.service
 
 [Install]
 WantedBy=default.target
-
-
-
-
