@@ -388,7 +388,7 @@ services:
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
-      timeout: 10s
+      timeout: 15s
       retries: 3
 
   hdfs-datanode-2:
@@ -416,7 +416,7 @@ services:
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
-      timeout: 10s
+      timeout: 15s
       retries: 3
 
   hdfs-datanode-3:
@@ -444,7 +444,7 @@ services:
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
-      timeout: 10s
+      timeout: 15s
       retries: 3
 
   hdfs-namenode-1:
@@ -470,7 +470,7 @@ services:
     healthcheck:
       test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
-      timeout: 10s
+      timeout: 15s
       retries: 3
 
   #---------------------------------------------------------------------------#
