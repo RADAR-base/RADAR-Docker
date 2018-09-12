@@ -8,4 +8,4 @@ OnUnitActiveSec=1h
 Unit=radar-output.service
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

@@ -58,7 +58,7 @@ To enable a `systemd` service to control the platform, run
 ```shell
 bin/radar-docker install-systemd
 ```
-After that command, the RADAR platform should be controlled via `systemctl`.
+After that command, the RADAR platform should be controlled via `systemctl`. When running as a user without `sudo` rights, in the following commands replace `sudo systemctl` with `systemctl --user`.
 ```shell
 # query the latest status and logs
 sudo systemctl status radar-docker
