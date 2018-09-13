@@ -304,7 +304,7 @@ services:
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
   rest-api:
-    image: radarbase/radar-restapi:0.2.1
+    image: radarbase/radar-restapi:0.3
     networks:
       - hotstorage
       - api
@@ -315,6 +315,8 @@ services:
     restart: always
     volumes:
       - "./etc/rest-api:/usr/local/conf/radar/rest-api"
+    environment:
+      RADAR_IS_CONFIG_LOCATION: usr/local/conf/radar/rest-api/radar-is.yml
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8080/api/openapi.json"]
       interval: 1m
