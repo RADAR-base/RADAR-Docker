@@ -595,7 +595,7 @@ services:
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-stream:
-    image: radarbase/radar-backend:0.2.3
+    image: radarbase/radar-backend:0.4.0
     command:
       - stream
     networks:
@@ -622,7 +622,7 @@ services:
   # RADAR backend monitor                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
-    image: radarbase/radar-backend:0.2.3
+    image: radarbase/radar-backend:0.4.0
     command: monitor
     networks:
       - zookeeper
