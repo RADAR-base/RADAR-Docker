@@ -19,6 +19,7 @@ copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/nginx.conf
 copy_template_if_absent etc/webserver/ip-access-control.conf
+copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
 
 # Set permissions
 sudo-linux chmod og-rw ./.env
@@ -85,6 +86,10 @@ echo "==> Configuring MongoDB Connector"
 ensure_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/mongodb-connector/sink-mongo.properties
 ensure_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sink-mongo.properties
 ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
+
+echo "==> Configuring Fitbit Connector"
+ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
+ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
 
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"

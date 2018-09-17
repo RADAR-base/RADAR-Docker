@@ -1,0 +1,8 @@
+name=radar-fitbit-source
+connector.class=org.radarbase.connect.rest.fitbit.FitbitSourceConnector
+tasks.max=4
+rest.source.base.url=https://api.fitbit.com
+rest.source.poll.interval.ms=5000
+rest.source.request.generator.class=org.radarbase.connect.rest.fitbit.request.FitbitRequestGenerator
+fitbit.api.client=
+fitbit.api.secret=
