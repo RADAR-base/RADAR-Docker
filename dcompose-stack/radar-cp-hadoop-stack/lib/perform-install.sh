@@ -19,6 +19,7 @@ copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/nginx.conf
 copy_template_if_absent etc/webserver/ip-access-control.conf
+copy_template_if_absent etc/webserver/optional-services.conf
 copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
 
 # Set permissions

@@ -654,7 +654,6 @@ services:
       - schema-registry-1
       - gateway
       - dashboard
-      - radar-integration
       - managementportal-app
       - kafka-manager
     ports:
@@ -667,6 +666,7 @@ services:
       - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
       - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
       - "./etc/webserver/kafka-manager.htpasswd:/etc/nginx/kafka-manager.htpasswd:ro"
+      - "./etc/webserver/optional-services.conf:/etc/nginx/optional-services.conf"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
