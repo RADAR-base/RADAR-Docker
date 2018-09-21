@@ -41,7 +41,6 @@ volumes:
     external: true
   certs-data:
     external: true
-  fitbit-logs: {}
 
 services:
   #---------------------------------------------------------------------------#

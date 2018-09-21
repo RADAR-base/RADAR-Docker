@@ -13,7 +13,6 @@ check_config_present .env etc/env.template
 check_config_present etc/smtp.env
 check_config_present etc/radar-backend/radar.yml
 check_config_present etc/managementportal/config/oauth_client_details.csv
-check_config_present etc/redcap-integration/radar.yml
 copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
@@ -135,6 +134,8 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   echo "==> Configuring Fitbit Connector"
   ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
   ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
+
+  check_config_present etc/redcap-integration/radar.yml
 fi
 
 echo "==> Starting RADAR-base Platform"
