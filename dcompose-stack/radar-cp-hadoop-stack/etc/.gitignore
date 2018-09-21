@@ -14,3 +14,5 @@
 /schema/commons/
 /schema/specifications/
 /gateway/radar-is.yml
+/fitbit/docker/users/*.yml
+/fitbit/docker/source-fitbit.properties

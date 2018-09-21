@@ -1,7 +1,14 @@
 #!/bin/bash
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-stack=${DOCKER_COMPOSE:-docker-compose}
+. .env
+
+if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
+  stack="${DOCKER_COMPOSE:-docker-compose} -f docker-compose.yml -f optional-services.yml"
+else
+  stack=${DOCKER_COMPOSE:-docker-compose}
+fi
+
 
 function print_usage() {
   echo 'Control the RADAR-base platform directly'

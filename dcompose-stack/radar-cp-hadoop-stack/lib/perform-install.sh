@@ -87,10 +87,6 @@ ensure_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/mongodb-connector/sin
 ensure_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sink-mongo.properties
 ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
 
-echo "==> Configuring Fitbit Connector"
-ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
-ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
-
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"
     radarbase/kafka-init:0.3.6
@@ -132,6 +128,13 @@ echo "==> Configuring nginx"
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
 sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/webserver/nginx.conf
 init_certificate "${SERVER_NAME}"
+
+# Configure Optional services
+if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
+  echo "==> Configuring Fitbit Connector"
+  ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
+  ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
+fi
 
 echo "==> Starting RADAR-base Platform"
 sudo-linux bin/radar-docker up -d --remove-orphans "$@"
