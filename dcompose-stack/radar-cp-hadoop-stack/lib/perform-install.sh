@@ -13,12 +13,13 @@ check_config_present .env etc/env.template
 check_config_present etc/smtp.env
 check_config_present etc/radar-backend/radar.yml
 check_config_present etc/managementportal/config/oauth_client_details.csv
-check_config_present etc/redcap-integration/radar.yml
 copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/nginx.conf
 copy_template_if_absent etc/webserver/ip-access-control.conf
+copy_template_if_absent etc/webserver/optional-services.conf
+copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
 
 # Set permissions
 sudo-linux chmod og-rw ./.env
@@ -127,6 +128,15 @@ echo "==> Configuring nginx"
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
 sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/webserver/nginx.conf
 init_certificate "${SERVER_NAME}"
+
+# Configure Optional services
+if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
+  echo "==> Configuring Fitbit Connector"
+  ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
+  ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
+
+  check_config_present etc/redcap-integration/radar.yml
+fi
 
 echo "==> Starting RADAR-base Platform"
 sudo-linux bin/radar-docker up -d --remove-orphans "$@"
