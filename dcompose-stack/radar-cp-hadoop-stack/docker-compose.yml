@@ -277,27 +277,6 @@ services:
       RADAR_NUM_REPLICATION_FACTOR: 3
 
   #---------------------------------------------------------------------------#
-  # RADAR REST API                                                            #
-  #---------------------------------------------------------------------------#
-  rest-api:
-    image: radarbase/radar-restapi:0.2.1
-    networks:
-      - hotstorage
-      - api
-      - management
-    depends_on:
-      - hotstorage
-      - managementportal-app
-    restart: always
-    volumes:
-      - "./etc/rest-api:/usr/local/conf/radar/rest-api"
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:8080/api/openapi.json"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
-
-  #---------------------------------------------------------------------------#
   # RADAR Cold Storage                                                        #
   #---------------------------------------------------------------------------#
   hdfs-datanode-1:
@@ -555,10 +534,8 @@ services:
       - default
     depends_on:
       - portainer
-      - rest-api
       - schema-registry-1
       - gateway
-      - dashboard
       - managementportal-app
       - kafka-manager
     ports:
