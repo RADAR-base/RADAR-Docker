@@ -1,6 +1,8 @@
 /mongodb-connector/sink-mongo.properties
 /hdfs-connector/sink-hdfs.properties
 /webserver/nginx.conf
+/webserver/kafka-manager.htpasswd
+/webserver/ip-access-control.conf
 /radar-backend/radar.yml
 /smtp.env
 /rest-api/device-catalog.yml
@@ -8,6 +10,9 @@
 /rest-api/mp_info.yml
 /redcap-integration/radar.yml
 /managementportal/config/keystore.jks
-/managementportal/config/liquibase/oauth_client_details.csv
+/managementportal/config/oauth_client_details.csv
 /schema/commons/
 /schema/specifications/
+/gateway/radar-is.yml
+/fitbit/docker/users/*.yml
+/fitbit/docker/source-fitbit.properties

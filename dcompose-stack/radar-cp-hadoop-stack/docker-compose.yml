@@ -1,5 +1,5 @@
 ---
-version: '2.1'
+version: '2.2'
 
 networks:
   zookeeper:
@@ -11,8 +11,6 @@ networks:
   api:
     driver: bridge
     internal: true
-  hadoop:
-    external: true
   mail:
     driver: bridge
     internal: true
@@ -25,6 +23,8 @@ networks:
   management:
     driver: bridge
     internal: true
+  hadoop:
+    external: true
 
 volumes:
   kafka-1-data: {}
@@ -83,11 +83,10 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
     healthcheck:
-      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-2 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
-
 
   zookeeper-3:
     image: confluentinc/cp-zookeeper:4.1.0
@@ -105,7 +104,7 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
     healthcheck:
-      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-3 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
@@ -127,12 +126,17 @@ services:
     restart: always
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "1.1"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/1 || exit 1"]
       interval: 1m30s
@@ -153,12 +157,17 @@ services:
     restart: always
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 730
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "1.1"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
       interval: 1m30s
@@ -185,6 +194,11 @@ services:
       KAFKA_LOG_RETENTION_HOURS: 730
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "1.1"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
       interval: 1m30s
@@ -230,10 +244,11 @@ services:
       - schema-registry-1
     restart: always
     environment:
-      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       KAFKA_REST_LISTENERS: http://0.0.0.0:8082
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
       KAFKA_REST_HOST_NAME: rest-proxy-1
+      KAFKA_REST_COMPRESSION_TYPE: lz4
     healthcheck:
       test: ["CMD", "curl", "-f", "localhost:8082/topics"]
       interval: 1m30s
@@ -244,8 +259,8 @@ services:
   # Kafka Init                                                                #
   #---------------------------------------------------------------------------#
   kafka-init:
-    build: kafka-radarinit
-    image: radarcns/kafka-init
+    build: images/radar-kafka-init
+    image: radarbase/kafka-init:0.3.6
     networks:
       - kafka
       - zookeeper
@@ -258,7 +273,7 @@ services:
     volumes:
       - ./etc/schema:/schema/conf
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
       KAFKA_NUM_BROKERS: 3
       RADAR_NUM_PARTITIONS: 3
@@ -289,7 +304,7 @@ services:
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
   rest-api:
-    image: radarbase/radar-restapi:0.2.0
+    image: radarbase/radar-restapi:0.2.1
     networks:
       - hotstorage
       - api
@@ -302,26 +317,6 @@ services:
       - "./etc/rest-api:/usr/local/conf/radar/rest-api"
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8080/api/openapi.json"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
-
-
-  #---------------------------------------------------------------------------#
-  # RADAR REDCap Integration                                                  #
-  #---------------------------------------------------------------------------#
-  radar-integration:
-    image: radarbase/radar-redcapintegration:latest
-    networks:
-      - api
-      - default
-    depends_on:
-      - managementportal-app
-    restart: always
-    volumes:
-      - "./etc/redcap-integration:/usr/local/tomcat/conf/radar"
-    healthcheck:
-      test: ["CMD", "curl", "-IX", "POST", "http://localhost:8080/redcap/trigger"]
       interval: 1m
       timeout: 5s
       retries: 3
@@ -349,40 +344,97 @@ services:
   # RADAR Cold Storage                                                        #
   #---------------------------------------------------------------------------#
   hdfs-datanode-1:
-    image: uhopper/hadoop-datanode:2.7.2
+    build:
+      context: ./images/hdfs
+      args:
+        BASE_VERSION: ${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
+    hostname: hdfs-datanode-1
+    command: datanode
     networks:
       - hadoop
+    depends_on:
+      - hdfs-namenode-1
     volumes:
       - "${HDFS_DATA_DIR_1}:/hadoop/dfs/data"
     restart: always
     environment:
-      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
-      HDFS_CONF_dfs_replication: 2
+      SERVICE_9866_NAME: datanode
+      SERVICE_9867_IGNORE: "true"
+      SERVICE_9864_IGNORE: "true"
+      HADOOP_HEAPSIZE: 1000
+      HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
+      HADOOP_DFS_REPLICATION: 2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
-      timeout: 5s
+      timeout: 15s
       retries: 3
 
   hdfs-datanode-2:
-    image: uhopper/hadoop-datanode:2.7.2
+    build:
+      context: ./images/hdfs
+      args:
+        BASE_VERSION: ${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
+    command: datanode
+    hostname: hdfs-datanode-2
     networks:
       - hadoop
+    depends_on:
+      - hdfs-namenode-1
     volumes:
       - "${HDFS_DATA_DIR_2}:/hadoop/dfs/data"
     restart: always
     environment:
-      CORE_CONF_fs_defaultFS: hdfs://hdfs-namenode:8020
-      HDFS_CONF_dfs_replication: 2
+      SERVICE_9866_NAME: datanode
+      SERVICE_9867_IGNORE: "true"
+      SERVICE_9864_IGNORE: "true"
+      HADOOP_HEAPSIZE: 1000
+      HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
+      HADOOP_DFS_REPLICATION: 2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
-      timeout: 5s
+      timeout: 15s
       retries: 3
 
-  hdfs-namenode:
-    build: hdfs-namenode
-    image: radarcns/hdfs-namenode:2.7.2
+  hdfs-datanode-3:
+    build:
+      context: ./images/hdfs
+      args:
+        BASE_VERSION: ${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
+    command: datanode
+    hostname: hdfs-datanode-3
+    networks:
+      - hadoop
+    depends_on:
+      - hdfs-namenode-1
+    volumes:
+      - "${HDFS_DATA_DIR_3}:/hadoop/dfs/data"
+    restart: always
+    environment:
+      SERVICE_9866_NAME: datanode
+      SERVICE_9867_IGNORE: "true"
+      SERVICE_9864_IGNORE: "true"
+      HADOOP_HEAPSIZE: 1000
+      HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
+      HADOOP_DFS_REPLICATION: 2
+    healthcheck:
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
+      interval: 1m
+      timeout: 15s
+      retries: 3
+
+  hdfs-namenode-1:
+    build:
+      context: ./images/hdfs
+      args:
+        BASE_VERSION: ${HDFS_BASE_VERSION}
+    image: radarbase/hdfs:${HDFS_BASE_VERSION}
+    command: namenode-1
+    hostname: hdfs-namenode-1
     networks:
       - hadoop
     volumes:
@@ -390,12 +442,15 @@ services:
       - "${HDFS_NAME_DIR_2}:/hadoop/dfs/name/2"
     restart: always
     environment:
-      CLUSTER_NAME: radar-cns
-      HDFS_CONF_dfs_namenode_name_dir: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
+      SERVICE_8020_NAME: namenode
+      SERVICE_9870_IGNORE: "true"
+      HADOOP_HEAPSIZE: 1000
+      HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
+      HADOOP_DFS_NAME_DIR: file:///hadoop/dfs/name/1,file:///hadoop/dfs/name/2
     healthcheck:
-      test: ["CMD", "hdfs", "dfs", "-ls", "/"]
+      test: ["CMD", "hdfs", "dfs", "-test", "-e", "/"]
       interval: 1m
-      timeout: 5s
+      timeout: 15s
       retries: 3
 
   #---------------------------------------------------------------------------#
@@ -416,7 +471,7 @@ services:
   # RADAR mongo connector                                                     #
   #---------------------------------------------------------------------------#
   radar-mongodb-connector:
-    image: radarbase/kafka-connect-mongodb-sink:0.2.1
+    image: radarbase/kafka-connect-mongodb-sink:0.2.2
     restart: on-failure
     volumes:
       - ./etc/mongodb-connector/sink-mongo.properties:/etc/kafka-connect/sink.properties
@@ -448,7 +503,7 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-mongodb-connector"
-      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       CONNECT_CONSUMER_MAX_POLL_RECORDS: 500
       CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS: 300000
       CONNECT_CONSUMER_SESSION_TIMEOUT_MS: 10000
@@ -463,12 +518,11 @@ services:
       timeout: 5s
       retries: 3
 
-
   #---------------------------------------------------------------------------#
   # RADAR HDFS connector                                                     #
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
-    image: radarbase/radar-hdfs-connector-auto:0.1
+    image: radarbase/radar-connect-hdfs-sink:0.2.0
     restart: on-failure
     volumes:
       - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties
@@ -478,15 +532,17 @@ services:
       - hadoop
     depends_on:
       - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
       - kafka-1
       - kafka-2
       - kafka-3
       - schema-registry-1
-      - rest-proxy-1
       - kafka-init
       - hdfs-datanode-1
       - hdfs-datanode-2
-      - hdfs-namenode
+      - hdfs-datanode-3
+      - hdfs-namenode-1
     environment:
       CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
       CONNECT_REST_PORT: 8083
@@ -502,14 +558,11 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-hdfs-connector"
-      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
       KAFKA_BROKERS: 3
-      CONNECT_LOG4J_ROOT_LOGLEVEL: WARN
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
-      # For backwards compatibility
-      TOPIC_LIST: "application_record_counts"
     healthcheck:
       test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-hdfs-sink-android-15000/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
       interval: 1m
@@ -575,22 +628,9 @@ services:
   #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #
   #---------------------------------------------------------------------------#
-  cadvisor:
-    image: google/cadvisor:v0.24.1
-    networks:
-      - monitor
-      - default
-    ports:
-      - "8080:8080"
-    volumes:
-      - "/:/rootfs:ro"
-      - "/var/run:/var/run:rw"
-      - "/sys:/sys:ro"
-      - "/var/lib/docker/:/var/lib/docker:ro"
-    restart: always
-
   portainer:
-    image: portainer/portainer:1.11.1
+    image: portainer/portainer:1.19.1
+    command: --admin-password '${PORTAINER_PASSWORD_HASH}'
     networks:
       - monitor
     volumes:
@@ -601,20 +641,18 @@ services:
   # Webserver                                                                 #
   #---------------------------------------------------------------------------#
   webserver:
-    image: nginx:1.13.1-alpine
+    image: nginx:1.14.0-alpine
     restart: always
     networks:
       - api
       - monitor
       - default
     depends_on:
-      - cadvisor
       - portainer
       - rest-api
       - schema-registry-1
       - gateway
       - dashboard
-      - radar-integration
       - managementportal-app
       - kafka-manager
     ports:
@@ -625,6 +663,9 @@ services:
       - certs-data:/data/letsencrypt
       - "./etc/webserver/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
+      - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
+      - "./etc/webserver/kafka-manager.htpasswd:/etc/nginx/kafka-manager.htpasswd:ro"
+      - "./etc/webserver/optional-services.conf:/etc/nginx/optional-services.conf"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
@@ -633,7 +674,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.3.6
+    image: radarbase/management-portal:0.4.1
     networks:
       - default
       - api
@@ -654,6 +695,7 @@ services:
       MANAGEMENTPORTAL_OAUTH_CLIENTS_FILE: /mp-includes/config/oauth_client_details.csv
       MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT: ${MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT}
       MANAGEMENTPORTAL_CATALOGUE_SERVER_SERVER_URL: http://catalog-server:9010/source-types
+      SPRING_APPLICATION_JSON: '{"managementportal":{"oauth":{"checkingKeyAliases":["${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_0}","${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_1}"]}}}'
       JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
       JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
     volumes:
@@ -666,7 +708,7 @@ services:
 
 
   managementportal-postgresql:
-    image: postgres:9.6.2
+    image: postgres:${POSTGRES_VERSION}
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
@@ -687,7 +729,7 @@ services:
   # Kafka Manager                                                             #
   #---------------------------------------------------------------------------#
   kafka-manager:
-    image: radarbase/kafka-manager
+    image: radarbase/kafka-manager:1.3.3.18
     networks:
       - zookeeper
       - kafka
@@ -710,19 +752,20 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarcns/radar-gateway:0.1.2
+    image: radarbase/radar-gateway:0.2.2
     networks:
       - api
       - kafka
     depends_on:
       - rest-proxy-1
-      - managementportal-app
     volumes:
-      - ./etc/gateway/radar-is.yml:/etc/radar-gateway/radar-is.yml
-      - ./etc/gateway/classpath.xml:/usr/local/tomcat/conf/Catalina/localhost/radar-gateway.xml
+      - ./etc/gateway:/etc/radar-gateway
+    command: ["radar-gateway", "/etc/radar-gateway/gateway.yml"]
+    environment:
+      RADAR_IS_CONFIG_LOCATION: /etc/radar-gateway/radar-is.yml
     healthcheck:
       # should give an unauthenticated response, rather than a 404
-      test: ["CMD-SHELL", "wget --spider localhost:8080/radar-gateway 2>&1 | grep -q 401 || exit 1"]
+      test: ["CMD-SHELL", "wget --spider localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
@@ -731,15 +774,15 @@ services:
   # Catalog server from radar-schemas                                         #
   #---------------------------------------------------------------------------#
   catalog-server:
-    build: kafka-radarinit
-    image: radarcns/kafka-init
+    build: images/radar-kafka-init
+    image: radarbase/kafka-init:0.3.6
     networks:
       - management
     command: radar-schemas-tools serve /schema/merged
     volumes:
       - ./etc/schema:/schema/conf
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
       KAFKA_NUM_BROKERS: 3
       RADAR_NUM_PARTITIONS: 3

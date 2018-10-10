@@ -1,0 +1,9 @@
+[Unit]
+Description=RADAR-Docker hash backup timer. Default set to daily
+[Timer]
+# Daily at 3am
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+Unit=radar-hashbackup.service
+[Install]
+WantedBy=multi-user.target
