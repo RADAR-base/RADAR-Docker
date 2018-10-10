@@ -144,6 +144,13 @@ inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then
   sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/webserver/nginx.conf
   init_certificate "${SERVER_NAME}"
+else
+  # Fill in reverse proxy servers
+  proxies=
+  for PROXY in ${NGINX_PROXIES:-}; do
+    proxies="${proxies}set_real_ip_from ${PROXY}; "
+  done
+  sed_i "s/^\(\s*\).*# NGINX_PROXIES/\1$proxies# NGINX_PROXIES/" etc/webserver/nginx.conf
 fi
 
 # Configure Optional services

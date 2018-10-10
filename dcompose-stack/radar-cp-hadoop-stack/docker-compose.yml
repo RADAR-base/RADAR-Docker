@@ -641,7 +641,7 @@ services:
   # Webserver                                                                 #
   #---------------------------------------------------------------------------#
   webserver:
-    image: nginx:1.13.1-alpine
+    image: nginx:1.14.0-alpine
     restart: always
     networks:
       - api
