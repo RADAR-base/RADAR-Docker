@@ -7,25 +7,6 @@ volumes:
 
 services:
   #---------------------------------------------------------------------------#
-  # RADAR REDCap Integration                                                  #
-  #---------------------------------------------------------------------------#
-  radar-integration:
-    image: radarbase/radar-redcapintegration:0.1.0
-    networks:
-      - api
-      - default
-    depends_on:
-      - managementportal-app
-    restart: always
-    volumes:
-      - "./etc/redcap-integration:/usr/local/etc/radar-redcap-int"
-    healthcheck:
-      test: ["CMD-SHELL", "wget --spider http://localhost:8080/redcap/trigger 2>&1 | grep -q 500 || exit 1"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
-
-  #---------------------------------------------------------------------------#
   # RADAR Fitbit connector                                                     #
   #---------------------------------------------------------------------------#
   radar-fitbit-connector:

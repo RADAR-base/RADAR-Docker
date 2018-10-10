@@ -17,6 +17,9 @@ http {
     '"$http_user_agent" "$http_x_forwarded_for"';
   tcp_nodelay  on;
 
+  # hide nginx version
+  server_tokens off;
+
   # add nosniff header (https://www.owasp.org/index.php/List_of_useful_HTTP_headers)
   add_header X-Content-Type-Options nosniff;
 
@@ -56,10 +59,6 @@ http {
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
     }
-    location /dashboard/ {
-      proxy_pass         http://dashboard:80/;
-      proxy_set_header   Host $host;
-    }
     location /portainer/ {
       include ip-access-control.conf;
 
@@ -73,11 +72,6 @@ http {
       proxy_set_header   Upgrade $http_upgrade;
       proxy_set_header   Connection "upgrade";
       proxy_http_version 1.1;
-    }
-    location /api/ {
-      include cors.conf;
-      proxy_pass         http://rest-api:8080/api/;
-      proxy_set_header   Host $host;
     }
     location /managementportal/ {
       include cors.conf;
