@@ -5,6 +5,11 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 . ./lib/util.sh
 . ./.env
 
+if [ "${ENABLE_HTTPS:-yes}" != yes ]; then
+  echo "HTTPS is disabled. Not renewing certificate."
+  exit 0
+fi
+
 if [ -z ${SERVER_NAME} ]; then
   echo "Set SERVER_NAME variable in .env"
   exit 1
