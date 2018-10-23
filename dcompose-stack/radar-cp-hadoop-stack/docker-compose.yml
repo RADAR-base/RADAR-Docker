@@ -324,25 +324,6 @@ services:
       retries: 3
 
   #---------------------------------------------------------------------------#
-  # RADAR REDCap Integration                                                  #
-  #---------------------------------------------------------------------------#
-  radar-integration:
-    image: radarbase/radar-redcapintegration:0.1.0
-    networks:
-      - api
-      - default
-    depends_on:
-      - managementportal-app
-    restart: always
-    volumes:
-      - "./etc/redcap-integration:/usr/local/tomcat/conf/radar"
-    healthcheck:
-      test: ["CMD", "wget", "-IX", "POST", "http://localhost:8080/redcap/trigger"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
-      
-  #---------------------------------------------------------------------------#
   # RADAR Dashboard                                                           #
   #---------------------------------------------------------------------------#
   dashboard:

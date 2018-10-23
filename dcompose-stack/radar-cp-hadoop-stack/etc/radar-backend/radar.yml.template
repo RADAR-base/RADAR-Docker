@@ -30,7 +30,7 @@ rest_proxy:
 #============================ Kafka Streams ============================#
 #The number of threads that a stream must be run according is priority
 stream:
-  stream_priority:
+  threads_per_priority:
     low: 1
     normal: 2
     high: 4
@@ -78,8 +78,6 @@ stream:
       - android_phone_relative_location
       output_topic: source_statistics_android_phone
 
-
-
 #======================== Battery level monitor ========================#
 battery_monitor:
   level: LOW
@@ -90,7 +88,7 @@ battery_monitor:
     - project_id: s2
       email_address:
         - notifier2@email
-  email_host: localhost
+  email_host: smtp
   email_port: 25
   email_user: user@example.com
   topics:
@@ -105,7 +103,7 @@ disconnect_monitor:
     - project_id: s2
       email_address:
         - notifier2@email
-  email_host: localhost
+  email_host: smtp
   email_port: 25
   email_user: user@example.com
   topics:
