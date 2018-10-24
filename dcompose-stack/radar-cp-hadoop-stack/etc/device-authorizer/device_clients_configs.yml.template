@@ -1,0 +1,7 @@
+device_clients:
+  - device_type: FitBit
+    authorization_endpoint: https://www.fitbit.com/oauth2/authorize
+    token_endpoint: https://api.fitbit.com/oauth2/token
+    client_id: 
+    client_secret:
+    scope: activity heartrate location nutrition sleep social weight

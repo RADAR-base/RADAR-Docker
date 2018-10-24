@@ -1,5 +1,15 @@
 # uncomment and add according to which optional services need to use the webserver.
-#location /redcapint/ {
-#  proxy_pass         http://radar-integration:8080/redcap/;
-#  proxy_set_header   Host $host;
-#}
+location /redcapint/ {
+  proxy_pass         http://radar-integration:8080/redcap/;
+  proxy_set_header   Host $host;
+}
+
+location /device-authorizer/ {
+  proxy_pass         http://radar-device-auth-frontend:80/;
+  proxy_set_header   Host $host;
+}
+
+location /device-auth/backend/ {
+  proxy_pass         http://radar-device-auth-backend:8080/;
+  proxy_set_header   Host $host;
+}

@@ -17,3 +17,4 @@
 radar-is.yml
 /fitbit/docker/users/*.yml
 /fitbit/docker/source-fitbit.properties
+/device-authorizer/device_clients_configs.yml
