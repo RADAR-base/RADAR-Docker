@@ -1,9 +1,5 @@
 version: 1.0
-released: 2016-11-27
-
-#============================= Application =============================#
-#Possible value are standalone or high_performance
-mode: standalone
+released: 2018-09-13
 
 #============================== Zookeeper ==============================#
 #List of Zookeeper instances
@@ -17,33 +13,39 @@ broker:
     - host: kafka-1
       port: 9092
 
-#Kafka internal parameters
-stream_properties:
-  max.request.size: 3500042 #Set message.max.bytes for kafka brokers higher than or equal to this value
-  retries: 15
-  session.timeout.ms: 500000
-  commit.interval.ms: 300000
-  request.timeout.ms: 10860000
-  state.cleanup.delay.ms: 10860000
-
-#============================ Kafka Streams ============================#
-#The number of threads that a stream must be run according is priority
-stream_priority:
-  low: 1
-  normal: 2
-  high: 4
-
 #=========================== Schema Registry ===========================#
 #List of Schema Registry instances
 schema_registry:
     - host: schema-registry-1
       port: 8081
       protocol: http
-
+#=========================== Kafka REST Proxy ===========================#
+#List of kafka Rest proxy instances
 rest_proxy:
     host: rest-proxy-1
     port: 8082
     protocol: http
+
+#Kafka internal parameters
+#============================ Kafka Streams ============================#
+#The number of threads that a stream must be run according is priority
+stream:
+  threads_per_priority:
+    low: 1
+    normal: 2
+    high: 4
+
+  properties:
+    max.request.size: 3500042 #Set message.max.bytes for kafka brokers higher than or equal to this value
+    retries: 15
+    session.timeout.ms: 500000
+    commit.interval.ms: 300000
+    request.timeout.ms: 10860000
+    state.cleanup.delay.ms: 10860000
+
+  streams:
+    - class: org.radarcns.stream.phone.PhoneUsageStream
+    - class: org.radarcns.stream.phone.PhoneUsageAggregationStream
 
 #======================== Battery level monitor ========================#
 battery_monitor:
@@ -55,7 +57,7 @@ battery_monitor:
     - project_id: s2
       email_address:
         - notifier2@email
-  email_host: localhost
+  email_host: smtp
   email_port: 25
   email_user: user@example.com
   topics:
@@ -70,7 +72,7 @@ disconnect_monitor:
     - project_id: s2
       email_address:
         - notifier2@email
-  email_host: localhost
+  email_host: smtp
   email_port: 25
   email_user: user@example.com
   topics:

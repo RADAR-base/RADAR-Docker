@@ -3,6 +3,7 @@
 /webserver/nginx.conf
 /webserver/kafka-manager.htpasswd
 /webserver/ip-access-control.conf
+/webserver/optional-services.conf
 /radar-backend/radar.yml
 /smtp.env
 /rest-api/device-catalog.yml
@@ -13,6 +14,6 @@
 /managementportal/config/oauth_client_details.csv
 /schema/commons/
 /schema/specifications/
-/gateway/radar-is.yml
+radar-is.yml
 /fitbit/docker/users/*.yml
 /fitbit/docker/source-fitbit.properties
