@@ -11,9 +11,8 @@ check_command_exists docker-compose
 # Initialize and check all config files
 check_config_present .env etc/env.template
 check_config_present etc/smtp.env
-check_config_present etc/radar-backend/radar.yml
-check_config_present etc/managementportal/config/oauth_client_details.csv
-copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
+copy_template_if_absent etc/radar-backend/radar.yml
+copy_template_if_absent etc/managementportal/config/oauth_client_details.csv
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/ip-access-control.conf
@@ -52,15 +51,10 @@ check_parent_exists HDFS_DATA_DIR_1 ${HDFS_DATA_DIR_1}
 check_parent_exists HDFS_DATA_DIR_2 ${HDFS_DATA_DIR_2}
 check_parent_exists HDFS_NAME_DIR_1 ${HDFS_NAME_DIR_1}
 check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
-check_parent_exists MONGODB_DIR ${MONGODB_DIR}
 check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 
 # Checking provided passwords and environment variables
 ensure_env_default SERVER_NAME localhost
-
-ensure_env_default HOTSTORAGE_USERNAME hotstorage
-ensure_env_password HOTSTORAGE_PASSWORD "Hot storage (MongoDB) password not set in .env."
-ensure_env_default HOTSTORAGE_NAME hotstorage
 
 ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
 ensure_env_default KAFKA_MANAGER_USERNAME kafkamanager-user
@@ -96,25 +90,10 @@ KAFKA_SCHEMA_RETENTION_MS=${KAFKA_SCHEMA_RETENTION_MS:-5400000000}
 KAFKA_SCHEMA_RETENTION_CMD='kafka-configs --zookeeper "${KAFKA_ZOOKEEPER_CONNECT}" --entity-type topics --entity-name _schemas --alter --add-config min.compaction.lag.ms='${KAFKA_SCHEMA_RETENTION_MS}',cleanup.policy=compact'
 sudo-linux bin/radar-docker exec -T kafka-1 bash -c "$KAFKA_SCHEMA_RETENTION_CMD"
 
-echo "==> Configuring MongoDB Connector"
-# Update sink-mongo.properties
-ensure_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/mongodb-connector/sink-mongo.properties
-ensure_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sink-mongo.properties
-ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
-
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"
     radarbase/kafka-init:0.3.6
   )
-
-# Set topics
-if [ -z "${COMBINED_AGG_TOPIC_LIST}"]; then
-  COMBINED_AGG_TOPIC_LIST=$(sudo-linux docker run "${KAFKA_INIT_OPTS[@]}" list_aggregated.sh 2>/dev/null | tail -n 1)
-  if [ -n "${RADAR_AGG_TOPIC_LIST}" ]; then
-    COMBINED_AGG_TOPIC_LIST="${RADAR_AGG_TOPIC_LIST},${COMBINED_AGG_TOPIC_LIST}"
-  fi
-fi
-ensure_variable 'topics=' "${COMBINED_AGG_TOPIC_LIST}" etc/mongodb-connector/sink-mongo.properties
 
 echo "==> Configuring HDFS Connector"
 if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
@@ -130,13 +109,6 @@ ensure_env_password MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET "ManagementPortal fr
 ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for ManagementPortal is not set in .env."
 
 bin/keystore-init
-
-echo "==> Configuring REST-API"
-
-# Set MongoDb credential
-inline_variable 'username:[[:space:]]' "$HOTSTORAGE_USERNAME" etc/rest-api/radar.yml
-inline_variable 'password:[[:space:]]' "$HOTSTORAGE_PASSWORD" etc/rest-api/radar.yml
-inline_variable 'database_name:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/radar.yml
 
 echo "==> Configuring Kafka-manager"
 sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${KAFKA_MANAGER_USERNAME}" "${KAFKA_MANAGER_PASSWORD}" > etc/webserver/kafka-manager.htpasswd
@@ -160,8 +132,6 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   echo "==> Configuring Fitbit Connector"
   ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
   ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
-
-  check_config_present etc/redcap-integration/radar.yml
 fi
 
 echo "==> Starting RADAR-base Platform"
