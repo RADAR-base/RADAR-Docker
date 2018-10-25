@@ -33,15 +33,15 @@ fi
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then
   copy_template_if_absent etc/webserver/nginx.conf
   if ! grep -q 443 etc/webserver/nginx.conf; then
-    echo "NGINX configuration does not contain HTTPS configuration. Update the config"
-    echo "to template etc/webserver/nginx.conf.template or set ENABLE_HTTPS=no in .env."
+    echo "NGINX configuration does not contain HTTPS configuration. Update etc/webserver/nginx.conf to match"
+    echo "template etc/webserver/nginx.conf.template or set ENABLE_HTTPS=no in .env."
     exit 1
   fi
 else
   copy_template_if_absent etc/webserver/nginx.conf etc/webserver/nginx.nossl.conf.template
   if grep -q 443 etc/webserver/nginx.conf; then
-    echo "NGINX configuration does contains HTTPS configuration. Update the config"
-    echo "to template etc/webserver/nginx.nossl.conf.template or set ENABLE_HTTPS=yes in .env."
+    echo "NGINX configuration does contains HTTPS configuration. Update etc/webserver/nginx.conf to match"
+    echo "template etc/webserver/nginx.nossl.conf.template or set ENABLE_HTTPS=yes in .env."
     exit 1
   fi
 fi
