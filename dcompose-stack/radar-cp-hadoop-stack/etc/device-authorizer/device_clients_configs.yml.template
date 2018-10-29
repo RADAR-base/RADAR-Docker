@@ -4,4 +4,4 @@ device_clients:
     token_endpoint: https://api.fitbit.com/oauth2/token
     client_id: 
     client_secret:
-    scope: activity heartrate location nutrition sleep social weight profile
+    scope: activity heartrate sleep profile
