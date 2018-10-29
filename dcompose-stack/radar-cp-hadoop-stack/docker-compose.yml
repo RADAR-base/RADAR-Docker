@@ -683,12 +683,12 @@ services:
       - management
       - mail
     depends_on:
-      - managementportal-postgresql
+      - radarbase-postgresql
       - smtp
       - catalog-server
     environment:
       SPRING_PROFILES_ACTIVE: prod,swagger
-      SPRING_DATASOURCE_URL: jdbc:postgresql://managementportal-postgresql:5432/managementportal
+      SPRING_DATASOURCE_URL: jdbc:postgresql://radarbase-postgresql:5432/managementportal
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       MANAGEMENTPORTAL_MAIL_FROM: ${FROM_EMAIL}
@@ -712,8 +712,12 @@ services:
       retries: 3
 
 
-  managementportal-postgresql:
-    image: postgres:${POSTGRES_VERSION}
+  radarbase-postgresql:
+    build:
+      context: ./images/postgres
+      args:
+        POSTGRES_VERSION: ${POSTGRES_VERSION}
+    image: postgres:radarbase-${POSTGRES_VERSION}
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
@@ -721,7 +725,7 @@ services:
     environment:
       POSTGRES_USER : ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: managementportal
+      POSTGRES_MULTIPLE_DATABASES: managementportal,deviceauthorizer
     networks:
       - management
     healthcheck:
