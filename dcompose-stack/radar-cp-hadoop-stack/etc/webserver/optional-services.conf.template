@@ -4,12 +4,12 @@ location /redcapint/ {
   proxy_set_header   Host $host;
 }
 
-location /device-authorizer/ {
-  proxy_pass         http://radar-device-auth-frontend:80/;
+location /rest-sources/authorizer/ {
+  proxy_pass         http://radar-rest-sources-authorizer:80/;
   proxy_set_header   Host $host;
 }
 
-location /device-auth/backend/ {
-  proxy_pass         http://radar-device-auth-backend:8080/;
+location /rest-sources/backend/ {
+  proxy_pass         http://radar-rest-sources-backend:8080/;
   proxy_set_header   Host $host;
 }

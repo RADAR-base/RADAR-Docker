@@ -20,6 +20,7 @@ copy_template_if_absent etc/webserver/nginx.conf
 copy_template_if_absent etc/webserver/ip-access-control.conf
 copy_template_if_absent etc/webserver/optional-services.conf
 copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
+copy_template_if_absent etc/rest-source-authorizer/source_clients_configs.yml
 
 # Set permissions
 sudo-linux chmod og-rw ./.env
@@ -139,6 +140,10 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   echo "==> Configuring Fitbit Connector"
   ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
   ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
+
+  echo "==> Configuring Rest Source Authorizer"
+  inline_variable 'client_id:[[:space:]]' "$FITBIT_API_CLIENT_ID" etc/rest-source-authorizer/source_clients_configs.yml
+  inline_variable 'client_secret:[[:space:]]' "$FITBIT_API_CLIENT_SECRET" etc/rest-source-authorizer/source_clients_configs.yml
 
   check_config_present etc/redcap-integration/radar.yml
 fi
