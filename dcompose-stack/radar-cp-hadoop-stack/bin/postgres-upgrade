@@ -11,7 +11,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 . ./.env
 . lib/util.sh
 
-echo "Are you sure you want to to upgrade HDFS from version ${POSTGRES_VERSION} to ${NEW_VERSION}?"
+echo "Are you sure you want to to upgrade POSTGRESQL from version ${POSTGRES_VERSION} to ${NEW_VERSION}?"
 
 select yn in "Yes" "No"; do
     case $yn in

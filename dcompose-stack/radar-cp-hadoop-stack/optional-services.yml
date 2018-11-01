@@ -29,7 +29,7 @@ services:
   # RADAR Fitbit connector                                                     #
   #---------------------------------------------------------------------------#
   radar-fitbit-connector:
-    image: radarbase/kafka-connect-rest-fitbit-source:0.1.0
+    image: radarbase/kafka-connect-rest-fitbit-source:0.2.0
     restart: on-failure
     volumes:
       - ./etc/fitbit/docker/source-fitbit.properties:/etc/kafka-connect/source-fitbit.properties
@@ -72,3 +72,33 @@ services:
       interval: 1m
       timeout: 5s
       retries: 3
+
+  radar-rest-sources-backend:
+    image: radarbase/radar-rest-source-auth-backend:1.0.0
+    depends_on:
+      - radarbase-postgresql
+    networks:
+      - default
+      - api
+      - management
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://radarbase-postgresql:5432/restsourceauthorizer
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - REST_SOURCE_AUTHORIZER_SOURCE_CLIENTS_FILE_PATH=app-includes/rest_source_clients_configs.yml
+      - APP_SLEEP=10 # gives time for the database to boot before the application
+    volumes:
+      - ./etc/rest-source-authorizer/:/app-includes/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8080/users"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  radar-rest-sources-authorizer:
+      image: radarbase/radar-rest-source-authorizer:1.0.0
+      networks:
+        - api
+      depends_on:
+        - radar-rest-sources-backend
+        - radarbase-postgresql
