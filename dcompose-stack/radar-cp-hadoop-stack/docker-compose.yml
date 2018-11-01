@@ -717,7 +717,7 @@ services:
       context: ./images/postgres
       args:
         POSTGRES_VERSION: ${POSTGRES_VERSION}
-    image: postgres:radarbase-${POSTGRES_VERSION}
+    image: radarbase/postgres:${POSTGRES_VERSION}-1
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
