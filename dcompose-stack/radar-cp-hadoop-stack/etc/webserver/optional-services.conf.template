@@ -1,9 +1,4 @@
 # uncomment and add according to which optional services need to use the webserver.
-location /redcapint/ {
-  proxy_pass         http://radar-integration:8080/redcap/;
-  proxy_set_header   Host $host;
-}
-
 location /rest-sources/authorizer/ {
   auth_basic         "Rest source authorizer";
   auth_basic_user_file rest-source-auth.htpasswd;
