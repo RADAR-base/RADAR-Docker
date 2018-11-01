@@ -260,7 +260,7 @@ services:
   #---------------------------------------------------------------------------#
   kafka-init:
     build: images/radar-kafka-init
-    image: radarbase/kafka-init:0.3.6
+    image: radarbase/kafka-init:0.4.1
     networks:
       - kafka
       - zookeeper
@@ -784,7 +784,7 @@ services:
   #---------------------------------------------------------------------------#
   catalog-server:
     build: images/radar-kafka-init
-    image: radarbase/kafka-init:0.3.6
+    image: radarbase/kafka-init:0.4.1
     networks:
       - management
     command: radar-schemas-tools serve /schema/merged
