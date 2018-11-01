@@ -61,6 +61,9 @@ ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
 ensure_env_default KAFKA_MANAGER_USERNAME kafkamanager-user
 ensure_env_password KAFKA_MANAGER_PASSWORD "Kafka Manager password not set in .env."
 
+ensure_env_default REST_SOURCE_AUTH_USERNAME restauthadmin
+ensure_env_password REST_SOURCE_AUTH_PASSWORD "REST_SOURCE_AUTH_PASSWORD not set in .env."
+
 if [ -z ${PORTAINER_PASSWORD_HASH} ]; then
   query_password PORTAINER_PASSWORD "Portainer password not set in .env."
   PORTAINER_PASSWORD_HASH=$(sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB admin "${PORTAINER_PASSWORD}" | cut -d ":" -f 2)
@@ -139,6 +142,9 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   echo "==> Configuring Rest Source Authorizer"
   inline_variable 'client_id:[[:space:]]' "$FITBIT_API_CLIENT_ID" etc/rest-source-authorizer/rest_source_clients_configs.yml
   inline_variable 'client_secret:[[:space:]]' "$FITBIT_API_CLIENT_SECRET" etc/rest-source-authorizer/rest_source_clients_configs.yml
+
+  echo "==> Configuring Rest Source Authorizer Credentials"
+  sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${REST_SOURCE_AUTH_USERNAME}" "${REST_SOURCE_AUTH_PASSWORD}" > etc/webserver/rest-source-auth.htpasswd
 
 fi
 

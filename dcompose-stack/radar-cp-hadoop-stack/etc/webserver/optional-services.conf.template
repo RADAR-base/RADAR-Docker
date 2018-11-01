@@ -5,6 +5,8 @@ location /redcapint/ {
 }
 
 location /rest-sources/authorizer/ {
+  auth_basic         "Rest source authorizer";
+  auth_basic_user_file rest-source-auth.htpasswd;
   proxy_pass         http://radar-rest-sources-authorizer:80/;
   proxy_set_header   Host $host;
 }
