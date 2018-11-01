@@ -18,6 +18,7 @@ copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/ip-access-control.conf
 copy_template_if_absent etc/webserver/optional-services.conf
 copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
+copy_template_if_absent etc/rest-source-authorizer/rest_source_clients_configs.yml
 
 # Set permissions
 sudo-linux chmod og-rw ./.env
@@ -105,6 +106,8 @@ fi
 ensure_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-hdfs.properties
 
 echo "==> Configuring Management Portal"
+sudo-linux bin/radar-docker up -d --build radarbase-postgresql
+sudo-linux bin/radar-docker exec --user postgres radarbase-postgresql /docker-entrypoint-initdb.d/multi-db-init.sh
 ensure_env_password MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET "ManagementPortal front-end client secret is not set in .env"
 ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for ManagementPortal is not set in .env."
 
@@ -132,6 +135,11 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   echo "==> Configuring Fitbit Connector"
   ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
   ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
+
+  echo "==> Configuring Rest Source Authorizer"
+  inline_variable 'client_id:[[:space:]]' "$FITBIT_API_CLIENT_ID" etc/rest-source-authorizer/rest_source_clients_configs.yml
+  inline_variable 'client_secret:[[:space:]]' "$FITBIT_API_CLIENT_SECRET" etc/rest-source-authorizer/rest_source_clients_configs.yml
+
 fi
 
 echo "==> Starting RADAR-base Platform"
