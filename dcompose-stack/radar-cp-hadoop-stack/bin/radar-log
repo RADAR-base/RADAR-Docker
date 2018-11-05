@@ -19,18 +19,32 @@ fi
 LOG_DIR="$1"
 
 mkdir -p "$LOG_DIR"
+chown root:syslog "$LOG_DIR"
+chmod g+w "$LOG_DIR"
 
-echo "Writing log directives to /etc/rsyslog.d/radar.conf"
+echo "Writing log directives to /etc/rsyslog.d/99-radar.conf"
 
-cat <<EOF > /etc/rsyslog.d/radar.conf
-if \$programname == 'radar-docker' then $LOG_DIR/radar-docker.log
-& stop
-if \$programname == 'radar-output' then $LOG_DIR/radar-output.log
-& stop
-if \$programname == 'radar-check-health' then $LOG_DIR/radar-check-health.log
-& stop
-if \$programname == 'radar-renew-certificate' then $LOG_DIR/radar-renew-certificate.log
-& stop
+cat <<EOF > /etc/rsyslog.d/99-radar.conf
+if ( \$programname == "radar-docker" ) then {
+    action(type="omfile" file="$LOG_DIR/radar-docker.log")
+    stop
+}
+if ( \$programname == "radar-output" ) then {
+    action(type="omfile" file="$LOG_DIR/radar-output.log")
+    stop
+}
+if ( \$programname == "radar-renew-certificate" ) then {
+    action(type="omfile" file="$LOG_DIR/radar-renew-certificate.log")
+    stop
+}
+if ( \$programname == "radar-check-health" ) then {
+    action(type="omfile" file="$LOG_DIR/radar-check-health.log")
+    stop
+}
+if ( $programname startswith "docker" ) then {
+    action(type="omfile" file="$LOG_DIR/docker.log")
+    stop
+}
 EOF
 
 LOG_SIZE=${LOG_SIZE:-1000000000}
