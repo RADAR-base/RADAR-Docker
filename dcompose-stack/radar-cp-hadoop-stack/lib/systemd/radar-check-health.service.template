@@ -9,3 +9,7 @@ WorkingDirectory=
 ExecStart=
 
 NotifyAccess=all
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=radar-check-health
