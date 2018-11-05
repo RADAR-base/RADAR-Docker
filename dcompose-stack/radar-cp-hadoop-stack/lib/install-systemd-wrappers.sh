@@ -4,7 +4,7 @@ echo $(pwd)
 . lib/util.sh
 . .env
 
-if id -Gn | grep -qe '\<sudo\>'; then
+if [ "$(id -un)" == "root" ] || id -Gn | grep -qe '\<sudo\>'; then
   BASE=/etc/systemd/system
   SYSTEMCTL_OPTS=()
 else
