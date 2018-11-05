@@ -41,7 +41,7 @@ if ( \$programname == "radar-check-health" ) then {
     action(type="omfile" file="$LOG_DIR/radar-check-health.log")
     stop
 }
-if ( $programname startswith "docker" ) then {
+if ( \$programname startswith "docker" ) then {
     action(type="omfile" file="$LOG_DIR/docker.log")
     stop
 }
