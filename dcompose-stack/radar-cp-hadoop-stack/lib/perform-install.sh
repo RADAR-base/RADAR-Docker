@@ -60,7 +60,12 @@ fi
 # Create networks and volumes
 if ! sudo-linux docker network ls --format '{{.Name}}' | grep -q "^hadoop$"; then
   echo "==> Creating docker network - hadoop"
-  sudo-linux docker network create hadoop > /dev/null
+  sudo-linux docker network create --internal hadoop > /dev/null
+elif [ $(docker network inspect hadoop --format "{{.Internal}}") != "true" ]; then
+  echo "==> Re-creating docker network - hadoop"
+  sudo-linux bin/radar-docker quit radar-hdfs-connector hdfs-namenode-1 hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3 > /dev/null
+  sudo-linux docker network rm hadoop > /dev/null
+  sudo-linux docker network create --internal hadoop > /dev/null
 else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
