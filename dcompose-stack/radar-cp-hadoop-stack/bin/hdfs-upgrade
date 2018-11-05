@@ -28,11 +28,7 @@ echo "==> Stopping HDFS name nodes"
 $stack quit hdfs-namenode-1 radar-hdfs-connector
 
 echo "==> Updating HDFS version to ${VERSION}"
-if grep -q HDFS_BASE_VERSION ./.env; then
-  sed_i "s/HDFS_BASE_VERSION=.*/HDFS_BASE_VERSION=${VERSION}/" ./.env
-else
-  echo "HDFS_BASE_VERSION=${VERSION}" >> ./.env
-fi
+ensure_variable "HDFS_BASE_VERSION=" "${VERSION}" .env
 
 $stack build
 

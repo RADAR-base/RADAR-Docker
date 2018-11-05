@@ -12,7 +12,7 @@ check_command_exists docker-compose
 check_config_present .env etc/env.template
 check_config_present etc/smtp.env
 check_config_present etc/radar-backend/radar.yml
-check_config_present etc/managementportal/config/oauth_client_details.csv
+copy_template_if_absent etc/managementportal/config/oauth_client_details.csv
 copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
