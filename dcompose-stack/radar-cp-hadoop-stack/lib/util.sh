@@ -97,6 +97,19 @@ copy_template_if_absent() {
   fi
 }
 
+# Copies the template (defined by the given config file with suffix
+# ".template") to intended configuration file.
+copy_template() {
+  template=${2:-${1}.template}
+  if [ ! -f "$1" ] && [ -e "$1" ]; then
+    echo "Configuration file ${1} is not a regular file."
+    exit 1
+  else
+    echo "Copying configuration file ${1} from template ${template}"
+    sudo-linux cp -p "${template}" "$1"
+  fi
+}
+
 check_config_present() {
   template=${2:-${1}.template}
   if [ ! -f "$1" ]; then
