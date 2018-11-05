@@ -68,7 +68,7 @@ EOF
 
 echo "Running log rotation every hour"
 
-if [ ! -e /etc/cron.hourly.logrotate ]; then
+if [ ! -e /etc/cron.hourly/logrotate ]; then
   ln -s /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
   systemctl restart cron
 fi
