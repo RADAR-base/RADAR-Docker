@@ -24,7 +24,7 @@ chmod g+w "$LOG_DIR"
 
 echo "Writing log directives to /etc/rsyslog.d/00-radar.conf"
 
-cat <<EOF > /etc/rsyslog.d/99-radar.conf
+cat <<EOF > /etc/rsyslog.d/00-radar.conf
 if ( \$programname == "radar-docker" ) then {
     action(type="omfile" file="$LOG_DIR/radar-docker.log")
     stop
