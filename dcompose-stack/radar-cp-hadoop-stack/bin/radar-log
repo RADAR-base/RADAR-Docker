@@ -35,9 +35,9 @@ EOF
 
 LOG_SIZE=${LOG_SIZE:-1000000000}
 
-echo "Writing log rotation directives to /etc/logrotate.d/radar.conf (with maximum size LOG_SIZE)"
+echo "Writing log rotation directives to /etc/logrotate.d/radar (with maximum size $LOG_SIZE)"
 
-cat <<EOF > /etc/logrotate.d/radar.conf
+cat <<EOF > /etc/logrotate.d/radar
 $LOG_DIR/radar-*.log {
   daily
   maxsize $LOG_SIZE
@@ -47,7 +47,7 @@ $LOG_DIR/radar-*.log {
   notifempty
   missingok
   postrotate
-    /usr/bin/killall -HUP syslogd
+    invoke-rc.d rsyslog rotate > /dev/null
   endscript
 }
 EOF
