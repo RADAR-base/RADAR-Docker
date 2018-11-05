@@ -10,3 +10,5 @@ ExecStart=
 
 NotifyAccess=all
 
+Environment=DOCKER_OPTS=
+
