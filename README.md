@@ -81,7 +81,7 @@ To run RADAR-base stack in a single node setup:
 
 ### Logging
 
-Set up logging by going to the `dcompose-stack/logging` directory and follow the README there.
+Set up a logging service by going to the `dcompose-stack/logging` directory and follow the README there.
 
 ## Work in progress
 
