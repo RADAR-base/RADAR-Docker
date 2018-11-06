@@ -4,7 +4,7 @@ echo $(pwd)
 . lib/util.sh
 . .env
 
-if id -Gn | grep -qe '\<sudo\>' || [ "$(id -nu)" == "root" ]; then
+if [ "$(id -un)" == "root" ] || id -Gn | grep -qe '\<sudo\>'; then
   BASE=/etc/systemd/system
   SYSTEMCTL_OPTS=()
 else
@@ -15,13 +15,13 @@ else
 fi
 
 echo "==> Copying templates"
-copy_template_if_absent $BASE/radar-docker.service lib/systemd/radar-docker.service.template
-copy_template_if_absent $BASE/radar-output.service lib/systemd/radar-output.service.template
-copy_template_if_absent $BASE/radar-output.timer lib/systemd/radar-output.timer.template
-copy_template_if_absent $BASE/radar-check-health.service lib/systemd/radar-check-health.service.template
-copy_template_if_absent $BASE/radar-check-health.timer lib/systemd/radar-check-health.timer.template
-copy_template_if_absent $BASE/radar-renew-certificate.service lib/systemd/radar-renew-certificate.service.template
-copy_template_if_absent $BASE/radar-renew-certificate.timer lib/systemd/radar-renew-certificate.timer.template
+copy_template $BASE/radar-docker.service lib/systemd/radar-docker.service.template
+copy_template $BASE/radar-output.service lib/systemd/radar-output.service.template
+copy_template $BASE/radar-output.timer lib/systemd/radar-output.timer.template
+copy_template $BASE/radar-check-health.service lib/systemd/radar-check-health.service.template
+copy_template $BASE/radar-check-health.timer lib/systemd/radar-check-health.timer.template
+copy_template $BASE/radar-renew-certificate.service lib/systemd/radar-renew-certificate.service.template
+copy_template $BASE/radar-renew-certificate.timer lib/systemd/radar-renew-certificate.timer.template
 
 echo "==> Inlining variables"
 inline_variable 'WorkingDirectory=' "$PWD" $BASE/radar-docker.service

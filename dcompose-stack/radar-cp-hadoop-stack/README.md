@@ -102,6 +102,8 @@ sudo systemctl start radar-docker
 
 To rebuild an image and restart them, run `bin/radar-docker rebuild IMAGE`. To stop and remove an container, run `bin/radar-docker quit CONTAINER`. To start the HDFS cluster, run `bin/radar-docker hdfs`. For a health check, run `bin/radar-docker health`.
 
+To log to a separate directory, run `sudo bin/radar-log /my/LOG_DIR`. This can be useful to separate the logs of RADAR from the generic `syslog` file and limiting the total log size.
+
 ### Monitoring a topic
 
 To see current data coming out of a Kafka topic, run
@@ -142,13 +144,6 @@ sudo systemctl start radar-renew-certificate.service
 ```
 Otherwise, the following manual commands can be invoked.
 If `SELF_SIGNED_CERT=no` in `./.env`, be sure to run `bin/radar-cert-renew` daily to ensure that your certificate does not expire.
-
-
-### cAdvisor
-
-cAdvisor (Container Advisor) provides container users an understanding of the resource usage and performance characteristics of their running containers.
-
-To view current resource performance,if running locally, try <http://localhost:8080>. This will bring up the built-in Web UI. Clicking on `/docker` in `Subcontainers` takes you to a new window with all of the Docker containers listed individually.
 
 ### Portainer
 
