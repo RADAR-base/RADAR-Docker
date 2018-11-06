@@ -12,6 +12,7 @@
 /rest-api/mp_info.yml
 /redcap-integration/radar.yml
 /managementportal/config/keystore.jks
+/managementportal/config/keystore.p12
 /managementportal/config/oauth_client_details.csv
 /schema/commons/
 /schema/specifications/

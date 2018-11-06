@@ -4,12 +4,16 @@
 echo "Creating RADAR-base topics..."
 
 if ! radar-schemas-tools create -p $KAFKA_NUM_PARTITIONS -r $KAFKA_NUM_REPLICATION -b $KAFKA_NUM_BROKERS "${KAFKA_ZOOKEEPER_CONNECT}" merged; then
-  echo "FAILED TO CREATE TOPICS"
-  exit 1
+  echo "FAILED TO CREATE TOPICS ... Retrying again"
+  if ! radar-schemas-tools create -p $KAFKA_NUM_PARTITIONS -r $KAFKA_NUM_REPLICATION -b $KAFKA_NUM_BROKERS "${KAFKA_ZOOKEEPER_CONNECT}" merged; then
+    echo "FAILED TO CREATE TOPICS"
+    exit 1
+  else
+    echo "Created topics at second attempt"
+  fi
+else
+  echo "Topics created."
 fi
-
-
-echo "Topics created."
 
 echo "Registering RADAR-base schemas..."
 
