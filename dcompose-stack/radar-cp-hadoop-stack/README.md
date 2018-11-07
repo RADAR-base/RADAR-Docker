@@ -102,7 +102,17 @@ sudo systemctl start radar-docker
 
 To rebuild an image and restart them, run `bin/radar-docker rebuild IMAGE`. To stop and remove an container, run `bin/radar-docker quit CONTAINER`. To start the HDFS cluster, run `bin/radar-docker hdfs`. For a health check, run `bin/radar-docker health`.
 
-To log to a separate directory, run `sudo bin/radar-log /my/LOG_DIR`. This can be useful to separate the logs of RADAR from the generic `syslog` file and limiting the total log size.
+To log to a separate directory, run
+```shell
+sudo bin/radar-log /my/LOG_DIR
+```
+
+This can be useful to separate the logs of RADAR from the generic `/var/log/syslog` file and limiting the total log size. To revert logging to `/var/log/syslog`, run
+
+```shell
+sudo rm /etc/rsyslog.d/00-radar.conf /etc/logrotate.d/radar /etc/cron.hourly/logrotate
+sudo systemctl restart rsyslog
+```
 
 ### Monitoring a topic
 
