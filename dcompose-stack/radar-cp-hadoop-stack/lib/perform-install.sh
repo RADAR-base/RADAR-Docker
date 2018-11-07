@@ -11,13 +11,14 @@ check_command_exists docker-compose
 # Initialize and check all config files
 check_config_present .env etc/env.template
 check_config_present etc/smtp.env
-copy_template_if_absent etc/radar-backend/radar.yml
+check_config_present etc/radar-backend/radar.yml
 copy_template_if_absent etc/managementportal/config/oauth_client_details.csv
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/ip-access-control.conf
 copy_template_if_absent etc/webserver/optional-services.conf
 copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
+copy_template_if_absent etc/rest-source-authorizer/rest_source_clients_configs.yml
 
 # Set permissions
 sudo-linux chmod og-rw ./.env
@@ -60,6 +61,9 @@ ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
 ensure_env_default KAFKA_MANAGER_USERNAME kafkamanager-user
 ensure_env_password KAFKA_MANAGER_PASSWORD "Kafka Manager password not set in .env."
 
+ensure_env_default REST_SOURCE_AUTH_USERNAME restauthadmin
+ensure_env_password REST_SOURCE_AUTH_PASSWORD "REST_SOURCE_AUTH_PASSWORD not set in .env."
+
 if [ -z ${PORTAINER_PASSWORD_HASH} ]; then
   query_password PORTAINER_PASSWORD "Portainer password not set in .env."
   PORTAINER_PASSWORD_HASH=$(sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB admin "${PORTAINER_PASSWORD}" | cut -d ":" -f 2)
@@ -69,7 +73,12 @@ fi
 # Create networks and volumes
 if ! sudo-linux docker network ls --format '{{.Name}}' | grep -q "^hadoop$"; then
   echo "==> Creating docker network - hadoop"
-  sudo-linux docker network create hadoop > /dev/null
+  sudo-linux docker network create --internal hadoop > /dev/null
+elif [ $(docker network inspect hadoop --format "{{.Internal}}") != "true" ]; then
+  echo "==> Re-creating docker network - hadoop"
+  sudo-linux bin/radar-docker quit radar-hdfs-connector hdfs-namenode-1 hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3 > /dev/null
+  sudo-linux docker network rm hadoop > /dev/null
+  sudo-linux docker network create --internal hadoop > /dev/null
 else
   echo "==> Creating docker network - hadoop ALREADY EXISTS"
 fi
@@ -105,6 +114,8 @@ fi
 ensure_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-hdfs.properties
 
 echo "==> Configuring Management Portal"
+sudo-linux bin/radar-docker up -d --build radarbase-postgresql
+sudo-linux bin/radar-docker exec --user postgres radarbase-postgresql /docker-entrypoint-initdb.d/multi-db-init.sh
 ensure_env_password MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET "ManagementPortal front-end client secret is not set in .env"
 ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for ManagementPortal is not set in .env."
 
@@ -132,6 +143,14 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   echo "==> Configuring Fitbit Connector"
   ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
   ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
+
+  echo "==> Configuring Rest Source Authorizer"
+  inline_variable 'client_id:[[:space:]]' "$FITBIT_API_CLIENT_ID" etc/rest-source-authorizer/rest_source_clients_configs.yml
+  inline_variable 'client_secret:[[:space:]]' "$FITBIT_API_CLIENT_SECRET" etc/rest-source-authorizer/rest_source_clients_configs.yml
+
+  echo "==> Configuring Rest Source Authorizer Credentials"
+  sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${REST_SOURCE_AUTH_USERNAME}" "${REST_SOURCE_AUTH_PASSWORD}" > etc/webserver/rest-source-auth.htpasswd
+
 fi
 
 echo "==> Starting RADAR-base Platform"

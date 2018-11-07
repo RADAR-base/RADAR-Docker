@@ -43,7 +43,7 @@ if ! array_contains topics ${args[0]}; then
 fi
 
 # consumer command to run
-KACC_CMD="kafka-avro-console-consumer --broker-list kafka-1:9092,kafka-2:9092,kafka-3:9092 --property schema.registry.url=http://schema-registry-1:8081 --property print.key=true --topic ${args[0]} ${args[@]:1}"
+KACC_CMD="kafka-avro-console-consumer --bootstrap-server kafka-1:9092,kafka-2:9092,kafka-3:9092 --property schema.registry.url=http://schema-registry-1:8081 --property print.key=true --topic ${args[0]} ${args[@]:1}"
 DOCKER_CMD="docker-compose exec schema-registry-1"
 
 # run consumer

@@ -257,7 +257,7 @@ services:
   #---------------------------------------------------------------------------#
   kafka-init:
     build: images/radar-kafka-init
-    image: radarbase/kafka-init:0.3.6
+    image: radarbase/kafka-init:0.4.1
     networks:
       - kafka
       - zookeeper
@@ -548,25 +548,26 @@ services:
       - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
       - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
       - "./etc/webserver/kafka-manager.htpasswd:/etc/nginx/kafka-manager.htpasswd:ro"
+      - "./etc/webserver/rest-source-auth.htpasswd:/etc/nginx/rest-source-auth.htpasswd:ro"
       - "./etc/webserver/optional-services.conf:/etc/nginx/optional-services.conf"
 
   #---------------------------------------------------------------------------#
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.5.1
+    image: radarbase/management-portal:0.5.2
     networks:
       - default
       - api
       - management
       - mail
     depends_on:
-      - managementportal-postgresql
+      - radarbase-postgresql
       - smtp
       - catalog-server
     environment:
       SPRING_PROFILES_ACTIVE: prod,swagger
-      SPRING_DATASOURCE_URL: jdbc:postgresql://managementportal-postgresql:5432/managementportal
+      SPRING_DATASOURCE_URL: jdbc:postgresql://radarbase-postgresql:5432/managementportal
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       MANAGEMENTPORTAL_MAIL_FROM: ${FROM_EMAIL}
@@ -589,8 +590,13 @@ services:
       timeout: 5s
       retries: 3
 
-  managementportal-postgresql:
-    image: postgres:${POSTGRES_VERSION}
+
+  radarbase-postgresql:
+    build:
+      context: ./images/postgres
+      args:
+        POSTGRES_VERSION: ${POSTGRES_VERSION}
+    image: radarbase/postgres:${POSTGRES_VERSION}-1
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
@@ -598,7 +604,7 @@ services:
     environment:
       POSTGRES_USER : ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: managementportal
+      POSTGRES_MULTIPLE_DATABASES: managementportal,restsourceauthorizer
       PGDATA: /var/lib/postgresql/data/pgdata/
     networks:
       - management
@@ -658,7 +664,7 @@ services:
   #---------------------------------------------------------------------------#
   catalog-server:
     build: images/radar-kafka-init
-    image: radarbase/kafka-init:0.3.6
+    image: radarbase/kafka-init:0.4.1
     networks:
       - management
     command: radar-schemas-tools serve /schema/merged
