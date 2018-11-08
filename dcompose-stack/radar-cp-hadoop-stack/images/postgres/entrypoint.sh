@@ -27,8 +27,8 @@ function create_user_and_database() {
         echo "Database does not exist"
         echo "  Creating database '$database' for user '$POSTGRES_USER'"
         psql -v ON_ERROR_STOP=1  <<-EOSQL
-	    CREATE DATABASE $database;
-	    GRANT ALL PRIVILEGES ON DATABASE $database TO $POSTGRES_USER;
+	    CREATE DATABASE '$database';
+	    GRANT ALL PRIVILEGES ON DATABASE '$database' TO '$POSTGRES_USER';
 EOSQL
     fi
 
