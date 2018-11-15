@@ -6,14 +6,16 @@ DB_HOST="localhost"
 DB_PORT=5432
 
 function wait_for_db() {
-    for count in {1..30}; do
-          echo "Pinging postgres database attempt "${count}
+    echo "Waiting for postgres database..."
+    for count in {1..120}; do
           if  $(nc -z ${DB_HOST} ${DB_PORT}) ; then
-            echo "Can connect into database"
-            break
+            echo "Database ready."
+	    sleep 5
+	    return 0
           fi
           sleep 1
     done
+    return 1
 }
 function create_user_and_database() {
 	local database=$1
@@ -37,7 +39,10 @@ EOSQL
 if [ -n "$POSTGRES_MULTIPLE_DATABASES" ]; then
 	echo "Multiple database creation requested: $POSTGRES_MULTIPLE_DATABASES"
 	  #waiting for postgres
-    wait_for_db
+    if ! wait_for_db; then
+        echo "Postgres database timeout"
+        exit 1
+    fi
 	for db in $(echo $POSTGRES_MULTIPLE_DATABASES | tr ',' ' '); do
 		create_user_and_database $db
 	done
