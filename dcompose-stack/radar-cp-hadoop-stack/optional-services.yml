@@ -71,7 +71,7 @@ services:
     volumes:
       - ./etc/rest-source-authorizer/:/app-includes/
     healthcheck:
-      test: ["CMD", "curl", "-f", "localhost:8080/users"]
+      test: ["CMD", "wget", "--spider", "http://localhost:8080/users"]
       interval: 1m30s
       timeout: 5s
       retries: 3
@@ -83,3 +83,8 @@ services:
       depends_on:
         - radar-rest-sources-backend
         - radarbase-postgresql
+      healthcheck:
+        test: ["CMD", "wget", "--spider", "http://localhost:80"]
+        interval: 1m30s
+        timeout: 5s
+        retries: 3
