@@ -1,5 +1,5 @@
 ARG POSTGRES_VERSION=10.4-alpine
 FROM postgres:${POSTGRES_VERSION}
 
-COPY ./entrypoint.sh /docker-entrypoint-initdb.d/multi-db-init.sh
-
+COPY ./multi-db-init.sh /docker-entrypoint-initdb.d/multi-db-init.sh
+COPY ./on-db-ready /usr/bin/on-db-ready

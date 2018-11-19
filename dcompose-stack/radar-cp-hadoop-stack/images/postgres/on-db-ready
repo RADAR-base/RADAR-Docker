@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+set -u
+
+if [ -n "$POSTGRES_MULTIPLE_DATABASES" ]; then
+  echo "Waiting for postgres database..."
+  for count in {1..120}; do
+    if pg_isready -q && [ "$(cat /var/run/postgresql/multiple_databases_ready 2> /dev/null)" = "$POSTGRES_MULTIPLE_DATABASES" ]; then
+      echo "Database ready."
+      exec "$@"
+    fi
+    sleep 1
+  done
+
+  echo "Postgres database timeout"
+  exit 1
+fi
