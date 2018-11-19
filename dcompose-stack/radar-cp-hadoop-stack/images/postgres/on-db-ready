@@ -4,8 +4,9 @@ set -u
 
 if [ -n "$POSTGRES_MULTIPLE_DATABASES" ]; then
   echo "Waiting for postgres database..."
+  HOSTNAME=$(hostname)
   for count in {1..120}; do
-    if pg_isready -q && [ "$(cat /var/run/postgresql/multiple_databases_ready 2> /dev/null)" = "$POSTGRES_MULTIPLE_DATABASES" ]; then
+    if pg_isready -h $HOSTNAME; then
       echo "Database ready."
       exec "$@"
     fi
