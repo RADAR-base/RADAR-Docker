@@ -24,5 +24,5 @@ if [ -n "$POSTGRES_MULTIPLE_DATABASES" ]; then
     create_user_and_database $db
   done
   echo -n "$POSTGRES_MULTIPLE_DATABASES" > /var/run/postgresql/multiple_databases_ready
-  echo "Multiple databases created"
+  echo "Databases created"
 fi
