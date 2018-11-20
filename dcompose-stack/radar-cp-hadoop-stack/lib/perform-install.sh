@@ -117,8 +117,9 @@ fi
 ensure_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-hdfs.properties
 
 echo "==> Configuring Management Portal"
-sudo-linux bin/radar-docker up -d --build radarbase-postgresql
-sudo-linux bin/radar-docker exec --user postgres radarbase-postgresql /docker-entrypoint-initdb.d/multi-db-init.sh
+sudo-linux bin/radar-docker build --no-cache radarbase-postgresql
+sudo-linux bin/radar-docker up -d --force-recreate radarbase-postgresql
+sudo-linux bin/radar-docker exec --user postgres radarbase-postgresql on-db-ready /docker-entrypoint-initdb.d/multi-db-init.sh
 ensure_env_password MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET "ManagementPortal front-end client secret is not set in .env"
 ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for ManagementPortal is not set in .env."
 
