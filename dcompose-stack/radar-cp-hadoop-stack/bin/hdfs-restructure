@@ -101,12 +101,12 @@ function create_snapshots() {
     SNAPSHOT=$SNAPSHOT_DIR/$month.zip
     SNAPSHOT_TMP=$SNAPSHOT_TMP_DIR/$month.zip
     if [ -e $SNAPSHOT ]; then
-      find . -name "$month[0-9][0-9]_[0-9][0-9][0-9][0-9].*" | zip -@u $SNAPSHOT -O $SNAPSHOT_TMP
+      find . -name "$month[0-9][0-9]_[0-9][0-9][0-9][0-9].*" | zip -0@u $SNAPSHOT -O $SNAPSHOT_TMP
       if [ -e $SNAPSHOT_TMP ]; then
         mv $SNAPSHOT_TMP $SNAPSHOT
       fi
     else
-      find . -name "$month[0-9][0-9]_[0-9][0-9][0-9][0-9].*" | zip -@ $SNAPSHOT_TMP
+      find . -name "$month[0-9][0-9]_[0-9][0-9][0-9][0-9].*" | zip -0@ $SNAPSHOT_TMP
       mv $SNAPSHOT_TMP $SNAPSHOT
     fi
   done
