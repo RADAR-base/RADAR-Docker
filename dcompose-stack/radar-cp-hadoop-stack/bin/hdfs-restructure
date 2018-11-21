@@ -1,12 +1,29 @@
 #!/bin/bash
 
+if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
+   printf "Usage:\n$0 <hdfs path> [<destination directory>]\nThe destination directory defaults to ./output\n"
+   exit 1
+fi
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Absolute directory to write output to
+OUTPUT_DIR=${2:-$DIR/output}
+OUTPUT_DIR="$(cd "$(dirname "$OUTPUT_DIR")"; pwd)/$(basename "$OUTPUT_DIR")"
+
+cd $DIR
+
+. .env
+
 # HDFS restructure version
 DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.3
+
+NUM_THREADS=${RESTRUCTURE_NUM_THREADS:-3}
 # HDFS restructure script flags
 HDFS_RESTRUCTURE_OPTS=(
   --compression gzip
   --deduplicate
-  --num-threads 3
+  --num-threads $NUM_THREADS
   )
 OUTPUT_USER=${OUTPUT_USER:-$(id -un)}
 OUTPUT_GROUP=${OUTPUT_GROUP:-$(id -gn)}
@@ -35,19 +52,6 @@ if [ ! -z $PROFILE_PORT ]; then
   DOCKER_OPTS="$DOCKER_OPTS -p ${PROFILE_PORT}:${PROFILE_PORT}"
 fi
 
-if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
-   printf "Usage:\n$0 <hdfs path> [<destination directory>]\nThe destination directory defaults to ./output\n"
-   exit 1
-fi
-
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
-# Absolute directory to write output to
-OUTPUT_DIR=${2:-$DIR/output}
-OUTPUT_DIR="$(cd "$(dirname "$OUTPUT_DIR")"; pwd)/$(basename "$OUTPUT_DIR")"
-
-cd $DIR
-
 . lib/util.sh
 
 # Start HDFS if not started already
@@ -73,3 +77,41 @@ sudo-linux docker run ${DOCKER_OPTS} \
     -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" \
     -e RADAR_HDFS_RESTRUCTURE_OPTS \
     $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
+
+if ! ${RESTRUCTURE_ENABLE_SNAPSHOTS:-true}; then
+  echo "Snapshots disabled. No snapshots will be made."
+  exit 0
+fi
+
+if ! command -v zip > /dev/null 2>&1; then
+  echo "WARN: zip not installed. No snapshots will be made."
+  exit 0
+fi
+
+function create_snapshots() {
+  PROJECT_DIR=$1
+  project=basename "$1"
+  cd "$PROJECT_DIR"
+  SNAPSHOT_DIR=../snapshots/$project
+  SNAPSHOT_TMP_DIR=../snapshots/+tmp
+  mkdir -p $SNAPSHOT_DIR $SNAPSHOT_TMP_DIR
+
+  months=$(find . -name "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9].*" -printf "%f\n" | cut -c-6 | sort -u)
+  for month in $months; do
+    SNAPSHOT=$SNAPSHOT_DIR/$month.zip
+    SNAPSHOT_TMP=$SNAPSHOT_TMP_DIR/$month.zip
+    if [ -e $SNAPSHOT ]; then
+      find . -name "$month[0-9][0-9]_[0-9][0-9][0-9][0-9].*" | zip -@u $SNAPSHOT -O $SNAPSHOT_TMP
+      if [ -e $SNAPSHOT_TMP ]; then
+        mv $SNAPSHOT_TMP $SNAPSHOT
+      fi
+    else
+      find . -name "$month[0-9][0-9]_[0-9][0-9][0-9][0-9].*" | zip -@ $SNAPSHOT_TMP
+      mv $SNAPSHOT_TMP $SNAPSHOT
+    fi
+  done
+  cd "$OLDPWD"
+}
+
+export -f create_snapshots
+find "$OUTPUT_DIR" -mindepth 1 -maxdepth 1 -type d ! -name snapshots ! -name +tmp -print0 | xargs -0 -n 1 -P $NUM_THREADS -I {} bash -c 'create_snapshots "$@"' _ {}
