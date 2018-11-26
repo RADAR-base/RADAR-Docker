@@ -761,7 +761,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.3.1
+    image: radarbase/radar-gateway:0.3.2
     networks:
       - api
       - kafka
