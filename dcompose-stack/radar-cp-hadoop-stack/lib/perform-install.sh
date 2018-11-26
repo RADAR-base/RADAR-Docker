@@ -95,7 +95,7 @@ ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mo
 
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"
-    radarbase/kafka-init:0.3.6
+    radarbase/kafka-init:0.4.2
   )
 
 # Set topics

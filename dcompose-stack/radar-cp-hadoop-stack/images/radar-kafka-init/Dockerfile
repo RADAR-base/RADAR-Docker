@@ -26,7 +26,7 @@ RUN curl -#o /usr/share/java/avro-tools.jar \
   | jq --raw-output ".preferred")avro/avro-1.8.2/java/avro-tools-1.8.2.jar"
 
 
-ENV RADAR_SCHEMAS_VERSION=0.4.1
+ENV RADAR_SCHEMAS_VERSION=0.4.2
 
 RUN curl -#L https://github.com/RADAR-base/RADAR-Schemas/releases/download/v${RADAR_SCHEMAS_VERSION}/radar-schemas-tools-${RADAR_SCHEMAS_VERSION}.tar.gz \
   | tar xz -C /usr --strip-components 1
