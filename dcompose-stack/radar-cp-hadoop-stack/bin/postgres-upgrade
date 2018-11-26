@@ -11,7 +11,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 . ./.env
 . lib/util.sh
 
-echo "Are you sure you want to to upgrade HDFS from version ${POSTGRES_VERSION} to ${NEW_VERSION}?"
+echo "Are you sure you want to to upgrade POSTGRESQL from version ${POSTGRES_VERSION} to ${NEW_VERSION}?"
 
 select yn in "Yes" "No"; do
     case $yn in
@@ -35,28 +35,23 @@ POSTGRES_NEW=$(docker run -d -v "${POSTGRES_NEW_DIR}/:/var/lib/postgresql/data" 
 sleep 5
 
 echo "==> Migrating ManagementPortal database to ${NEW_VERSION}"
-docker-compose exec managementportal-postgresql pg_dumpall -U "${POSTGRES_USER}" \
+docker-compose exec radarbase-postgresql pg_dumpall -U "${POSTGRES_USER}" \
   | docker exec -i ${POSTGRES_NEW} psql -U "${POSTGRES_USER}"
 
 docker rm -vf "${POSTGRES_NEW}"
 
 echo "==> Stopping postgres..."
-docker-compose stop managementportal-postgresql
-docker-compose rm -vf managementportal-postgresql
+docker-compose stop radarbase-postgresql
+docker-compose rm -vf radarbase-postgresql
 
 echo "==> Moving old data to backup ${MP_POSTGRES_DIR}/data-backup-$(date +%FT%TZ)/"
 mv "${MP_POSTGRES_DIR}/data/" "${MP_POSTGRES_DIR}/data-backup-$(date +%FT%TZ)/"
 mv "${POSTGRES_NEW_DIR}" "${MP_POSTGRES_DIR}/data/"
 
 # change postgres version
-sed_i 's| image: postgres:.*| image: postgres:${POSTGRES_VERSION}|' docker-compose.yml
-
-if grep -q "POSTGRES_VERSION=" .env; then
-  sed_i "s|POSTGRES_VERSION=.*|POSTGRES_VERSION=${NEW_VERSION}|" .env
-else
-  echo "POSTGRES_VERSION=${NEW_VERSION}" >> .env
-fi
+inline_variable " image: postgres:" "${NEW_VERSION}" docker-compose.yml
+ensure_variable "POSTGRES_VERSION=" "${NEW_VERSION}" .env
 
 echo "==> Starting postgres..."
 
-docker-compose up -d managementportal-postgresql
+docker-compose up -d radarbase-postgresql

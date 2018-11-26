@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+set -u
+
+if [ -n "$POSTGRES_MULTIPLE_DATABASES" ]; then
+  echo "Waiting for postgres database..."
+  HOSTNAME=$(hostname)
+  for count in {1..120}; do
+    if pg_isready -U "$POSTGRES_USER" -q -h $HOSTNAME; then
+      echo "Database ready."
+      exec "$@"
+    fi
+    sleep 1
+  done
+
+  echo "Postgres database timeout"
+  exit 1
+fi

@@ -260,7 +260,7 @@ services:
   #---------------------------------------------------------------------------#
   kafka-init:
     build: images/radar-kafka-init
-    image: radarbase/kafka-init:0.3.6
+    image: radarbase/kafka-init:0.4.1
     networks:
       - kafka
       - zookeeper
@@ -304,7 +304,7 @@ services:
   # RADAR REST API                                                            #
   #---------------------------------------------------------------------------#
   rest-api:
-    image: radarbase/radar-restapi:0.2.1
+    image: radarbase/radar-restapi:0.3
     networks:
       - hotstorage
       - api
@@ -315,6 +315,8 @@ services:
     restart: always
     volumes:
       - "./etc/rest-api:/usr/local/conf/radar/rest-api"
+    environment:
+      RADAR_IS_CONFIG_LOCATION: usr/local/conf/radar/rest-api/radar-is.yml
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8080/api/openapi.json"]
       interval: 1m
@@ -573,7 +575,7 @@ services:
   # RADAR backend streams                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-stream:
-    image: radarbase/radar-backend:0.2.3
+    image: radarbase/radar-backend:0.4.0
     command:
       - stream
     networks:
@@ -600,7 +602,7 @@ services:
   # RADAR backend monitor                                                     #
   #---------------------------------------------------------------------------#
   radar-backend-monitor:
-    image: radarbase/radar-backend:0.2.3
+    image: radarbase/radar-backend:0.4.0
     command: monitor
     networks:
       - zookeeper
@@ -674,27 +676,30 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.4.1
+    image: radarbase/management-portal:0.5.1
     networks:
       - default
       - api
       - management
       - mail
     depends_on:
-      - managementportal-postgresql
+      - radarbase-postgresql
       - smtp
       - catalog-server
     environment:
       SPRING_PROFILES_ACTIVE: prod,swagger
-      SPRING_DATASOURCE_URL: jdbc:postgresql://managementportal-postgresql:5432/managementportal
+      SPRING_DATASOURCE_URL: jdbc:postgresql://radarbase-postgresql:5432/managementportal
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       MANAGEMENTPORTAL_MAIL_FROM: ${FROM_EMAIL}
-      MANAGEMENTPORTAL_MAIL_BASEURL: https://${SERVER_NAME}/managementportal
+      MANAGEMENTPORTAL_COMMON_BASEURL: https://${SERVER_NAME}/
+      MANAGEMENTPORTAL_COMMON_MANAGEMENT_PORTAL_BASE_URL: https://${SERVER_NAME}/managementportal
       MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET: ${MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET}
       MANAGEMENTPORTAL_OAUTH_CLIENTS_FILE: /mp-includes/config/oauth_client_details.csv
       MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT: ${MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT}
       MANAGEMENTPORTAL_CATALOGUE_SERVER_SERVER_URL: http://catalog-server:9010/source-types
+      MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD: ${MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD}
+      MANAGEMENTPORTAL_COMMON_PRIVACY_POLICY_URL: ${MANAGEMENTPORTAL_COMMON_PRIVACY_POLICY_URL}
       SPRING_APPLICATION_JSON: '{"managementportal":{"oauth":{"checkingKeyAliases":["${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_0}","${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_1}"]}}}'
       JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
       JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
@@ -707,8 +712,12 @@ services:
       retries: 3
 
 
-  managementportal-postgresql:
-    image: postgres:${POSTGRES_VERSION}
+  radarbase-postgresql:
+    build:
+      context: ./images/postgres
+      args:
+        POSTGRES_VERSION: ${POSTGRES_VERSION}
+    image: radarbase/postgres:${POSTGRES_VERSION}-1
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
@@ -716,7 +725,7 @@ services:
     environment:
       POSTGRES_USER : ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: managementportal
+      POSTGRES_MULTIPLE_DATABASES: managementportal,restsourceauthorizer
     networks:
       - management
     healthcheck:
@@ -752,7 +761,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.2.2
+    image: radarbase/radar-gateway:0.3.1
     networks:
       - api
       - kafka
@@ -775,7 +784,7 @@ services:
   #---------------------------------------------------------------------------#
   catalog-server:
     build: images/radar-kafka-init
-    image: radarbase/kafka-init:0.3.6
+    image: radarbase/kafka-init:0.4.1
     networks:
       - management
     command: radar-schemas-tools serve /schema/merged

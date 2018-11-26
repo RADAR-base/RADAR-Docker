@@ -12,7 +12,7 @@ startDate: 2018-08-06T00:00:00Z
 # Date until when to collect data.
 endDate: 2019-01-01T00:00:00Z
 # Fitbit user ID as returned by the Fitbit authentication procedure
-fitbitUserId: ?
+externalUserId: ?
 oauth2:
   # Fitbit OAuth 2.0 access token as returned by the Fitbit authentication procedure
   accessToken: ?
