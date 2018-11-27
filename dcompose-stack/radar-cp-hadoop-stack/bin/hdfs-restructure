@@ -89,8 +89,8 @@ if ! command -v zip > /dev/null 2>&1; then
 fi
 
 function create_snapshots() {
-  PROJECT_DIR=$1
-  project=basename "$1"
+  PROJECT_DIR="$1"
+  project=$(basename "${PROJECT_DIR}")
   cd "$PROJECT_DIR"
   SNAPSHOT_DIR=../snapshots/$project
   SNAPSHOT_TMP_DIR=../snapshots/+tmp
