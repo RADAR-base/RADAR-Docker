@@ -259,8 +259,11 @@ services:
   # Kafka Init                                                                #
   #---------------------------------------------------------------------------#
   kafka-init:
-    build: images/radar-kafka-init
-    image: radarbase/kafka-init:0.4.1
+    build:
+      context: images/radar-kafka-init
+      args:
+        SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
+    image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
     networks:
       - kafka
       - zookeeper
@@ -676,7 +679,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.5.1
+    image: radarbase/management-portal:0.5.2
     networks:
       - default
       - api
@@ -761,7 +764,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.3.1
+    image: radarbase/radar-gateway:0.3.3
     networks:
       - api
       - kafka
@@ -783,8 +786,11 @@ services:
   # Catalog server from radar-schemas                                         #
   #---------------------------------------------------------------------------#
   catalog-server:
-    build: images/radar-kafka-init
-    image: radarbase/kafka-init:0.4.1
+    build:
+      context: images/radar-kafka-init
+      args:
+        SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
+    image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
     networks:
       - management
     command: radar-schemas-tools serve /schema/merged
