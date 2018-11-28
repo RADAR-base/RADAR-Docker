@@ -95,7 +95,7 @@ ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mo
 
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"
-    radarbase/kafka-init:0.3.6
+    radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
   )
 
 # Set topics
@@ -119,7 +119,7 @@ ensure_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/hdfs-connector/sink-h
 echo "==> Configuring Management Portal"
 sudo-linux bin/radar-docker build --no-cache radarbase-postgresql
 sudo-linux bin/radar-docker up -d --force-recreate radarbase-postgresql
-sudo-linux bin/radar-docker exec --user postgres radarbase-postgresql on-db-ready /docker-entrypoint-initdb.d/multi-db-init.sh
+sudo-linux bin/radar-docker exec --user postgres -T radarbase-postgresql on-db-ready /docker-entrypoint-initdb.d/multi-db-init.sh
 ensure_env_password MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET "ManagementPortal front-end client secret is not set in .env"
 ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for ManagementPortal is not set in .env."
 
