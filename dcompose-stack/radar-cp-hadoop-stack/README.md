@@ -9,8 +9,8 @@ This is the set of minimal configuration required to run the stack.
 
 1. First copy `etc/env.template` file to `./.env` and check and modify all its variables.
 
-
-   1.1. To have a valid HTTPS connection for a public host, set `SELF_SIGNED_CERT=no`. You need to provide a public valid DNS name as `SERVER_NAME` for SSL certificate to work. IP addresses will not work.
+   1.1. To have a valid HTTPS connection for a public host, set `SELF_SIGNED_CERT=no`. You need to provide a public valid DNS name as `SERVER_NAME` for SSL certificate to work. IP addresses will not work. For a locally signed certificate, set `SELF_SIGNED_CERT=yes`. If HTTPS is to be disabled altogether, set `ENABLE_HTTPS=no`. If that is because the server is
+   behind a reverse proxy or load balancer, set `NGINX_PROXIES=1.2.3.4 5.6.7.8` as a space-separated list of proxy server IP addresses as forwarded in the `X-Forwarded-For` header.
 
    1.2. Set `MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET` to a secret to be used by the Management Portal frontend.
 
