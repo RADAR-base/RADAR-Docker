@@ -1,0 +1,80 @@
+#!/bin/bash
+
+trap catch_errors ERR;
+
+function catch_errors() {
+   exit_code=$?
+   echo "### FAILURE ###";
+   exit $exit_code;
+}
+
+if [ $# != 1 ]; then
+  echo "Set logging output directory"
+  echo "Usage: $0 DIRECTORY"
+  echo "  Env variables:"
+  echo "    LOG_SIZE    maximum number of bytes for a log (default 1000000000, is one GB)"
+  exit 1
+fi
+
+LOG_DIR="$1"
+
+mkdir -p "$LOG_DIR"
+chown root:syslog "$LOG_DIR"
+chmod g+w "$LOG_DIR"
+
+echo "Writing log directives to /etc/rsyslog.d/00-radar.conf"
+
+cat <<EOF > /etc/rsyslog.d/00-radar.conf
+if ( \$programname == "radar-docker" ) then {
+    action(type="omfile" file="$LOG_DIR/radar-docker.log")
+    stop
+}
+if ( \$programname == "radar-output" ) then {
+    action(type="omfile" file="$LOG_DIR/radar-output.log")
+    stop
+}
+if ( \$programname == "radar-renew-certificate" ) then {
+    action(type="omfile" file="$LOG_DIR/radar-renew-certificate.log")
+    stop
+}
+if ( \$programname == "radar-check-health" ) then {
+    action(type="omfile" file="$LOG_DIR/radar-check-health.log")
+    stop
+}
+if ( \$programname startswith "docker" ) then {
+    action(type="omfile" file="$LOG_DIR/docker.log")
+    stop
+}
+EOF
+
+LOG_SIZE=${LOG_SIZE:-1000000000}
+
+echo "Writing log rotation directives to /etc/logrotate.d/radar (with maximum size $LOG_SIZE)"
+
+cat <<EOF > /etc/logrotate.d/radar
+$LOG_DIR/radar-*.log {
+  daily
+  maxsize $LOG_SIZE
+  rotate 10
+  delaycompress
+  compress
+  notifempty
+  missingok
+  postrotate
+    invoke-rc.d rsyslog rotate > /dev/null
+  endscript
+}
+EOF
+
+echo "Running log rotation every hour"
+
+if [ ! -e /etc/cron.hourly/logrotate ]; then
+  ln -s /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
+  systemctl restart cron
+fi
+
+echo "Restarting rsyslog"
+
+systemctl restart rsyslog
+
+echo "Done."

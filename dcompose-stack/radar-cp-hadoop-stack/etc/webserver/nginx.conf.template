@@ -17,6 +17,9 @@ http {
   # add nosniff header (https://www.owasp.org/index.php/List_of_useful_HTTP_headers)
   add_header X-Content-Type-Options nosniff;
 
+  # For logins, make 2 requests per second at most
+  limit_req_zone $binary_remote_addr zone=login_limit:10m rate=2r/s;
+
   server {
     listen                    80 default_server;
     listen                    [::]:80 default_server;
@@ -59,7 +62,7 @@ http {
 
     location /kafka/ {
       include cors.conf;
-      proxy_pass         http://gateway:8080/radar-gateway/;
+      proxy_pass         http://gateway/radar-gateway/;
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
@@ -87,11 +90,14 @@ http {
       proxy_set_header   Host $host;
     }
     location /portainer/ {
+      include ip-access-control.conf;
+
       proxy_pass         http://portainer:9000/;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
     }
     location /portainer/api/websocket/ {
+      include ip-access-control.conf;
       proxy_pass         http://portainer:9000/api/websocket/;
       proxy_set_header   Upgrade $http_upgrade;
       proxy_set_header   Connection "upgrade";
@@ -102,22 +108,32 @@ http {
       proxy_pass         http://rest-api:8080/api/;
       proxy_set_header   Host $host;
     }
-    location /redcapint/ {
-      proxy_pass         http://radar-integration:8080/redcap/;
-      proxy_set_header   Host $host;
-    }
-    location /frontend/config/ {
-      proxy_pass         http://rest-api:8080/radar/frontend/;
-      proxy_set_header   Host $host;
-    }
     location /managementportal/ {
       include cors.conf;
       proxy_pass         http://managementportal-app:8080/managementportal/;
       proxy_set_header   Host $host;
     }
+    location /managementportal/oauth/ {
+      # Allow 20 fast-following requests, like when authorizing a user.
+      limit_req zone=login_limit burst=20;
+      include cors.conf;
+      proxy_pass         http://managementportal-app:8080/managementportal/oauth/;
+      proxy_set_header   Host $host;
+    }
+    location /managementportal/api/meta-token/ {
+      limit_req zone=login_limit;
+      include cors.conf;
+      proxy_pass         http://managementportal-app:8080/managementportal/api/meta-token/;
+      proxy_set_header   Host $host;
+    }
     location /kafkamanager/{
+      include ip-access-control.conf;
+      auth_basic         "Kafka manager";
+      auth_basic_user_file kafka-manager.htpasswd;
+
       proxy_pass         http://kafka-manager:9000;
       proxy_set_header   Host $host;
     }
+    include optional-services.conf;
   }
 }

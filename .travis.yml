@@ -3,49 +3,24 @@ sudo: required
 services:
   - docker
 env:
-  DOCKER_COMPOSE_VERSION: 1.11.2
+  DOCKER_COMPOSE_VERSION: 1.21.1
+  DOCKER_COMPOSE: $HOME/bin/docker-compose
 
 before_install:
   - docker --version
   - mkdir -p "$HOME/bin";
   - export PATH="$HOME/bin:$PATH";
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > "$HOME/bin/docker-compose";
-  - chmod +x "$HOME/bin/docker-compose";
-  - sudo $HOME/bin/docker-compose --version
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > $DOCKER_COMPOSE;
+  - chmod +x "$DOCKER_COMPOSE";
+  - sudo $DOCKER_COMPOSE --version
 script:
   # Standard stack
   - cd dcompose-stack/radar-cp-stack
-  - sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$(sudo $HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
-  - sudo $HOME/bin/docker-compose down
-
-  # With kerberos support
-  # NOT SUPPORTED: kerberos image cannot be found
-  #- cd ../radar-cp-sasl-stack
-  #- sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
-  #- sudo $HOME/bin/docker-compose down
+  - sudo $DOCKER_COMPOSE up -d --build && sleep 15 && [ -z "$(sudo $DOCKER_COMPOSE ps | tail -n +3 | grep " Exit ")" ]
+  - sudo $DOCKER_COMPOSE down
 
   # With email and HDFS support
-  - cd ../radar-cp-hadoop-stack
-  - sudo docker network create hadoop
-  - export SERVER_NAME=localhost
-  - export HDFS_DATA_DIR_1=$PWD/hdfs-data1
-  - export HDFS_DATA_DIR_2=$PWD/hdfs-data2
-  - export HDFS_NAME_DIR_1=$PWD/hdfs-name1
-  - export HDFS_NAME_DIR_2=$PWD/hdfs-name2
-  - echo $"SMARTHOST_ADDRESS=mail.example.com\nSMARTHOST_PORT=587\nSMARTHOST_USER=user@example.com\nSMARTHOST_PASSWORD=XXXXXXXX" > etc/smtp.env
-  - sudo docker volume create certs
-  - sudo docker volume create certs-data
-  - cp etc/radar-backend/radar.yml.template etc/radar-backend/radar.yml
-  - cp etc/webserver/nginx.conf.template etc/webserver/nginx.conf
-  - cp etc/hdfs-connector/sink-hdfs.properties.template etc/hdfs-connector/sink-hdfs.properties
-  - cp etc/mongodb-connector/sink-mongo.properties.template etc/mongodb-connector/sink-mongo.properties
-  - sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
-  - sudo $HOME/bin/docker-compose down
-  - sudo docker network rm hadoop
-
-  # With Docker Swarm support
-  # NOT SUPPORTED: docker swarm and docker beta features are not available in Travis
-  #- cd ../radar-cp-swarm-stack
-  #- sudo docker network create --attachable hadoop
-  #- sudo $HOME/bin/docker-compose up -d --build && sleep 15 && [ -z "$($HOME/bin/docker-compose ps | tail -n +3 | grep " Exit ")" ]
-  #- sudo $HOME/bin/docker-compose down
+  - cd ../radar-cp-hadoop-stack/travis
+  - ./setup-env.sh
+  - cd ../
+  - bin/radar-docker install && sleep 120 && bin/radar-docker ps && [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]

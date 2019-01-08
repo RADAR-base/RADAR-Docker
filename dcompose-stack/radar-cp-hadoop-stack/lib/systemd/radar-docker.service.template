@@ -1,13 +1,15 @@
 [Unit]
 Description=RADAR-Docker service
-BindsTo=docker.service
-After=docker.service
 
 [Service]
 TimeoutStartSec=0
 TimeoutStopSec=90
 Restart=always
 RestartSec=10
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=radar-docker
 
 WorkingDirectory=
 
@@ -20,4 +22,4 @@ ExecStop=/usr/local/bin/docker-compose down
 NotifyAccess=all
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

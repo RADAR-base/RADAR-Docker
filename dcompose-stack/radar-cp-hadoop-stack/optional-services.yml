@@ -1,0 +1,109 @@
+---
+version: '2.2'
+
+
+volumes:
+  fitbit-logs: {}
+
+services:
+  #---------------------------------------------------------------------------#
+  # RADAR REDCap Integration                                                  #
+  #---------------------------------------------------------------------------#
+  radar-integration:
+    image: radarbase/radar-redcapintegration:0.1.0
+    networks:
+      - api
+      - default
+    depends_on:
+      - managementportal-app
+    restart: always
+    volumes:
+      - "./etc/redcap-integration:/usr/local/etc/radar-redcap-int"
+    healthcheck:
+      test: ["CMD", "wget", "-IX", "POST", "http://localhost:8080/redcap/trigger"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR Fitbit connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-fitbit-connector:
+    image: radarbase/kafka-connect-rest-fitbit-source:0.2.0
+    restart: on-failure
+    volumes:
+      - ./etc/fitbit/docker/source-fitbit.properties:/etc/kafka-connect/source-fitbit.properties
+      - ./etc/fitbit/docker/users:/var/lib/kafka-connect-fitbit-source/users
+      - fitbit-logs:/var/lib/kafka-connect-fitbit-source/logs
+    networks:
+      - zookeeper
+      - kafka
+      - default
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/var/lib/kafka-connect-fitbit-source/logs/connect.offsets"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-fitbit-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      CONNECTOR_PROPERTY_FILE_PREFIX: "source-fitbit"
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
+      KAFKA_BROKERS: 3
+      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
+    healthcheck:
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-fitbit-source/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  radar-rest-sources-backend:
+    image: radarbase/radar-rest-source-auth-backend:1.0.0
+    depends_on:
+      - radarbase-postgresql
+    networks:
+      - default
+      - api
+      - management
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://radarbase-postgresql:5432/restsourceauthorizer
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - REST_SOURCE_AUTHORIZER_SOURCE_CLIENTS_FILE_PATH=app-includes/rest_source_clients_configs.yml
+      - APP_SLEEP=10 # gives time for the database to boot before the application
+    volumes:
+      - ./etc/rest-source-authorizer/:/app-includes/
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8080/users"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  radar-rest-sources-authorizer:
+      image: radarbase/radar-rest-source-authorizer:1.0.0
+      networks:
+        - api
+      depends_on:
+        - radar-rest-sources-backend
+        - radarbase-postgresql
+      healthcheck:
+        test: ["CMD", "wget", "--spider", "http://localhost:80"]
+        interval: 1m30s
+        timeout: 5s
+        retries: 3

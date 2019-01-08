@@ -1,0 +1,128 @@
+#!/bin/bash
+
+if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
+   printf "Usage:\n$0 <hdfs path> [<destination directory>]\nThe destination directory defaults to ./output\n"
+   exit 1
+fi
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Absolute directory to write output to
+OUTPUT_DIR=${2:-$DIR/output}
+OUTPUT_DIR="$(cd "$(dirname "$OUTPUT_DIR")"; pwd)/$(basename "$OUTPUT_DIR")"
+
+cd $DIR
+
+. .env
+
+# HDFS restructure version
+DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.3
+
+NUM_THREADS=${RESTRUCTURE_NUM_THREADS:-3}
+# HDFS restructure script flags
+HDFS_RESTRUCTURE_OPTS=(
+  --compression gzip
+  --deduplicate
+  --num-threads $NUM_THREADS
+  )
+OUTPUT_USER=${OUTPUT_USER:-$(id -un)}
+OUTPUT_GROUP=${OUTPUT_GROUP:-$(id -gn)}
+
+# HDFS restructure JVM flags
+export RADAR_HDFS_RESTRUCTURE_OPTS="$JAVA_OPTS -Xmx4g"
+# Without DOCKER_OPTS, run in interactive mode.
+# From systemd or cron, override DOCKER_OPTS to remove
+# interactive mode, e.g.,
+# DOCKER_OPTS="" bin/hdfs-restructure /mydir
+DOCKER_OPTS=${DOCKER_OPTS--i}
+
+# For profiling, run e.g. jvisualvm and connect to localhost:$PROFILE_PORT
+# after running:
+# PROFILE_PORT=9101 bin/hdfs-restructure /mydir
+# Note that profiling the application makes it slower.
+if [ ! -z $PROFILE_PORT ]; then
+  export RADAR_HDFS_RESTRUCTURE_OPTS="$RADAR_HDFS_RESTRUCTURE_OPTS
+    -Djava.rmi.server.hostname=${PROFILE_HOST:-localhost}
+    -Dcom.sun.management.jmxremote
+    -Dcom.sun.management.jmxremote.port=${PROFILE_PORT}
+    -Dcom.sun.management.jmxremote.rmi.port=${PROFILE_PORT}
+    -Dcom.sun.management.jmxremote.local.only=false
+    -Dcom.sun.management.jmxremote.authenticate=false
+    -Dcom.sun.management.jmxremote.ssl=false"
+  DOCKER_OPTS="$DOCKER_OPTS -p ${PROFILE_PORT}:${PROFILE_PORT}"
+fi
+
+. lib/util.sh
+
+# Start HDFS if not started already
+sudo-linux bin/radar-docker hdfs
+
+# HDFS filename to get
+HDFS_FILE=$1
+# Internal docker directory to write output to
+HDFS_OUTPUT_DIR=/output
+# HDFS command to run
+HDFS_COMMAND=(
+    "${HDFS_RESTRUCTURE_OPTS[@]}"
+    -p local-uid=$(id -u ${OUTPUT_USER})
+    -p local-gid=$(grep "^${OUTPUT_GROUP}:" /etc/group | cut -d: -f3)
+    -n hdfs-namenode-1
+    -o "$HDFS_OUTPUT_DIR"
+    --tmp-dir "$HDFS_OUTPUT_DIR/+tmp"
+    "$HDFS_FILE"
+  )
+
+sudo-linux docker run ${DOCKER_OPTS} \
+    -t --rm --network hadoop \
+    -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" \
+    -e RADAR_HDFS_RESTRUCTURE_OPTS \
+    $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
+
+if ! ${RESTRUCTURE_ENABLE_SNAPSHOTS:-true}; then
+  echo "Snapshots disabled. No snapshots will be made."
+  exit 0
+fi
+
+if ! command -v zip > /dev/null 2>&1; then
+  echo "WARN: zip not installed. No snapshots will be made."
+  exit 0
+fi
+
+function create_snapshots() {
+  PROJECT_DIR="$1"
+  project=$(basename "${PROJECT_DIR}")
+  cd "$PROJECT_DIR"
+  SNAPSHOT_DIR=../snapshots/$project
+  SNAPSHOT_TMP_DIR=../snapshots/+tmp
+  mkdir -p $SNAPSHOT_DIR $SNAPSHOT_TMP_DIR
+
+  months=$(find . -name "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9].*" -printf "%f\n" | cut -c-6 | sort -u)
+  for month in $months; do
+    SNAPSHOT=$SNAPSHOT_DIR/$month.zip
+    SNAPSHOT_TMP=$SNAPSHOT_TMP_DIR/$month.zip
+    if [ -e $SNAPSHOT ]; then
+      UPDATED_FILES_TMP=$SNAPSHOT_TMP.updated
+      find . -name "$month[0-9][0-9]_[0-9][0-9][0-9][0-9].*" -newer $SNAPSHOT > $UPDATED_FILES_TMP
+      if [ ! -s $UPDATED_FILES_TMP ]; then
+        # No new files for this snapshot
+        continue
+      fi
+      if zip -T $SNAPSHOT >/dev/null; then
+        zip -0@u $SNAPSHOT -O $SNAPSHOT_TMP < $UPDATED_FILES_TMP
+        rm $UPDATED_FILES_TMP
+        if [ -e $SNAPSHOT_TMP ]; then
+          mv $SNAPSHOT_TMP $SNAPSHOT
+        fi
+        continue
+      else
+        echo "Snapshot for ${project}/${month}.zip was corrupted. Recreating."
+        rm $SNAPSHOT
+      fi
+    fi
+    find . -name "$month[0-9][0-9]_[0-9][0-9][0-9][0-9].*" | zip -0@ $SNAPSHOT_TMP
+    mv $SNAPSHOT_TMP $SNAPSHOT
+  done
+}
+
+export -f create_snapshots
+find "$OUTPUT_DIR" -mindepth 1 -maxdepth 1 -type d ! -name snapshots ! -name +tmp -print0 | xargs -0 -n 1 -P $NUM_THREADS -I {} bash -c 'create_snapshots "$@"' _ {}
