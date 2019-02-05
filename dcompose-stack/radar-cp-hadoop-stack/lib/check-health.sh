@@ -15,9 +15,10 @@ function slack_notify() {
             exit 1
         fi
 
+        channel=${HEALTHCHECK_SLACK_CHANNEL:-#radar-ops}
         color=$1
         body=$2
-        curl -X POST --data-urlencode "payload={\"channel\": \"#radar-ops\", \"username\": \"radar-healthcheck\", \"icon_emoji\": \":hospital:\", \"attachments\": [{\"color\": \"$color\", \"fallback\": \"$body\", \"fields\": [{\"title\": \"Health update\", \"value\": \"$body\"}]}]}" \
+        curl -X POST --data-urlencode "payload={\"channel\": \"$channel\", \"username\": \"radar-healthcheck\", \"icon_emoji\": \":hospital:\", \"attachments\": [{\"color\": \"$color\", \"fallback\": \"$body\", \"fields\": [{\"title\": \"Health update\", \"value\": \"$body\"}]}]}" \
             $HEALTHCHECK_SLACK_WEBHOOK_URL
     fi
 }
