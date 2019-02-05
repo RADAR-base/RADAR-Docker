@@ -56,6 +56,13 @@ This is a set of optional configuration which is not required but could be usefu
 
   3.2 For the Fitbit Connector, please specify the `FITBIT_API_CLIENT_ID` and `FITBIT_API_CLIENT_SECRET` in the .env file. Then copy the `etc/fitbit/docker/users/fitbit-user.yml.template` to `etc/fitbit/docker/users/fitbit-user.yml` and fill out all the details of the fitbit user. If multiple users, then for each user create a separate file in the `etc/fitbit/docker/users/` directory containing all the fields as in the template. For more information about users configuration for fitbit, read [here](https://github.com/RADAR-base/RADAR-REST-Connector#usage).
 
+4. The systemd scripts described in the next paragraph include a health check. To enable system health notifications to Slack, install its [Incoming Webhooks app](https://api.slack.com/incoming-webhooks). With the webhook URL that you configure there, set in `.env`:
+
+      ```shell
+      HEALTHCHECK_SLACK_NOTIFY=yes
+      HEALTHCHECK_SLACK_WEBHOOK_URL=https://...
+      ```
+
 ## Usage
 
 Run
