@@ -1,6 +1,6 @@
-# RADAR platform
+# RADAR-Docker for RADAR-base platform
 
-This docker-compose stack contains the full operational RADAR platform. Once configured, it is meant to run on a single server with at least 16 GB memory and 4 CPU cores. It is tested on Ubuntu 16.04 and on macOS 11.1 with Docker 17.06.
+This docker-compose stack contains the full operational RADAR-base platform. Once configured, it is meant to run on a single server with at least 16 GB memory and 4 CPU cores. It is tested on Ubuntu 16.04 and on macOS 11.1 with Docker 17.06.
 
 ## Configuration
 
