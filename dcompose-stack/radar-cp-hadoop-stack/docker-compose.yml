@@ -631,6 +631,27 @@ services:
       TOPIC_LIST: "application_record_counts"
 
   #---------------------------------------------------------------------------#
+  # NetData Host Monitoring                                                   #
+  #---------------------------------------------------------------------------#
+  netdata:
+    image: netdata/netdata
+    #networks:
+    #  - 
+    hostname: netdata # set to fqdn of host
+    ports:
+      - 19999:19999
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      PGID=999
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  #---------------------------------------------------------------------------#
   # Docker Monitoring                                                         #
   #---------------------------------------------------------------------------#
   portainer:
