@@ -279,8 +279,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
       KAFKA_NUM_BROKERS: 3
-      RADAR_NUM_PARTITIONS: 3
-      RADAR_NUM_REPLICATION_FACTOR: 3
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_NUM_REPLICATION: 3
 
   #---------------------------------------------------------------------------#
   # RADAR Hot Storage                                                         #
