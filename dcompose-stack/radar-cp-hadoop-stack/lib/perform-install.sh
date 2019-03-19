@@ -66,6 +66,8 @@ ensure_env_default HOTSTORAGE_NAME hotstorage
 ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
 ensure_env_default KAFKA_MANAGER_USERNAME kafkamanager-user
 ensure_env_password KAFKA_MANAGER_PASSWORD "Kafka Manager password not set in .env."
+ensure_env_default NETDATA_USERNAME netdata-user
+ensure_env_password NETDATA_PASSWORD "NetData password not set in .env."
 
 if [ -z ${PORTAINER_PASSWORD_HASH} ]; then
   query_password PORTAINER_PASSWORD "Portainer password not set in .env."
