@@ -635,17 +635,15 @@ services:
   #---------------------------------------------------------------------------#
   netdata:
     image: netdata/netdata
-    #networks:
-    #  - 
+    networks:
+      - api
     hostname: netdata # set to fqdn of host
-    ports:
-      - 19999:19999
     cap_add:
       - SYS_PTRACE
     security_opt:
       - apparmor:unconfined
     environment:
-      PGID=999
+      PGID: 999
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -681,6 +679,7 @@ services:
       - dashboard
       - managementportal-app
       - kafka-manager
+      - netdata
     ports:
       - "80:80"
       - "443:443"
@@ -692,6 +691,7 @@ services:
       - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
       - "./etc/webserver/kafka-manager.htpasswd:/etc/nginx/kafka-manager.htpasswd:ro"
       - "./etc/webserver/optional-services.conf:/etc/nginx/optional-services.conf"
+      - "./etc/webserver/netdata.htpasswd:/etc/nginx/netdata.htpasswd:ro"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"

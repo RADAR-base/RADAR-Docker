@@ -150,6 +150,9 @@ inline_variable 'database_name:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/rada
 echo "==> Configuring Kafka-manager"
 sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${KAFKA_MANAGER_USERNAME}" "${KAFKA_MANAGER_PASSWORD}" > etc/webserver/kafka-manager.htpasswd
 
+echo "==> Configuring NetData"
+sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${NETDATA_USERNAME}" "${NETDATA_PASSWORD}" > etc/webserver/netdata.htpasswd
+
 echo "==> Configuring nginx"
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then

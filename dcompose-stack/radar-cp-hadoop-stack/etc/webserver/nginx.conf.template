@@ -95,10 +95,6 @@ http {
       proxy_pass         http://portainer:9000/;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
-      #should be restricted
-      #allow your-subnet1;
-      #allow your-subnet2;
-      #deny all;
     }
     location /portainer/api/websocket/ {
       include ip-access-control.conf;
@@ -131,12 +127,11 @@ http {
       proxy_set_header   Host $host;
     }
     location /netdata/ {
+      include ip-access-control.conf;
+      auth_basic         "NetData Monitoring";
+      auth_basic_user_file netdata.htpasswd;
+
       proxy_pass	http://netdata:19999/;
-      #should be restricted
-      #allow your-subnet1;
-      #allow your-subnet2;
-      #deny all;
-      
     }
     location /kafkamanager/{
       include ip-access-control.conf;
