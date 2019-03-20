@@ -126,6 +126,13 @@ http {
       proxy_pass         http://managementportal-app:8080/managementportal/api/meta-token/;
       proxy_set_header   Host $host;
     }
+    location /netdata/ {
+      include ip-access-control.conf;
+      auth_basic         "NetData Monitoring";
+      auth_basic_user_file netdata.htpasswd;
+
+      proxy_pass	http://netdata:19999/;
+    }
     location /kafkamanager/{
       include ip-access-control.conf;
       auth_basic         "Kafka manager";

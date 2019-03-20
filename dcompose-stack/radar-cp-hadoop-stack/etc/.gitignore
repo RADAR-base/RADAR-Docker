@@ -2,6 +2,7 @@
 /hdfs-connector/sink-hdfs.properties
 /webserver/nginx.conf
 /webserver/kafka-manager.htpasswd
+/webserver/netdata.htpasswd
 /webserver/ip-access-control.conf
 /webserver/optional-services.conf
 /radar-backend/radar.yml
