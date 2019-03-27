@@ -197,9 +197,9 @@ You can check the logs of CRON by typing `grep CRON /var/log/syslog`.
 
 #### Advanced Tuning
 
-To increase the amount of storage you can add multiple paths as destinations for data storage as follows -
+To increase the amount of storage horizontally you can add multiple paths as destinations for data storage as follows -
 
-- Add the required paths as environment variables in `.env` file similar to the other hdfs paths like -
+- Add the required paths as environment variables in `.env` file similar to the other hdfs paths like HDFS_DATA_DIR_<NODE#>_<VOLUME#> -
     ```
     ...
     HDFS_DATA_DIR_1_1=/usr/local/var/lib/docker/hdfs-data-1
