@@ -51,6 +51,7 @@ fi
 # Check provided directories and configurations
 check_parent_exists HDFS_DATA_DIR_1 ${HDFS_DATA_DIR_1}
 check_parent_exists HDFS_DATA_DIR_2 ${HDFS_DATA_DIR_2}
+check_parent_exists HDFS_DATA_DIR_3 ${HDFS_DATA_DIR_3}
 check_parent_exists HDFS_NAME_DIR_1 ${HDFS_NAME_DIR_1}
 check_parent_exists HDFS_NAME_DIR_2 ${HDFS_NAME_DIR_2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
