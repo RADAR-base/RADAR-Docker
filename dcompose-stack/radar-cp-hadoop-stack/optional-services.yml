@@ -20,7 +20,7 @@ services:
     volumes:
       - "./etc/redcap-integration:/usr/local/etc/radar-redcap-int"
     healthcheck:
-      test: ["CMD", "wget", "-IX", "POST", "http://localhost:8080/redcap/trigger"]
+      test: ["CMD-SHELL", "wget --post-data {} http://localhost:8080/redcap/trigger 2>&1 | grep -q 500 || exit 1"]
       interval: 1m
       timeout: 5s
       retries: 3
@@ -29,7 +29,7 @@ services:
   # RADAR Fitbit connector                                                     #
   #---------------------------------------------------------------------------#
   radar-fitbit-connector:
-    image: radarbase/kafka-connect-rest-fitbit-source:0.2.0
+    image: radarbase/kafka-connect-rest-fitbit-source:0.2.1
     restart: on-failure
     volumes:
       - ./etc/fitbit/docker/source-fitbit.properties:/etc/kafka-connect/source-fitbit.properties
