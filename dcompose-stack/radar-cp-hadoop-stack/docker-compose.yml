@@ -529,7 +529,7 @@ services:
   # RADAR HDFS connector                                                     #
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
-    image: radarbase/radar-connect-hdfs-sink:0.2.0
+    image: radarbase/radar-connect-hdfs-sink:0.2.1
     restart: on-failure
     volumes:
       - ./etc/hdfs-connector/sink-hdfs.properties:/etc/kafka-connect/sink-hdfs.properties

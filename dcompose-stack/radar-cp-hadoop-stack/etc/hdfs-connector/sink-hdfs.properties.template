@@ -7,3 +7,4 @@ rotate.interval.ms=900000
 hdfs.url=hdfs://hdfs-namenode-1:8020
 format.class=org.radarcns.sink.hdfs.AvroFormatRadar
 topics.dir=topicAndroidNew
+avro.codec=snappy
