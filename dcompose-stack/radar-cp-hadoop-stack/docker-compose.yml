@@ -23,6 +23,8 @@ networks:
   management:
     driver: bridge
     internal: true
+    # driver_opts:
+    #     com.docker.network.driver.mtu: 1450
   hadoop:
     external: true
 
