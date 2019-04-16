@@ -8,9 +8,10 @@ ENV KAFKA_NUM_REPLICATION=2
 ENV KAFKA_NUM_BROKERS=3
 ENV KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181
 
-RUN apt-get update && apt-get install -y \
-  curl \
-  rsync
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		curl \
+		rsync \
+	&& rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /schema/merged /schema/java/src /schema/java/classes /usr/share/java
 
