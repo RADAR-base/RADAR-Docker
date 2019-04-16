@@ -1,6 +1,6 @@
-FROM openjdk:8-alpine
+FROM openjdk:11-jdk-slim
 
-MAINTAINER Joris Borgdorff <joris@thehyve.nl>
+LABEL authors="Joris Borgdorff<joris@thehyve.nl>,Yatharth Ranjan<yatharth.ranjan@kcl.ac.uk>"
 
 ENV KAFKA_SCHEMA_REGISTRY=http://schema-registry-1:8081
 ENV KAFKA_NUM_PARTITIONS=3
@@ -8,11 +8,10 @@ ENV KAFKA_NUM_REPLICATION=2
 ENV KAFKA_NUM_BROKERS=3
 ENV KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181
 
-RUN apk add --no-cache \
-  bash \
-  curl \
-  rsync \
-  tar
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		curl \
+		rsync \
+	&& rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /schema/merged /schema/java/src /schema/java/classes /usr/share/java
 
