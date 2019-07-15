@@ -16,7 +16,7 @@ cd $DIR
 . .env
 
 # HDFS restructure version
-DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.3
+DOCKER_IMAGE=radarbase/radar-hdfs-restructure:0.5.7
 
 NUM_THREADS=${RESTRUCTURE_NUM_THREADS:-3}
 # HDFS restructure script flags

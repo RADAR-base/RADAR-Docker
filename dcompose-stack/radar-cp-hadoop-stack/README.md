@@ -2,6 +2,13 @@
 
 This docker-compose stack contains the full operational RADAR-base platform. Once configured, it is meant to run on a single server with at least 16 GB memory and 4 CPU cores. It is tested on Ubuntu 16.04 and on macOS 11.1 with Docker 17.06.
 
+## Prerequisites
+
+- A Linux server that is available 24/7 with HTTP(S) ports open to the internet and with a domain name
+- Root access on the server.
+- Docker, Docker-compose, Java (JDK or JRE) and Git are installed
+- Basic knowledge on docker, docker-compose and git.
+
 ## Configuration
 
 ### Required
@@ -195,7 +202,53 @@ You can check the logs of CRON by typing `grep CRON /var/log/syslog`.
 
 ### HDFS
 
-This folder contains useful scripts to manage the extraction of data from HDFS in the RADAR-base Platform.
+#### Advanced Tuning
+
+To increase the amount of storage horizontally you can add multiple paths as destinations for data storage as follows -
+
+- Add the required paths as environment variables in `.env` file similar to the other hdfs paths like HDFS_DATA_DIR_<NODE#>_<VOLUME#> -
+    ```
+    ...
+    HDFS_DATA_DIR_1_1=/usr/local/var/lib/docker/hdfs-data-1
+    HDFS_DATA_DIR_2_1=/usr/local/var/lib/docker/hdfs-data-2
+    HDFS_DATA_DIR_3_1=/usr/local/var/lib/docker/hdfs-data-3
+    HDFS_DATA_DIR_1_2=/usr/local/var/lib/docker/hdfs-data-4
+    HDFS_DATA_DIR_2_2=/usr/local/var/lib/docker/hdfs-data-5
+    HDFS_DATA_DIR_3_2=/usr/local/var/lib/docker/hdfs-data-6
+    ...
+    ```
+- mount these to the required paths on the container using volume mounts (similar to the one already present) like -
+    ```yaml
+    ...
+    volumes:
+        - "${HDFS_DATA_DIR_1_1}:/hadoop/dfs/data"
+        - "${HDFS_DATA_DIR_1_2}:/hadoop/dfs/data2"
+    ...
+    ```
+    Assuming you named the environment variable for the host path as `HDFS_DATA_DIR_1_1` and `HDFS_DATA_DIR_1_2`
+- Add the `HADOOP_DFS_DATA_DIR` to each datanode adding a comma-delimited set of paths (possibly different volumes) to the environment of datanode services in ./docker-compose.yml file like -
+    ```yaml
+    ...
+    environment:
+      SERVICE_9866_NAME: datanode
+      SERVICE_9867_IGNORE: "true"
+      SERVICE_9864_IGNORE: "true"
+      HADOOP_HEAPSIZE: 1000
+      HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
+      HADOOP_DFS_REPLICATION: 2
+      HADOOP_DFS_DATA_DIR: file:///hadoop/dfs/data,file:///hadoop/dfs/data2
+      ...
+    ```
+- Add a check at the top of the `./lib/perform-install` script to make sure that the directory exists for each host directory-
+    ```bash
+    ...
+    check_parent_exists HDFS_DATA_DIR_1_1 ${HDFS_DATA_DIR_1_1}
+    ...
+    ```
+
+#### Management
+
+The RADAR-base platform contains useful scripts to manage the extraction of data from HDFS in the RADAR-base Platform.
 
 - `bin/hdfs-upgrade VERSION`
   - Perform an upgrade from an older version of the [Smizy HDFS base image](https://hub.docker.com/r/smizy/hadoop-base/) to a newer one. E.g. from `2.7.6-alpine`, which is compatible with the `uhopper` image, to `3.0.3-alpine`.
