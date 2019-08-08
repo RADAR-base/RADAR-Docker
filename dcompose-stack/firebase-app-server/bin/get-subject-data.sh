@@ -9,6 +9,6 @@ else
 	repl="\\002d"
 	subject=${raw_subject//$match/$repl}
 #	echo $subject
-	java -jar ./hsqldb/sqltool.jar --rcFile=/home/ubuntu/sqltool.rc --debug --sql="
+	java -jar ${2} --rcFile=../etc/sqltool.rc --debug --sql="
 	select status_info.subject_id, notification_info.title, notification_info.ttl_seconds, notification_info.message, notification_info.execution_time from notification_info inner join status_info on notification_info.notification_task_uuid = status_info.notification_task_uuid where status_info.subject_id=U&'${subject}';" db
 fi
