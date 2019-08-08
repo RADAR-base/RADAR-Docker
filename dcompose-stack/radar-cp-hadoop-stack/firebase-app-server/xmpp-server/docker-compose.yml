@@ -1,0 +1,38 @@
+version: '2.1'
+
+networks:
+  db:
+    driver: bridge
+    internal: true
+
+services:
+  hsqldb:
+    build: ./database/
+    image: radarbase/hsqldb
+    restart: always
+    networks:
+      - db
+      - default
+    ports:
+      - 9001:9001
+    volumes:
+      - ${FCM_XMPP_APP_SERVER_DB_PATH}:/usr/hsql/
+      - ./database/server.properties:/etc/opt/hsqldb/conf/server.properties
+
+  xmppserver:
+    image: radarbase/fcmxmppserverv2:0.1.5
+    restart: always
+    networks:
+      - default
+      - db
+    depends_on:
+      - hsqldb
+    volumes:
+      - ${FCM_XMPP_APP_SERVER_LOGS_PATH}:/usr/local/radar/xmpp-server/logs/
+    environment:
+      RADAR_XMPP_FCM_SENDER_KEY: ${FCM_SENDER_KEY}
+      RADAR_XMPP_FCM_SERVER_KEY: ${FCM_SERVER_KEY}
+      RADAR_XMPP_SCHEDULER_TYPE: "server"
+      RADAR_XMPP_DB_PATH: "//hsqldb:9001/notification"
+      RADAR_XMPP_CACHE_EXPIRY: 300
+      JAVA_OPTS: "-Xms256m -Xmx1G"
