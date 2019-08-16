@@ -2,4 +2,4 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-.lib/perform-install.sh
+./lib/perform-install.sh
