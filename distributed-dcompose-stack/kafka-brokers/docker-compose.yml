@@ -29,6 +29,7 @@ services:
     image: confluentinc/cp-zookeeper:5.2.0
     networks:
       - zookeeper
+      - default
     volumes:
       - zookeeper-1-data:/var/lib/zookeeper/data
       - zookeeper-1-log:/var/lib/zookeeper/logs
@@ -52,6 +53,7 @@ services:
     image: confluentinc/cp-zookeeper:5.2.0
     networks:
       - zookeeper
+      - default
     volumes:
       - zookeeper-2-data:/var/lib/zookeeper/data
       - zookeeper-2-log:/var/lib/zookeeper/logs
@@ -75,6 +77,7 @@ services:
     image: confluentinc/cp-zookeeper:5.2.0
     networks:
       - zookeeper
+      - default
     volumes:
       - zookeeper-3-data:/var/lib/zookeeper/data
       - zookeeper-3-log:/var/lib/zookeeper/logs
@@ -102,6 +105,7 @@ services:
     networks:
       - kafka
       - zookeeper
+      - default
     volumes:
       - kafka-1-data:/var/lib/kafka/data
     depends_on:
@@ -135,6 +139,7 @@ services:
     networks:
       - kafka
       - zookeeper
+      - default
     volumes:
       - kafka-2-data:/var/lib/kafka/data
     depends_on:
@@ -168,6 +173,7 @@ services:
     networks:
       - kafka
       - zookeeper
+      - default
     volumes:
       - kafka-3-data:/var/lib/kafka/data
     depends_on:
