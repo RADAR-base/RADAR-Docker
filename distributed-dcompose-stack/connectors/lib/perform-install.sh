@@ -11,7 +11,7 @@ check_command_exists docker-compose
 
 copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
-copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
+copy_template_if_absent etc/fitbit-connector/docker/source-fitbit.properties
 
 echo "==> Configuring MongoDB Connector"
 # Update sink-mongo.properties
