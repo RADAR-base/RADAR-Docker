@@ -20,8 +20,8 @@ ensure_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sin
 ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
 
 echo "==> Configuring Fitbit Connector"
-ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit/docker/source-fitbit.properties
-ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit/docker/source-fitbit.properties
+ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit-connector/docker/source-fitbit.properties
+ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit-connector/docker/source-fitbit.properties
 
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"
