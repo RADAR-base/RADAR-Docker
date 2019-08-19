@@ -24,6 +24,9 @@ echo "==> Configuring Fitbit Connector"
 ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit-connector/docker/source-fitbit.properties
 ensure_variable 'fitbit.api.secret=' $FITBIT_API_CLIENT_SECRET etc/fitbit-connector/docker/source-fitbit.properties
 
+KAFKA_INIT_DOCKER_PATH=../../dcompose-stack/radar-cp-hadoop-stack/images/radar-kafka-init
+sudo-linux docker build ${KAFKA_INIT_DOCKER_PATH} -t radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
+
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"
     radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
