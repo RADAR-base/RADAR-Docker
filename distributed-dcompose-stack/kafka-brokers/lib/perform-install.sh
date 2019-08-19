@@ -8,4 +8,4 @@ echo "OS version: $(uname -a)"
 check_command_exists docker
 check_command_exists docker-compose
 
-sudo-linux docker-commpose up -d
+sudo-linux docker-compose up -d
