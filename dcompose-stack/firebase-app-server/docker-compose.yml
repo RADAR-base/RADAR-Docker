@@ -8,7 +8,7 @@ networks:
 services:
   hsqldb:
     build: ../../images/hsqldb/
-    image: radarbase/hsqldb
+    image: radarbase/hsqldb:2.5.0
     restart: always
     networks:
       - db
@@ -16,8 +16,8 @@ services:
     ports:
       - 9001:9001
     volumes:
-      - ${FCM_XMPP_APP_SERVER_DB_PATH}:/usr/hsql/
-      - ../etc/server.properties:/etc/opt/hsqldb/conf/server.properties
+      - ${FCM_XMPP_APP_SERVER_DB_PATH}:/var/opt/hsqldb/data
+      - ./etc/server.properties:/etc/opt/hsqldb/conf/server.properties
 
   xmppserver:
     image: radarbase/fcmxmppserverv2:0.1.5
