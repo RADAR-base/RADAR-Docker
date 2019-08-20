@@ -42,9 +42,11 @@ fi
 ensure_variable 'topics=' "${COMBINED_AGG_TOPIC_LIST}" etc/mongodb-connector/sink-mongo.properties
 
 echo "==> Configuring HDFS Connector"
+ensure_variable 'hdfs.url=' $HDFS_NAMENODE_URL etc/hdfs-connector/sink-hdfs.properties
 ensure_variable 'hdfs.url=' $HDFS_NAMENODE_URL etc/hdfs-connector/sink-hdfs-high.properties
 ensure_variable 'hdfs.url=' $HDFS_NAMENODE_URL etc/hdfs-connector/sink-hdfs-low.properties
 ensure_variable 'hdfs.url=' $HDFS_NAMENODE_URL etc/hdfs-connector/sink-hdfs-med.properties
+
 if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
   COMBINED_RAW_TOPIC_LIST=$(sudo-linux docker run "${KAFKA_INIT_OPTS[@]}" list_raw.sh 2>/dev/null | tail -n 1)
   if [ -n "${RADAR_RAW_TOPIC_LIST}" ]; then
