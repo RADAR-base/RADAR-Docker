@@ -21,9 +21,9 @@ check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
 
 echo "==> Configuring Management Portal"
-sudo-linux bin/radar-docker build --no-cache radarbase-postgresql
-sudo-linux bin/radar-docker up -d --force-recreate radarbase-postgresql
-sudo-linux bin/radar-docker exec --user postgres -T radarbase-postgresql on-db-ready /docker-entrypoint-initdb.d/multi-db-init.sh
+sudo-linux docker-compose build --no-cache radarbase-postgresql
+sudo-linux docker-compose up -d --force-recreate radarbase-postgresql
+sudo-linux docker-compose exec --user postgres -T radarbase-postgresql on-db-ready /docker-entrypoint-initdb.d/multi-db-init.sh
 ensure_env_password MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET "ManagementPortal front-end client secret is not set in .env"
 ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for ManagementPortal is not set in .env."
 
