@@ -15,12 +15,17 @@ check_config_present .env etc/env.template
 ensure_env_password HOSTNAME "Host Name is not set .env."
 
 sudo-linux docker-compose up -d
-
+echo "==> Getting Topic List..."
 KAFKA_TOPIC_LIST=$(docker-compose exec -T kafka-1 bash -c kafka-topics --list --bootstrap-server localhost:9092)
 
+printf '  «%s»\n' "${KAFKA_TOPIC_LIST[@]}"
+
 if [[ ! contains-element '_schemas' "${KAFKA_TOPIC_LIST[@]}" ]]; then
+  echo "==> Creating _schemas topics as it does not exist..."
   KAFKA_CREATE_SCHEMA_TOPIC_COMMAND='kafka-topics --create --topic _schemas --replication-factor 3 --partitions 1 --bootstrap-server localhost:9092'
   sudo-linux docker-compose exec -T kafka-1 bash -c "${KAFKA_CREATE_SCHEMA_TOPIC_COMMAND}"
+else
+  echo "==> _schemas topic already exists."
 fi
 
 KAFKA_SCHEMA_RETENTION_MS=${KAFKA_SCHEMA_RETENTION_MS:-5400000000}
