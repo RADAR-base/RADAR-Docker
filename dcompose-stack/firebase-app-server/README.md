@@ -41,6 +41,8 @@ There are some extra scripts provided for convenience when administering the ser
     ```
     This will output the CSV files in the directory `/home/ubuntu/xmpp-server-extras/logs-parser/files` which contain three files for each day (One for Executions, One for Delivery and One for Errors).
 
+- `install-systemd` Run the xmpp server in a systemd environment as part of system startup.
+
 ## Other information
 
 If you are in a development environment, It may be worth trying to use the new and improved [RADAR-AppServer](https://github.com/RADAR-base/RADAR-Appserver/tree/dev). It exposes REST endpoints along with supporting the legacy XMPP and has secure integration with the Management Portal.

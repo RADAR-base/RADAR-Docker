@@ -1,0 +1,28 @@
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+echo $(pwd)
+. lib/util.sh
+. .env
+
+if [ "$(id -un)" == "root" ] || id -Gn | grep -qe '\<sudo\>'; then
+  BASE=/etc/systemd/system
+  SYSTEMCTL_OPTS=()
+else
+  BASE=$HOME/.config/systemd/user
+  mkdir -p $BASE
+  SYSTEMCTL_OPTS=(--user)
+  export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID}
+fi
+
+echo "==> Copying templates"
+copy_template $BASE/radar-xmpp-server.service lib/systemd/radar-xmpp-server.service.template
+
+echo "==> Inlining variables"
+inline_variable 'WorkingDirectory=' "$PWD" $BASE/radar-xmpp-server.service
+inline_variable 'ExecStart=' "$PWD/bin/start-xmpp" $BASE/radar-xmpp-server.service
+
+echo "==> Reloading systemd"
+systemctl "${SYSTEMCTL_OPTS[@]}" daemon-reload
+systemctl "${SYSTEMCTL_OPTS[@]}" enable radar-xmpp-server
+systemctl "${SYSTEMCTL_OPTS[@]}" start radar-xmpp-server
+
