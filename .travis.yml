@@ -24,3 +24,9 @@ script:
   - ./setup-env.sh
   - cd ../
   - bin/radar-docker install && sleep 120 && bin/radar-docker ps && [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]
+
+  # Firebase messaging stack
+  - cd  ../firebase-app-server
+  - cp etc/env.template .env
+  - sudo $DOCKER_COMPOSE up -d --build && sleep 15 && [ -z "$(sudo $DOCKER_COMPOSE ps | tail -n +3 | grep " Exit ")" ]
+  - sudo $DOCKER_COMPOSE down
