@@ -19,7 +19,7 @@ sudo-linux docker-compose up -d
 KAFKA_TOPIC_LIST=$(docker-compose exec -T kafka-1 bash -c kafka-topics --list --bootstrap-server localhost:9092)
 
 if [[ ! contains-element '_schemas' "${KAFKA_TOPIC_LIST[@]}" ]]; then
-  KAFKA_CREATE_SCHEMA_TOPIC_COMMAND='docker exec kafka-brokers_kafka-1_1 kafka-topics --create --topic _schemas --replication-factor 3 --partitions 1 --bootstrap-server localhost:9092'
+  KAFKA_CREATE_SCHEMA_TOPIC_COMMAND='kafka-topics --create --topic _schemas --replication-factor 3 --partitions 1 --bootstrap-server localhost:9092'
   sudo-linux docker-compose exec -T kafka-1 bash -c "${KAFKA_CREATE_SCHEMA_TOPIC_COMMAND}"
 fi
 
