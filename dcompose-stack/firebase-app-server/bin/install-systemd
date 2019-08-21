@@ -1,7 +1,9 @@
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+#!/bin/bash
 
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 echo $(pwd)
-. lib/util.sh
+
+. ../radar-cp-hadoop-stack/lib/util.sh
 . .env
 
 if [ "$(id -un)" == "root" ] || id -Gn | grep -qe '\<sudo\>'; then
