@@ -20,7 +20,9 @@ KAFKA_TOPIC_LIST=$(docker-compose exec -T kafka-1 bash -c 'kafka-topics --list -
 
 printf '«%s»\n' "${KAFKA_TOPIC_LIST[@]}"
 
-if [[ ! contains-element '_schemas' "${KAFKA_TOPIC_LIST[@]}" ]]; then
+SCHEMA_TOPIC_EXISTS=(contains-element "_schemas" "${KAFKA_TOPIC_LIST[@]}")
+
+if [[ $SCHEMA_TOPIC_EXISTS -eq 1 ]]; then
   echo "==> Creating _schemas topics as it does not exist..."
   KAFKA_CREATE_SCHEMA_TOPIC_COMMAND='kafka-topics --create --topic _schemas --replication-factor 3 --partitions 1 --bootstrap-server localhost:9092'
   sudo-linux docker-compose exec -T kafka-1 bash -c "${KAFKA_CREATE_SCHEMA_TOPIC_COMMAND}"
