@@ -8,7 +8,7 @@ echo "OS version: $(uname -a)"
 check_command_exists docker
 check_command_exists docker-compose
 
-
+check_config_present .env etc/env.template
 copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/hdfs-connector/sink-hdfs.properties
 copy_template_if_absent etc/fitbit-connector/docker/source-fitbit.properties
