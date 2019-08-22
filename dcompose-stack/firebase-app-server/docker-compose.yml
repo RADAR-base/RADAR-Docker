@@ -12,7 +12,6 @@ services:
     restart: always
     networks:
       - db
-      - default
     ports:
       - 9001:9001
     volumes:

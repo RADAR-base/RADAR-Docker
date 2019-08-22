@@ -4,8 +4,8 @@ MAINTAINER yatharth.ranjan@kcl.ac.uk
 
 # Reuse directory layout between images
 RUN mkdir -p /opt/hsqldb/lib /etc/opt/hsqldb/conf /var/opt/hsqldb/data && \
-    groupadd --system hsqldb && \
-    useradd --system -g hsqldb hsqldb && \
+    groupadd --system -g 999 hsqldb && \
+    useradd --system -g hsqldb -u 9999 hsqldb && \
     chown hsqldb:hsqldb -R /var/opt/hsqldb
 
 ENV MVN_CENTRAL_URL http://central.maven.org/maven2
