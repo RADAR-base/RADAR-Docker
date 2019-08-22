@@ -23,8 +23,10 @@ This can be done by changing the `server.database.n` properties in the [server.p
 Since the App Server does not depend on any other services, it can be run separately by running -
 
 ```sh
-docker-compose up -d
+bin/start-xmpp -d
 ```
+
+It can be further controlled with `docker-compose` and `docker` commands.
 
 ## Extras
 
