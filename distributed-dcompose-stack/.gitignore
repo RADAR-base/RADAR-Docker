@@ -4,3 +4,6 @@
 
 **/nginx.conf
 **/ip-access-control.conf
+
+**keystore.jks
+**keystore.p12

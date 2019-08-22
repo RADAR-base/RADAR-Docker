@@ -29,6 +29,12 @@ echo "==> Setting up topics"
 sudo-linux docker-compose run --rm kafka-init
 
 echo "==> Configure gateway"
+if [[ (-f etc/managementportal/config/keystore.jks) || (-f etc/managementportal/config/keystore.jks) ]]; then
+  ./bin/keys-init
+else
+  echo "No Keystore File Found. Please copy it from the Management Portal and put it in 'etc/managementportal/config/'..."
+  exit 1
+fi
 inline_variable 'managementPortalUrl:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}" etc/gateway/gateway.yml
 
 echo "==> Configuring nginx"
