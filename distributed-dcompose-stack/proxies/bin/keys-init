@@ -3,7 +3,7 @@
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
 . ./.env
-. lib/util.sh
+. ../commons/lib/util.sh
 
 function convertJksToPkcs12() {
   src=$1
