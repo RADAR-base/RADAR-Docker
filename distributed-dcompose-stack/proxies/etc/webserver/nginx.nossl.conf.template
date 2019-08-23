@@ -76,7 +76,7 @@ http {
     }
     location /api/ {
       include cors.conf;
-      proxy_pass         ${REST_API_URL};
+      proxy_pass         ${REST_API_URL}api/;
       proxy_set_header   Host $host;
     }
     location /managementportal/ {
