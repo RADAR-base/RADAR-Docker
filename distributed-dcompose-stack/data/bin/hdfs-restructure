@@ -71,7 +71,7 @@ HDFS_COMMAND=(
   )
 
 sudo-linux docker run ${DOCKER_OPTS} \
-    -t --rm --network hadoop \
+    -t --rm \
     -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" \
     -e RADAR_HDFS_RESTRUCTURE_OPTS \
     --name $DOCKER_CONTAINER_NAME \
