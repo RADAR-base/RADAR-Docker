@@ -53,7 +53,7 @@ if [ ! -z $PROFILE_PORT ]; then
   DOCKER_OPTS="$DOCKER_OPTS -p ${PROFILE_PORT}:${PROFILE_PORT}"
 fi
 
-. lib/util.sh
+. ../commons/lib/util.sh
 
 # Start HDFS if not started already
 sudo-linux bin/radar-docker hdfs
@@ -77,7 +77,7 @@ sudo-linux docker run ${DOCKER_OPTS} \
     -t --rm --network hadoop \
     -v "$OUTPUT_DIR:$HDFS_OUTPUT_DIR" \
     -e RADAR_HDFS_RESTRUCTURE_OPTS \
-    --name $DOCKER_CONTAINER_NAME
+    --name $DOCKER_CONTAINER_NAME \
     $DOCKER_IMAGE "${HDFS_COMMAND[@]}"
 
 if ! ${RESTRUCTURE_ENABLE_SNAPSHOTS:-true}; then
