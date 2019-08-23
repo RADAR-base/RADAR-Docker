@@ -1,0 +1,32 @@
+#!/bin/bash
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd $DIR
+
+. ../../scripts/util.sh
+. .env
+
+if [[ ! -z $2 ]]; then
+  $OUTPUT_DIR=$2
+elif [[ ! -z ${RESTRUCTURE_OUTPUT_DIR} ]]; then
+  $OUTPUT_DIR=${RESTRUCTURE_OUTPUT_DIR}
+else
+  log_info "No Output directory specified. Using the '${DIR}/output' directory."
+  $OUTPUT_DIR=output
+
+# lock file
+lockfile=${DIR}/.LOCK_RETRY
+# log file
+logfile=${DIR}/logs/radar-output.log
+
+if [ ! -f $lockfile ]; then
+  touch $lockfile
+  ./bin/hdfs-restructure ${1:-/topicAndroidNew} ${OUTPUT_DIR} 2>&1 | tee ${logfile}
+  rm $lockfile
+else
+  log_info "Another instance is already running ... "
+fi
+log_info "### DONE ###"
+
+# check if log size exceeds the limit. If so, it rotates the log file
+rolloverLog
