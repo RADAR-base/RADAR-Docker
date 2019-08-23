@@ -17,6 +17,7 @@ services:
     image: radarbase/radar-hotstorage:0.1
     networks:
       - hotstorage
+      - default
     volumes:
       - "${MONGODB_DIR}/db:/data/db"
       - "${MONGODB_DIR}/configdb:/data/configdb"
@@ -25,6 +26,8 @@ services:
       RADAR_USER: ${HOTSTORAGE_USERNAME}
       RADAR_PWD: ${HOTSTORAGE_PASSWORD}
       RADAR_DB: ${HOTSTORAGE_NAME}
+    ports:
+      - "27017:27017"
     healthcheck:
       test: ["CMD", "mongo", "-u", "${HOTSTORAGE_USERNAME}", "-p", "${HOTSTORAGE_PASSWORD}", "${HOTSTORAGE_NAME}", "--eval", "db"]
       interval: 1m
