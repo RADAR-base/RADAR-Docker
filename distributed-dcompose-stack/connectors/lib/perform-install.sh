@@ -19,6 +19,8 @@ echo "==> Configuring MongoDB Connector"
 ensure_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/mongodb-connector/sink-mongo.properties
 ensure_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sink-mongo.properties
 ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
+ensure_variable 'mongo.host=' $HOTSTORAGE_HOST etc/mongodb-connector/sink-mongo.properties
+ensure_variable 'mongo.port=' $HOTSTORAGE_HOST etc/mongodb-connector/sink-mongo.properties
 
 echo "==> Configuring Fitbit Connector"
 ensure_variable 'fitbit.api.client=' $FITBIT_API_CLIENT_ID etc/fitbit-connector/docker/source-fitbit.properties
