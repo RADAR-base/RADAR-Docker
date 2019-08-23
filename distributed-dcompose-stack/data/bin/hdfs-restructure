@@ -55,9 +55,6 @@ fi
 
 . ../commons/lib/util.sh
 
-# Start HDFS if not started already
-sudo-linux bin/radar-docker hdfs
-
 # HDFS filename to get
 HDFS_FILE=$1
 # Internal docker directory to write output to
