@@ -18,6 +18,7 @@ elif [[ ! -z ${RESTRUCTURE_OUTPUT_DIR} ]]; then
 else
   log_info "No Output directory specified. Using the '${DIR}/output' directory."
   $OUTPUT_DIR=output
+fi
 
 if [ ! -f $lockfile ]; then
   touch $lockfile
