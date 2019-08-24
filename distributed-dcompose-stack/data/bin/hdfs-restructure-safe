@@ -13,13 +13,13 @@ logfile="${DIR}/logs/radar-output.log"
 
 if [[ ! -z $2 ]]; then
   echo "==> Found Command Line Output Directory option."
-  $OUTPUT_DIR=$2
+  OUTPUT_DIR=$2
 elif [[ ! -z ${RESTRUCTURE_OUTPUT_DIR} ]]; then
   echo "==> Found Environemnt Variable Output Directory option."
-  $OUTPUT_DIR=${RESTRUCTURE_OUTPUT_DIR}
+  OUTPUT_DIR=${RESTRUCTURE_OUTPUT_DIR}
 else
   log_info "No Output directory specified. Using the '${DIR}/output' directory."
-  $OUTPUT_DIR="${DIR}/output"
+  OUTPUT_DIR="${DIR}/output"
 fi
 
 if [ ! -d ${OUTPUT_DIR} ]; then
