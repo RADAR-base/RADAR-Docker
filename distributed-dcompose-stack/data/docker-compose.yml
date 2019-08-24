@@ -3,23 +3,23 @@ version: '2.2'
 
 services:
   radar-output:
-  image: radarbase/radar-hdfs-restructure:0.5.7
-  restart: always
-  volumes:
-    - ${RESTRUCTURE_OUTPUT_DIR}:/output
-  command:
-    - --compression
-    - gzip
-    - --deduplicate
-    - --num-threads
-    - ${RESTRUCTURE_NUM_THREADS}
-    - -n
-    - ${HDFS_NAMENODE_URL}
-    - -o
-    - /output
-    - --tmp-dir
-    - /output/+tmp
-    - -S
-    - -i
-    - ${RESTRUCTURE_SERVICE_POLL_INTERVAL_SECONDS}
-    - /topicAndroidNew
+    image: radarbase/radar-hdfs-restructure:0.5.7
+    restart: always
+    volumes:
+      - ${RESTRUCTURE_OUTPUT_DIR}:/output
+    command:
+      - --compression
+      - gzip
+      - --deduplicate
+      - --num-threads
+      - ${RESTRUCTURE_NUM_THREADS}
+      - -n
+      - ${HDFS_NAMENODE_URL}
+      - -o
+      - /output
+      - --tmp-dir
+      - /output/+tmp
+      - -S
+      - -i
+      - ${RESTRUCTURE_SERVICE_POLL_INTERVAL_SECONDS}
+      - /topicAndroidNew
