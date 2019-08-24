@@ -27,6 +27,8 @@ if [ ! -d ${OUTPUT_DIR} ]; then
   exit 1
 fi
 
+echo "Ouput Directory: ==> ${OUTPUT_DIR}"
+
 if [ ! -f $lockfile ]; then
   touch $lockfile
   ./bin/hdfs-restructure ${1:-/topicAndroidNew} ${OUTPUT_DIR} 2>&1 | tee ${logfile}
