@@ -17,7 +17,12 @@ elif [[ ! -z ${RESTRUCTURE_OUTPUT_DIR} ]]; then
   $OUTPUT_DIR=${RESTRUCTURE_OUTPUT_DIR}
 else
   log_info "No Output directory specified. Using the '${DIR}/output' directory."
-  $OUTPUT_DIR=output
+  $OUTPUT_DIR="${DIR}/output"
+fi
+
+if [ ! -d ${OUTPUT_DIR} ]; then
+  echo "${OUTPUT_DIR} does not exist or is not a directory."
+  exit 1
 fi
 
 if [ ! -f $lockfile ]; then
