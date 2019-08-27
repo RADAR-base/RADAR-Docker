@@ -155,10 +155,10 @@ services:
   #---------------------------------------------------------------------------#
   # RADAR REDCap Integration                                                  #
   #---------------------------------------------------------------------------#
-  radar-integration:
+  redcap-integration:
     image: radarbase/radar-redcapintegration:0.1.0
     networks:
-      - api
+      - management
       - default
     depends_on:
       - managementportal-app
