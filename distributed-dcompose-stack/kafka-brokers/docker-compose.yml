@@ -130,6 +130,7 @@ services:
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     ports:
+      - 29092
       - 9092:9092
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/1 || exit 1"]
@@ -167,6 +168,7 @@ services:
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     ports:
+      - 29092
       - 9093:9093
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
@@ -204,6 +206,7 @@ services:
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     ports:
+      - 29092
       - 9094:9094
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
