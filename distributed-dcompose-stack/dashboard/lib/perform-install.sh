@@ -32,13 +32,15 @@ echo "==> Configuring REST-API"
 inline_variable 'username:[[:space:]]' "$HOTSTORAGE_USERNAME" etc/rest-api/radar.yml
 inline_variable 'password:[[:space:]]' "$HOTSTORAGE_PASSWORD" etc/rest-api/radar.yml
 inline_variable 'database_name:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/radar.yml
+inline_variable 'management_portal_url:[[:space:]]*' "$MANAGEMENT_PORTAL_URL" etc/rest-api/radar.yml
+inline_variable 'oauth_client_secret:[[:space:]]*' "$REST_API_OAUTH_CLIENT_SECRET" etc/rest-api/radar.yml
 
-echo "==> Configure gateway"
 if [[ (-f etc/managementportal/config/keystore.jks) || (-f etc/managementportal/config/keystore.p12) ]]; then
   ./bin/keys-init
 else
-  echo "No Keystore File Found. Please copy it from the Management Portal and put it in 'etc/managementportal/config/'..."
-  exit 1
+  echo "No Keystore File Found. Configuring using publicKeyEndpoint..."
+  copy_template_if_absent etc/rest-api/radar-is.yml
+  inline_variable 'publicKeyEndpoints:[[:space:]]*' "$MANAGEMENT_PORTAL_URL/oauth/token_key" etc/rest-api/radar-is.yml
 fi
 
 sudo-linux docker-compose up -d
