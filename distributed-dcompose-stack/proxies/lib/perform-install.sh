@@ -36,7 +36,7 @@ else
   copy_template_if_absent etc/gateway/radar-is.yml
   inline_variable 'publicKeyEndpoints:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}managementportal/oauth/token_key" etc/gateway/radar-is.yml
 fi
-inline_variable 'managementPortalUrl:[[:space:]]*' "${MANAGEMENT_PORTAL_URL%/}" etc/gateway/gateway.yml
+inline_variable 'managementPortalUrl:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}managementportal" etc/gateway/gateway.yml
 
 echo "==> Configuring nginx"
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then
