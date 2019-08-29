@@ -34,9 +34,9 @@ if [[ (-f etc/managementportal/config/keystore.jks) || (-f etc/managementportal/
 else
   echo "No Keystore File Found. Configuring using publicKeyEndpoint..."
   copy_template_if_absent etc/gateway/radar-is.yml
-  inline_variable 'publicKeyEndpoints:[[:space:]]*' "$MANAGEMENT_PORTAL_URL/oauth/token_key" etc/gateway/radar-is.yml
+  inline_variable 'publicKeyEndpoints:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}oauth/token_key" etc/gateway/radar-is.yml
 fi
-inline_variable 'managementPortalUrl:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}" etc/gateway/gateway.yml
+inline_variable 'managementPortalUrl:[[:space:]]*' "${MANAGEMENT_PORTAL_URL%/}" etc/gateway/gateway.yml
 
 echo "==> Configuring nginx"
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then
