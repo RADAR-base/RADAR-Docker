@@ -25,6 +25,6 @@ fi
 
 # TODO Add time-series db backend for archiving
 echo "==> Configuring Netdata master..."
-sed_i "s|API-KEY|${NETDATA_STREAM_API_KEY}"
+sed_i "s|API-KEY|${NETDATA_STREAM_API_KEY}|"
 
 sudo-linux docker-compose up -d
