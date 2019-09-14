@@ -56,6 +56,7 @@ services:
     image: netdata/netdata:v1.17.0
     volumes:
       - ./etc/netdata/master/stream.conf:/etc/netdata/stream.conf
+    privileged: true
     ports:
       - 19999:19999
     cap_add:

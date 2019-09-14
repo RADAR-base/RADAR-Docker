@@ -213,6 +213,7 @@ services:
     volumes:
       - ./etc/netdata/slave/stream.conf:/etc/netdata/stream.conf
       - ./etc/netdata/slave/netdata.conf:/etc/netdata/netdata.conf
+    privileged: true
     ports:
       - 19999:19999
     cap_add:
