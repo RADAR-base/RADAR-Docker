@@ -51,3 +51,18 @@ services:
       interval: 1m30s
       timeout: 5s
       retries: 3
+
+  netdata-master:
+    image: netdata/netdata:v1.17.0
+    volumes:
+      - ./etc/netdata/master/stream.conf:/etc/netdata/stream.conf
+    ports:
+      - 19999:19999
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro

@@ -1,0 +1,7 @@
+[global]
+    # disable the local database
+    memory mode = none
+
+[health]
+    # disable health checks
+    enabled = no

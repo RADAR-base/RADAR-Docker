@@ -34,6 +34,16 @@ KAFKA_SCHEMA_RETENTION_MS=${KAFKA_SCHEMA_RETENTION_MS:-5400000000}
 KAFKA_SCHEMA_RETENTION_CMD='kafka-configs --zookeeper "${KAFKA_ZOOKEEPER_CONNECT}" --entity-type topics --entity-name _schemas --alter --add-config min.compaction.lag.ms='${KAFKA_SCHEMA_RETENTION_MS}',cleanup.policy=compact'
 sudo-linux docker-compose exec -T kafka-1 bash -c "$KAFKA_SCHEMA_RETENTION_CMD"
 
+echo "==> Configuring Netdata Host monitoring"
+if [[ -n "${NETDATA_MASTER_HOST}" ]]; then
+  cp "../commons/etc/netdata/slave/stream.conf.template" "etc/netdata/slave/stream.conf"
+  cp "../commons/etc/netdata/slave/netdata.conf.template" "etc/netdata/slave/netdata.conf"
+  inline_variable "destination[[:space:]]=[[:space:]]" "${NETDATA_MASTER_HOST}" "etc/netdata/slave/stream.conf"
+  inline_variable "api[[:space:]]key[[:space:]]=[[:space:]]" "${NETDATA_STREAM_API_KEY}" "etc/netdata/slave/stream.conf"
+else
+  echo "NetData Master not configured. Not setting up host monitoring."
+fi
+
 contains-element () {
   local e match="$1"
   shift
