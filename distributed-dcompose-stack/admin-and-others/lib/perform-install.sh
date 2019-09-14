@@ -11,7 +11,7 @@ check_command_exists docker-compose
 check_config_present .env etc/env.template
 
 check_config_present etc/radar-backend/radar.yml
-ensure_variable "$NETDATA_STREAM_API_KEY" "The Netdata Stream API key is not set."
+ensure_env_password "$NETDATA_STREAM_API_KEY" "The Netdata Stream API key is not set."
 copy_template_if_absent "etc/netdata/master/stream.conf"
 
 . ./.env
