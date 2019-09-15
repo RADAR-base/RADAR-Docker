@@ -55,7 +55,7 @@ services:
   netdata-master:
     image: netdata/netdata:v1.17.0
     volumes:
-      - ./etc/netdata/master/stream.conf:/etc/netdata/stream.conf
+      - ./etc/netdata/master/stream.conf:/etc/netdata/stream.conf:ro
     privileged: true
     ports:
       - 19999:19999

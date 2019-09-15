@@ -11,3 +11,6 @@
 
     # alarms checks, only while the slave is connected
     health enabled by default = auto
+
+    # only allow slaves with following IP Addresses
+    allow from = *
