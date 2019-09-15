@@ -5,3 +5,7 @@
 [health]
     # disable health checks
     enabled = no
+
+[web]
+    # disable web console and registry as this is a slave
+    mode = none
