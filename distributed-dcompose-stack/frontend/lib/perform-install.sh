@@ -34,4 +34,16 @@ echo "==> Configuring Rest Source Authorizer"
 inline_variable 'client_id:[[:space:]]' "$FITBIT_API_CLIENT_ID" etc/rest-source-authorizer/rest_source_clients_configs.yml
 inline_variable 'client_secret:[[:space:]]' "$FITBIT_API_CLIENT_SECRET" etc/rest-source-authorizer/rest_source_clients_configs.yml
 
+
+echo "==> Configuring Netdata Host monitoring"
+if [[ -n "${NETDATA_MASTER_HOST}" ]]; then
+  sudo-linux docker-compose exec
+  cp "../commons/etc/netdata/slave/stream.conf.template" "etc/netdata/slave/stream.conf"
+  cp "../commons/etc/netdata/slave/netdata.conf.template" "etc/netdata/slave/netdata.conf"
+  inline_variable "destination[[:space:]]=[[:space:]]" "${NETDATA_MASTER_HOST}" "etc/netdata/slave/stream.conf"
+  inline_variable "api[[:space:]]key[[:space:]]=[[:space:]]" "${NETDATA_STREAM_API_KEY}" "etc/netdata/slave/stream.conf"
+else
+  echo "NetData Master not configured. Not setting up host monitoring."
+fi
+
 sudo-linux docker-compose up -d

@@ -85,6 +85,16 @@ ensure_env_default KAFKA_MANAGER_USERNAME kafkamanager-user
 ensure_env_password KAFKA_MANAGER_PASSWORD "Kafka Manager password not set in .env."
 sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${KAFKA_MANAGER_USERNAME}" "${KAFKA_MANAGER_PASSWORD}" > etc/webserver/kafka-manager.htpasswd
 
+echo "==> Configuring Netdata Host monitoring"
+if [[ -n "${NETDATA_MASTER_HOST}" ]]; then
+  sudo-linux docker-compose exec
+  cp "../commons/etc/netdata/slave/stream.conf.template" "etc/netdata/slave/stream.conf"
+  cp "../commons/etc/netdata/slave/netdata.conf.template" "etc/netdata/slave/netdata.conf"
+  inline_variable "destination[[:space:]]=[[:space:]]" "${NETDATA_MASTER_HOST}" "etc/netdata/slave/stream.conf"
+  inline_variable "api[[:space:]]key[[:space:]]=[[:space:]]" "${NETDATA_STREAM_API_KEY}" "etc/netdata/slave/stream.conf"
+else
+  echo "NetData Master not configured. Not setting up host monitoring."
+fi
 
 sudo-linux docker-compose up -d
 
