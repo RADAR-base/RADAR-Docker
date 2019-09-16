@@ -149,7 +149,7 @@ http {
       proxy_set_header   Host $host;
     }
     location /netdata/ {
-      proxy_pass         ${NETDATA_MASTER_HOST};
+      proxy_pass         http://${NETDATA_MASTER_HOST};
       proxy_set_header   Host $host;
     }
   }
