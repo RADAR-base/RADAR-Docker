@@ -87,7 +87,6 @@ sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${KAFKA_MANAGER_USERN
 
 echo "==> Configuring Netdata Host monitoring"
 if [[ -n "${NETDATA_MASTER_HOST}" ]]; then
-  sudo-linux docker-compose exec
   cp "../commons/etc/netdata/slave/stream.conf.template" "etc/netdata/slave/stream.conf"
   cp "../commons/etc/netdata/slave/netdata.conf.template" "etc/netdata/slave/netdata.conf"
   inline_variable "destination[[:space:]]=[[:space:]]" "${NETDATA_MASTER_HOST}" "etc/netdata/slave/stream.conf"
