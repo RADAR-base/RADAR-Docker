@@ -95,6 +95,11 @@ else
   echo "NetData Master not configured. Not setting up host monitoring."
 fi
 
+echo "==> Configuring Netdata Master password"
+ensure_env_default NETDATA_USERNAME netdata-user
+ensure_env_password NETDATA_PASSWORD "Netdata Manager password not set in .env."
+sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${NETDATA_USERNAME}" "${NETDATA_PASSWORD}" > etc/webserver/netdata.htpasswd
+
 sudo-linux docker-compose up -d
 
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then

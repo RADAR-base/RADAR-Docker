@@ -149,8 +149,11 @@ http {
       proxy_set_header   Host $host;
     }
     location /netdata/ {
-      proxy_pass         http://${NETDATA_MASTER_HOST};
+      proxy_pass         http://${NETDATA_MASTER_HOST}/;
       proxy_set_header   Host $host;
+
+      auth_basic         "Netdata";
+      auth_basic_user_file netdata.htpasswd;
     }
   }
 }
