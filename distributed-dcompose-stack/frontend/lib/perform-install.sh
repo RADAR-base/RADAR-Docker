@@ -7,6 +7,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 echo "OS version: $(uname -a)"
 check_command_exists docker
 check_command_exists docker-compose
+check_command_exists java
 
 # Initialize and check all config files
 check_config_present .env etc/env.template
