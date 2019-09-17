@@ -65,6 +65,7 @@ sed_i 's|\${RADAR_REST_SOURCES_URL}|'"${RADAR_REST_SOURCES_URL}"'|' etc/webserve
 sed_i 's|\${RADAR_REST_SOURCES_BACKEND_URL}|'"${RADAR_REST_SOURCES_BACKEND_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${REDCAP_INTEGRATION_APP_URL}|'"${REDCAP_INTEGRATION_APP_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${NETDATA_MASTER_HOST}|'"${NETDATA_MASTER_HOST}"'|' etc/webserver/nginx.conf
+sed_i 's|\${HDFS_NAMENODE_UI_URL}|'"${HDFS_NAMENODE_UI_URL}"'|' etc/webserver/nginx.conf
 
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then
