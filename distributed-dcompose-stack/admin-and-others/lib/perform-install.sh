@@ -13,8 +13,8 @@ check_config_present .env etc/env.template
 check_config_present etc/radar-backend/radar.yml
 ensure_env_password "$NETDATA_STREAM_API_KEY" "The Netdata Stream API key is not set."
 copy_template_if_absent "etc/netdata/master/stream.conf"
-copy_template_if_absent "etc/netdata/master/health_alarm_notify.conf.template"
-copy_template_if_absent "etc/netdata/master/mail/.msmtprc.template"
+copy_template_if_absent "etc/netdata/master/health_alarm_notify.conf"
+copy_template_if_absent "etc/netdata/master/mail/.msmtprc"
 
 . ./.env
 
