@@ -155,9 +155,21 @@ http {
       auth_basic         "Netdata";
       auth_basic_user_file netdata.htpasswd;
     }
+
     location /hdfsnamenode/ {
       proxy_pass         ${HDFS_NAMENODE_UI_URL};
       proxy_set_header   Host $host;
+      proxy_set_header Accept-Encoding "";
+
+      sub_filter 'src="/' 'src="/hdfsnamenode/';
+      sub_filter 'src="' 'src="/hdfsnamenode/';
+      sub_filter 'href="/' 'href="/hdfsnamenode/';
+      sub_filter 'href=\'/' 'href=\'/hdfsnamenode/';
+      sub_filter "/jmx" "/hdfsnamenode/jmx";
+      sub_filter "/conf" "/hdfsnamenode/conf";
+      sub_filter "/startupProgress" "/hdfsnamenode/startupProgress";
+      sub_filter_once off;
+      sub_filter_types *;
     }
   }
 }
