@@ -11,7 +11,7 @@ services:
       args:
         BASE_VERSION: ${HDFS_BASE_VERSION}
     image: radarbase/hdfs:${HDFS_BASE_VERSION}
-    hostname: hdfs-datanode
+    hostname: ${HDFS_DATANODE_HOSTNAME}
     command: datanode
     volumes:
       - "${HDFS_DATA_DIR_1}:/hadoop/dfs/data"
