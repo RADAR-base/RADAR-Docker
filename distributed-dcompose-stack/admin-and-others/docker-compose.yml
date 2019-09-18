@@ -66,5 +66,6 @@ services:
       - /sys:/host/sys:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./etc/netdata/master/stream.conf:/etc/netdata/stream.conf:ro
+      - ./etc/netdata/master/mail/.msmtprc:/etc/netdata/.msmtprc:ro
     environment:
       PGID: 999

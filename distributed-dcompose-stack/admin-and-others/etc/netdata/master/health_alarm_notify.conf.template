@@ -1,0 +1,19 @@
+SEND_SLACK="NO"
+
+SLACK_WEBHOOK_URL="https://hooks.slack.com/services/XXXXXXXX/XXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+# if a role's recipients are not configured, a notification will be send to:
+# - A slack channel (syntax: '#channel' or 'channel')
+# - A slack user (syntax: '@user')
+# - The channel or user defined in slack for the webhook (syntax: '#')
+# empty = do not send a notification for unconfigured roles
+DEFAULT_RECIPIENT_SLACK="# #netdata-alarms"
+
+SEND_EMAIL="YES"
+
+DEFAULT_RECIPIENT_EMAIL="${MAINTAINER_EMAIL}"
+
+# The full path to the sendmail command.
+# If empty, the system $PATH will be searched for it.
+# If not found, email notifications will be disabled (silently).
+sendmail="/usr/bin/msmtp"
