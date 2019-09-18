@@ -62,6 +62,43 @@ Then you will be able to go to `<proxies-component-ip-or-url>/netdata` and monit
 
 ![Netdata Multiple Hosts](/img/netdata.png)
 
+## Alerting
+
+### SMTP server
+A common **SMTP server** is exposed in the [frontend](/frontend) component at port 25. This can be configured once and all other components can use this to relay the mails. The following alerting tools will use this to send alerting emails.
+
+### Backend Monitor
+The backend monitor is deployed in the [admin-and-others](/admin-and-others) component of the stack. It can be used to monitor different Kafka topics (and hence data streams) to alert when certain thresholds are passed. Currently, disconnection and battery level monitors are included. Please see the README in the component for more info.
+
+### Health Check
+A script for checking the health of docker containers(and notifying in case of unhealthy) is provided in `/commons/lib/check-health.sh`. It also comes bundled with `systemd` configuration for running as a systemd service. This can be configured and run on each component to monitor any downtimes/failures of services.
+
+To enable system health notifications to Slack, install its [Incoming Webhooks app](https://api.slack.com/incoming-webhooks). With the webhook URL that you configure there, set in `/commons/.env`:
+
+      ```shell
+      HEALTHCHECK_SLACK_NOTIFY=yes
+      HEALTHCHECK_SLACK_WEBHOOK_URL=https://...
+      ```
+To configure the Email health notifications settings, add the following in the `/commons/.env` file:
+      ```shell
+      SERVER_NAME=
+      MAINTAINER_EMAIL=
+      SMTP_SERVER_HOST=
+      ```
+where,
+- `SERVER_NAME` is the your component name where you are configuring this.
+- `MAINTAINER_EMAIL` is the email address to send the notification to.
+- `SMTP_SERVER_HOST` is the IP/Hostname of the SMTP relay server. So in this case, the IP/Hostname of the [frontend](/frontend) component.
+
+The script uses [swaks](http://www.jetmore.org/john/code/swaks/) to send mails through the SMTP relay provided in frontend component. So this will need to be installed on each host where the script is to be run. Installing is easy by running `sudo apt-get install -y swaks`.
+
+To run as a `Systemd` service, run the `.commons/bin/install-systemd-wrappers.sh` to setup the systemd wrappers for health check.
+
+If not running the script as a `systemd` service, it can also be run as a job in crontab.
+
+### NetData Alerts
+
+
 ## Updates
 
 This section describes instructions on how to perform some of the most frequently required updates.
