@@ -3,9 +3,9 @@
 
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
-stack=docker-compose -f "../$COMPONENT_NAME/docker-compose.yml"
 . lib/util.sh
 . ./.env
+stack="docker-compose -f ../$COMPONENT_NAME/docker-compose.yml"
 
 function slack_notify() {
     # Send notification via Slack, if configured.
