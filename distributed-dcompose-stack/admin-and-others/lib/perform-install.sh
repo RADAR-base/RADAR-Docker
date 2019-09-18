@@ -32,3 +32,5 @@ sed_i "s|\${MAINTAINER_EMAIL}|${MAINTAINER_EMAIL}|" "etc/netdata/master/health_a
 sed_i "s|\${HOSTNAME}|${SMTP_SERVER_HOST}|" "etc/netdata/master/mail/.msmtprc"
 
 sudo-linux docker-compose up -d
+
+sudo-linux docker-compose exec -T netdata-master apk add --no-cache msmtp
