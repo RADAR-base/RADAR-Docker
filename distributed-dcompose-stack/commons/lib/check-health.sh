@@ -62,7 +62,11 @@ else
       IFS=$SAVEIFS
       body="Services on ${display_host} are unhealthy. Services $display_services have been restarted. Please log in for further information."
       echo "Sent notification to $MAINTAINER_EMAIL"
-      swaks --to $MAINTAINER_EMAIL --server ${SMTP_SERVER_HOST:-localhost} --from ${FROM_EMAIL:-"radar-base"} --h-Subject "[RADAR] Services on ${COMPONENT_NAME} unhealthy." --body "$body"
+      if([[ -n ${FROM_EMAIL} ]]); then
+        swaks --to $MAINTAINER_EMAIL --server ${SMTP_SERVER_HOST:-localhost} --from ${FROM_EMAIL} --h-Subject "[RADAR] Services on ${COMPONENT_NAME} unhealthy." --body "$body"
+      else
+        swaks --to $MAINTAINER_EMAIL --server ${SMTP_SERVER_HOST:-localhost} --h-Subject "[RADAR] Services on ${COMPONENT_NAME} unhealthy." --body "$body"
+      fi
     else
       echo "Can't send email notification since the program 'SWAKS' is not installed. Please install it first using 'sudo apt-get install -y swaks'"
     fi
