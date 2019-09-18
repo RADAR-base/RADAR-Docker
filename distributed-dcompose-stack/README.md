@@ -86,7 +86,7 @@ To configure the Email health notifications settings, add the following in the `
       SMTP_SERVER_HOST=
       ```
 where,
-- `SERVER_NAME` is the your component name where you are configuring this.
+- `COMPONENT_NAME` is the your component name where you are configuring this. This should exactly match the component's name as in the path. For example `admin-and-others`.
 - `MAINTAINER_EMAIL` is the email address to send the notification to.
 - `SMTP_SERVER_HOST` is the IP/Hostname of the SMTP relay server. So in this case, the IP/Hostname of the [frontend](/frontend) component.
 

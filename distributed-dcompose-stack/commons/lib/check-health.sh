@@ -3,7 +3,7 @@
 
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
-stack=docker-compose
+stack=docker-compose -f "../$COMPONENT_NAME/docker-compose.yml"
 . lib/util.sh
 . ./.env
 
@@ -42,7 +42,7 @@ while read service; do
     fi
 done <<< "$(sudo-linux $stack config --services)"
 
-display_host="${SERVER_NAME} ($(hostname -f), $(curl -s http://ipecho.net/plain))"
+display_host="${COMPONENT_NAME} ($(hostname -f), $(curl -s http://ipecho.net/plain))"
 
 if [ "${#unhealthy[@]}" -eq 0 ]; then
     if [ -f .unhealthy ]; then
@@ -62,7 +62,7 @@ else
       IFS=$SAVEIFS
       body="Services on ${display_host} are unhealthy. Services $display_services have been restarted. Please log in for further information."
       echo "Sent notification to $MAINTAINER_EMAIL"
-      swaks --to $MAINTAINER_EMAIL --server ${SMTP_SERVER_HOST:-localhost} --from $FROM_EMAIL --h-Subject "[RADAR] Services on ${SERVER_NAME} unhealthy." --body $body
+      swaks --to $MAINTAINER_EMAIL --server ${SMTP_SERVER_HOST:-localhost} --from $FROM_EMAIL --h-Subject "[RADAR] Services on ${COMPONENT_NAME} unhealthy." --body $body
     else
       echo "Can't send email notification since the program 'SWAKS' is not installed. Please install it first using 'sudo apt-get install -y swaks'"
     fi
