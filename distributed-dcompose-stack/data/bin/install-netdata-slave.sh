@@ -12,8 +12,8 @@ check_command_exists docker-compose
 
 echo "==> Configuring Netdata Host monitoring"
 if [[ -n "${NETDATA_MASTER_HOST}" ]]; then
-  sudo-linux cp -p  "../commons/etc/netdata/slave/stream.conf.template" "etc/netdata/slave/stream.conf"
-  sudo-linux cp -p  "../commons/etc/netdata/slave/netdata.conf.template" "etc/netdata/slave/netdata.conf"
+  cp -p  "../commons/etc/netdata/slave/stream.conf.template" "etc/netdata/slave/stream.conf"
+  cp -p  "../commons/etc/netdata/slave/netdata.conf.template" "etc/netdata/slave/netdata.conf"
   inline_variable "destination[[:space:]]=[[:space:]]" "${NETDATA_MASTER_HOST}" "etc/netdata/slave/stream.conf"
   inline_variable "api[[:space:]]key[[:space:]]=[[:space:]]" "${NETDATA_STREAM_API_KEY}" "etc/netdata/slave/stream.conf"
 else
