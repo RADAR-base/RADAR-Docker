@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 . ../commons/lib/util.sh
@@ -5,6 +7,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 echo "OS version: $(uname -a)"
 check_command_exists docker
 check_command_exists docker-compose
+
+. ./.env
 
 echo "==> Configuring Netdata Host monitoring"
 if [[ -n "${NETDATA_MASTER_HOST}" ]]; then
