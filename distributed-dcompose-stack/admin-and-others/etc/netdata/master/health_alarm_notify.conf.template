@@ -1,13 +1,13 @@
-SEND_SLACK="NO"
+SEND_SLACK${NETDATA_ALERT_SLACK_ENABLE}"
 
-SLACK_WEBHOOK_URL="https://hooks.slack.com/services/XXXXXXXX/XXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+SLACK_WEBHOOK_URL="${NETDATA_ALERT_SLACK_WEBHOOK}"
 
 # if a role's recipients are not configured, a notification will be send to:
 # - A slack channel (syntax: '#channel' or 'channel')
 # - A slack user (syntax: '@user')
 # - The channel or user defined in slack for the webhook (syntax: '#')
 # empty = do not send a notification for unconfigured roles
-DEFAULT_RECIPIENT_SLACK="# #netdata-alarms"
+DEFAULT_RECIPIENT_SLACK="${NETDATA_ALERT_SLACK_CHANNEL}"
 
 SEND_EMAIL="YES"
 

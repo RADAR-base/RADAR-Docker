@@ -94,10 +94,23 @@ The script uses [swaks](http://www.jetmore.org/john/code/swaks/) to send mails t
 
 To run as a `Systemd` service, run the `.commons/bin/install-systemd-wrappers.sh` to setup the systemd wrappers for health check.
 
-If not running the script as a `systemd` service, it can also be run as a job in crontab.
+If not running the script as a `systemd` service, it can also be run as a job in `crontab`.
 
 ### NetData Alerts
+Alerting is also provided with Netdata Health Monitoring. These can be configured for the Netdata master instance provided in the [admin-and-others](/admin-and-others) component. By default, Alerting by email is provided. To configure it, add the following to the `.env` file -
+      ```shell
+      MAINTAINER_EMAIL=
+      SMTP_SERVER_HOST=
+      ```
+These are the same configs as mentioned in the [Health Check section](#health-check)
 
+Alerts can also be received through Slack. But these are disabled by default. To enable and configure, add the following to the `.env` file -
+    ```shell
+    NETDATA_ALERT_SLACK_ENABLE=YES
+    NETDATA_ALERT_SLACK_WEBHOOK=https://hooks.slack.com/services/XXXXXXXX/XXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    NETDATA_ALERT_SLACK_CHANNEL="# #netdata-alarms"
+    ```
+Replace the `NETDATA_ALERT_SLACK_WEBHOOK` with the actual webhook that you generate from slack. For more info, take a look at [official docs](https://docs.netdata.cloud/health/notifications/slack/).
 
 ## Updates
 

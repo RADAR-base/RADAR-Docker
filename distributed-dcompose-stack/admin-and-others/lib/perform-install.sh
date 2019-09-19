@@ -30,6 +30,9 @@ echo "==> Configuring Netdata master..."
 sed_i "s|API-KEY|${NETDATA_STREAM_API_KEY}|" "etc/netdata/master/stream.conf"
 sed_i "s|\${MAINTAINER_EMAIL}|${MAINTAINER_EMAIL}|" "etc/netdata/master/health_alarm_notify.conf"
 sed_i "s|\${HOSTNAME}|${SMTP_SERVER_HOST}|" "etc/netdata/master/mail/.msmtprc"
+sed_i "s|\${NETDATA_ALERT_SLACK_ENABLE}|${NETDATA_ALERT_SLACK_ENABLE}|" "etc/netdata/master/health_alarm_notify.conf"
+sed_i "s|\${NETDATA_ALERT_SLACK_WEBHOOK}|${NETDATA_ALERT_SLACK_WEBHOOK}|" "etc/netdata/master/health_alarm_notify.conf"
+sed_i "s|\${NETDATA_ALERT_SLACK_CHANNEL}|${NETDATA_ALERT_SLACK_CHANNEL}|" "etc/netdata/master/health_alarm_notify.conf"
 
 sudo-linux docker-compose up -d
 
