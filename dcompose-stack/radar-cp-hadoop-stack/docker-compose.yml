@@ -636,7 +636,7 @@ services:
   # Docker Monitoring                                                         #
   #---------------------------------------------------------------------------#
   portainer:
-    image: portainer/portainer:1.19.1
+    image: portainer/portainer:1.22.0
     command: --admin-password '${PORTAINER_PASSWORD_HASH}'
     networks:
       - monitor
