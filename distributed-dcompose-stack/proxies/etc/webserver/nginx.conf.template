@@ -161,6 +161,9 @@ http {
       proxy_set_header   Host $host;
       proxy_set_header Accept-Encoding "";
 
+      auth_basic         "HDFS Namnode UI";
+      auth_basic_user_file hdfs-namenode.htpasswd;
+
       sub_filter 'src="/' 'src="/hdfsnamenode/';
       sub_filter 'src="' 'src="/hdfsnamenode/';
       sub_filter 'href="/' 'href="/hdfsnamenode/';

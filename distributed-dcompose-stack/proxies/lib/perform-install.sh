@@ -98,8 +98,13 @@ fi
 
 echo "==> Configuring Netdata Master password"
 ensure_env_default NETDATA_USERNAME netdata-user
-ensure_env_password NETDATA_PASSWORD "Netdata Manager password not set in .env."
+ensure_env_password NETDATA_PASSWORD "Netdata password not set in .env."
 sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${NETDATA_USERNAME}" "${NETDATA_PASSWORD}" > etc/webserver/netdata.htpasswd
+
+echo "==> Configuring HDFS namnode UI"
+ensure_env_default HDFS_NAMENODE_UI_USER hdfsnamenode-user
+ensure_env_password HDFS_NAMENODE_UI_PASSWORD "HDFS Namenode UI password not set in .env."
+sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${HDFS_NAMENODE_UI_USER}" "${HDFS_NAMENODE_UI_PASSWORD}" > etc/webserver/hdfs-namenode.htpasswd
 
 sudo-linux docker-compose up -d
 
