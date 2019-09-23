@@ -75,8 +75,6 @@ services:
     image: radarbase/postgres:${POSTGRES_VERSION}-1
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
-      - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
-      - "./postgres-backup/scripts:/backup-scripts"
     environment:
       POSTGRES_USER : ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

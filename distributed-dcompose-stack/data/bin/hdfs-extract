@@ -7,7 +7,7 @@ if [[ $# -lt 1 || $1 = "-h" || $1 = "--help" ]]; then
    exit 1
 fi
 
-. "$DIR/lib/util.sh"
+. "$DIR/../commons/lib/util.sh"
 . "$DIR/.env"
 
 # HDFS filename to get
