@@ -82,7 +82,7 @@ services:
   # RADAR Fitbit connector                                                     #
   #---------------------------------------------------------------------------#
   radar-fitbit-connector:
-    image: radarbase/kafka-connect-rest-fitbit-source:0.2.1
+    image: radarbase/kafka-connect-rest-fitbit-source:0.2.3
     restart: on-failure
     volumes:
       - ./etc/fitbit-connector/docker/source-fitbit.properties:/etc/kafka-connect/source-fitbit.properties
