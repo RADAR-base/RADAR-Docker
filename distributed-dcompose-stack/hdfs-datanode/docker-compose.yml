@@ -18,13 +18,15 @@ services:
     restart: always
     environment:
 #      SERVICE_9866_NAME: datanode-1
-      SERVICE_9867_IGNORE: "true"
-      SERVICE_9864_IGNORE: "true"
+#      SERVICE_9867_IGNORE: "true"
+#      SERVICE_9864_IGNORE: "true"
       HADOOP_HEAPSIZE: 1000
       HADOOP_NAMENODE1_HOSTNAME: hdfs-namenode-1
       HADOOP_DFS_REPLICATION: 2
     ports:
       - "9864:9864"
+      - "9866:9866"
+      - "9867:9867"
       - "50010:50010"
       - "50020:50020"
       - "50475:50475"
