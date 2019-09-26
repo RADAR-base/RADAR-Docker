@@ -140,6 +140,10 @@ http {
     }
 
     location /rest-sources/authorizer/ {
+      include ip-access-control.conf;
+      auth_basic         "Rest Source Authorizer";
+      auth_basic_user_file rest-source-authorizer.htpasswd;
+      
       proxy_pass         ${RADAR_REST_SOURCES_URL};
       proxy_set_header   Host $host;
     }

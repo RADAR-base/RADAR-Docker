@@ -106,6 +106,13 @@ ensure_env_default HDFS_NAMENODE_UI_USER hdfsnamenode-user
 ensure_env_password HDFS_NAMENODE_UI_PASSWORD "HDFS Namenode UI password not set in .env."
 sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${HDFS_NAMENODE_UI_USER}" "${HDFS_NAMENODE_UI_PASSWORD}" > etc/webserver/hdfs-namenode.htpasswd
 
+
+echo "==> Configuring Rest Sources Authoriser"
+ensure_env_default RADAR_REST_SOURCES_AUTH_USER rest-source-user
+ensure_env_password RADAR_REST_SOURCES_AUTH_PASSWORD "Rest Sources authorizer password not set in .env."
+sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${RADAR_REST_SOURCES_AUTH_USER}" "${RADAR_REST_SOURCES_AUTH_PASSWORD}" > etc/webserver/rest-source-authorizer.htpasswd
+
+
 sudo-linux docker-compose up -d
 
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then
