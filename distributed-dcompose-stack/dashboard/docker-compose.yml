@@ -87,6 +87,7 @@ services:
     image: radarbase/radar-backend:0.4.0
     command:
       - stream
+    networks:
       # for getting the play store category
       - default
     volumes:
