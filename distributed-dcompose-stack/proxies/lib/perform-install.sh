@@ -24,9 +24,13 @@ if ! sudo-linux docker volume ls -q | grep -q "^certs-data$"; then
   sudo-linux docker volume create --name=certs-data --label certs
 fi
 
-# Initializing Kafka
-echo "==> Setting up topics"
-sudo-linux docker-compose run --rm kafka-init
+if [[ ${1} == "--register-schemas" ]]; then
+  # Initializing Kafka
+  echo "==> Setting up topics"
+  sudo-linux docker-compose run --rm kafka-init
+else
+  echo "Not registering Schemas and topics. To register please run again with '--register-schemas' flag"
+fi
 
 echo "==> Configure gateway"
 if [[ (-f etc/managementportal/config/keystore.jks) || (-f etc/managementportal/config/keystore.p12) ]]; then
