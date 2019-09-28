@@ -73,7 +73,7 @@ sed_i 's|\${HDFS_NAMENODE_UI_URL}|'"${HDFS_NAMENODE_UI_URL}"'|' etc/webserver/ng
 
 # Split into IP and port if exists
 NETDATA_MASTER_HOST_SPLIT=($(echo ${NETDATA_MASTER_HOST} | tr ":" "\n"))
-sed_i 's|\${NETDATA_MASTER_HOST}|'"${NETDATA_MASTER_HOST_SPLIT[0]}"'|' etc/webserver/nginx.conf
+sed_i 's|\${NETDATA_MASTER_HOST_IP}|'"${NETDATA_MASTER_HOST_SPLIT[0]}"'|' etc/webserver/nginx.conf
 
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then

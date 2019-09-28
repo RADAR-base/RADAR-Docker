@@ -182,7 +182,7 @@ http {
     location /stub_status {
       stub_status;
       # Security: Only allow access from the IP below.
-      allow ${NETDATA_MASTER_HOST};
+      allow ${NETDATA_MASTER_HOST_IP};
       # Deny anyone else
       deny all;
    }
