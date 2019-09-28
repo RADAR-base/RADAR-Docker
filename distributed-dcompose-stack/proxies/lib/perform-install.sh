@@ -68,7 +68,7 @@ sed_i 's|\${NETDATA_MASTER_HOST}|'"${NETDATA_MASTER_HOST}"'|' etc/webserver/ngin
 sed_i 's|\${HDFS_NAMENODE_UI_URL}|'"${HDFS_NAMENODE_UI_URL}"'|' etc/webserver/nginx.conf
 
 # Split into IP and port if exists
-NETDATA_MASTER_HOST_SPLIT=($(echo $my_string | tr ":" "\n"))
+NETDATA_MASTER_HOST_SPLIT=($(echo ${NETDATA_MASTER_HOST} | tr ":" "\n"))
 sed_i 's|\${NETDATA_MASTER_HOST}|'"${NETDATA_MASTER_HOST_SPLIT[0]}"'|' etc/webserver/nginx.conf
 
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
