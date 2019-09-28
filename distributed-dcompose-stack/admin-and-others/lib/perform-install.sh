@@ -15,6 +15,7 @@ ensure_env_password "$NETDATA_STREAM_API_KEY" "The Netdata Stream API key is not
 copy_template_if_absent "etc/netdata/master/stream.conf"
 copy_template_if_absent "etc/netdata/master/health_alarm_notify.conf"
 copy_template_if_absent "etc/netdata/master/mail/.msmtprc"
+copy_template_if_absent "etc/netdata/master/python.d/nginx.conf"
 
 . ./.env
 
@@ -33,6 +34,7 @@ sed_i "s|\${HOSTNAME}|${SMTP_SERVER_HOST}|" "etc/netdata/master/mail/.msmtprc"
 sed_i "s|\${NETDATA_ALERT_SLACK_ENABLE}|${NETDATA_ALERT_SLACK_ENABLE}|" "etc/netdata/master/health_alarm_notify.conf"
 sed_i "s|\${NETDATA_ALERT_SLACK_WEBHOOK}|${NETDATA_ALERT_SLACK_WEBHOOK}|" "etc/netdata/master/health_alarm_notify.conf"
 sed_i "s|\${NETDATA_ALERT_SLACK_CHANNEL}|${NETDATA_ALERT_SLACK_CHANNEL}|" "etc/netdata/master/health_alarm_notify.conf"
+sed_i "s|\${WEBSERVER_STATUS_STUB_URL}|${WEBSERVER_STATUS_STUB_URL}|" "etc/netdata/master/python.d/nginx.conf"
 
 sudo-linux docker-compose up -d
 

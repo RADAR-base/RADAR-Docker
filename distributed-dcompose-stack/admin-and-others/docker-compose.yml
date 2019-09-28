@@ -68,5 +68,6 @@ services:
       - ./etc/netdata/master/stream.conf:/etc/netdata/stream.conf:ro
       - ./etc/netdata/master/health_alarm_notify.conf:/etc/netdata/health_alarm_notify.conf:ro
       - ./etc/netdata/master/mail/.msmtprc:/etc/netdata/.msmtprc:ro
+      - ./etc/netdata/master/python.d/nginx.conf:/etc/netdata/python.d/nginx.conf
     environment:
       PGID: 999

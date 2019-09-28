@@ -143,7 +143,7 @@ http {
       include ip-access-control.conf;
       auth_basic         "Rest Source Authorizer";
       auth_basic_user_file rest-source-authorizer.htpasswd;
-      
+
       proxy_pass         ${RADAR_REST_SOURCES_URL};
       proxy_set_header   Host $host;
     }
@@ -178,5 +178,13 @@ http {
       sub_filter_once off;
       sub_filter_types *;
     }
+
+    location /stub_status {
+      stub_status;
+      # Security: Only allow access from the IP below.
+      allow ${NETDATA_MASTER_HOST};
+      # Deny anyone else
+      deny all;
+   }
   }
 }
