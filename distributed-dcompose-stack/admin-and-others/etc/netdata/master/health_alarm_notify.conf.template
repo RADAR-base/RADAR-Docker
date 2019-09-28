@@ -17,3 +17,6 @@ DEFAULT_RECIPIENT_EMAIL="${MAINTAINER_EMAIL}"
 # If empty, the system $PATH will be searched for it.
 # If not found, email notifications will be disabled (silently).
 sendmail="/usr/bin/msmtp"
+
+role_recipients_email[sysadmin]="${DEFAULT_RECIPIENT_EMAIL}"
+role_recipients_slack[sysadmin]="${DEFAULT_RECIPIENT_SLACK}"
