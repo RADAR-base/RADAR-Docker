@@ -12,6 +12,6 @@ ensure_env_password FCM_SENDER_KEY "Firebase Cloud Messaging Sender ID"
 ensure_env_password FCM_SERVER_KEY "Firebase Cloud Messaging Server Key"
 
 mkdir -p "$FCM_XMPP_APP_SERVER_DB_PATH"
-chown -R 999:9999 "$FCM_XMPP_APP_SERVER_DB_PATH"
+chown -R 9999:999 "$FCM_XMPP_APP_SERVER_DB_PATH"
 
 exec docker-compose up "$@"
