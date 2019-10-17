@@ -12,11 +12,13 @@ def parse_logs(input_directory, output_directory):
         if not log_file.endswith('.log'):
             continue
 
-        ouput_file_name = log_file.split('.')[0]
+        print("Parsing {}...".format(log_file))
+
+        output_file_name = log_file.split('.')[0]
         log_path = os.path.join(input_directory, log_file)
-        exec_path = os.path.join(output_directory, "{}_executions.csv".format(ouput_file_name))
-        delivery_path = os.path.join(output_directory, "{}_delivery.csv".format(ouput_file_name))
-        error_path = os.path.join(output_directory, "{}_error.csv".format(ouput_file_name))
+        exec_path = os.path.join(output_directory, "{}_executions.csv".format(output_file_name))
+        delivery_path = os.path.join(output_directory, "{}_delivery.csv".format(output_file_name))
+        error_path = os.path.join(output_directory, "{}_error.csv".format(output_file_name))
 
         with open(log_path) as f,\
                  open(exec_path, 'w') as exec_output,\

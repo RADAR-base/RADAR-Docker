@@ -1,0 +1,17 @@
+#!/bin/bash
+
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
+
+. ../radar-cp-hadoop-stack/lib/util.sh
+
+copy_template_if_absent .env etc/env.template
+
+. .env
+
+ensure_env_password FCM_SENDER_KEY "Firebase Cloud Messaging Sender ID"
+ensure_env_password FCM_SERVER_KEY "Firebase Cloud Messaging Server Key"
+
+mkdir -p "$FCM_XMPP_APP_SERVER_DB_PATH"
+chown -R 9999:999 "$FCM_XMPP_APP_SERVER_DB_PATH"
+
+exec docker-compose up "$@"

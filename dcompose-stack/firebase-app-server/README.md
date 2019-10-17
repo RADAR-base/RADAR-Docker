@@ -23,8 +23,10 @@ This can be done by changing the `server.database.n` properties in the [server.p
 Since the App Server does not depend on any other services, it can be run separately by running -
 
 ```sh
-docker-compose up -d
+bin/start-xmpp -d
 ```
+
+It can be further controlled with `docker-compose` and `docker` commands.
 
 ## Extras
 
@@ -40,6 +42,8 @@ There are some extra scripts provided for convenience when administering the ser
     0 16 * * * python3 /home/ubuntu/xmpp-server-extras/logs-parser/log-parser.py /usr/local/var/lib/radar/xmpp/hsql/logs/ /home/ubuntu/xmpp-server-extras/logs-parser/files >> /home/ubuntu/log-parser-run.log 2>&1
     ```
     This will output the CSV files in the directory `/home/ubuntu/xmpp-server-extras/logs-parser/files` which contain three files for each day (One for Executions, One for Delivery and One for Errors).
+
+- `install-systemd` Run the xmpp server in a systemd environment as part of system startup.
 
 ## Other information
 
