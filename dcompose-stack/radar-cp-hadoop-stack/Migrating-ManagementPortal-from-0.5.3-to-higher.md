@@ -114,4 +114,4 @@ If you already have an environment where you are using ManagementPortal:0.5.3 or
     `bin/radar-docker restart managementportal-app gateway`
 
     
-        
+7. To make sure the upgrade is working, verify if a participant who is already enrolled to a study can still send data.        
