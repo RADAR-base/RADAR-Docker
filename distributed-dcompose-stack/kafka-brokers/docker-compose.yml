@@ -10,9 +10,6 @@ networks:
     internal: true
 
 volumes:
-  kafka-1-data: {}
-  kafka-2-data: {}
-  kafka-3-data: {}
   zookeeper-1-data: {}
   zookeeper-2-data: {}
   zookeeper-3-data: {}
@@ -107,7 +104,7 @@ services:
       - zookeeper
       - default
     volumes:
-      - kafka-1-data:/var/lib/kafka/data
+      - ${KAFKA_BROKER_1_LOGS_PATH}:/var/lib/kafka/data
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -143,7 +140,7 @@ services:
       - zookeeper
       - default
     volumes:
-      - kafka-2-data:/var/lib/kafka/data
+      - ${KAFKA_BROKER_2_LOGS_PATH}:/var/lib/kafka/data
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -179,7 +176,7 @@ services:
       - zookeeper
       - default
     volumes:
-      - kafka-3-data:/var/lib/kafka/data
+      - ${KAFKA_BROKER_3_LOGS_PATH}:/var/lib/kafka/data
     depends_on:
       - zookeeper-1
       - zookeeper-2

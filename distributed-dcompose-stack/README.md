@@ -15,10 +15,10 @@ The following table describes each of the components of the distributed stack.
 
 | Component                             | Description                                                                                                                                                                                                                             | Services                                                                                                                                         | Open Ports                                                                                       | Pre-requisites                                                 | Dependencies                                                                                                                                      | Recommended Disks                                                                                                                                                                                     |
 |---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [kafka-brokers](/kafka-brokers)       | Consists of exposed Kafka brokers and Zookeeper ensemble                                                                                                                                                                                | kafka-1, kafka-2, kafka-3, zookeeper-1, zookeeper-2, zookeeper-3                                                                                 | Internal Network - 9092, 9093, 9094, 2181, 2182, 2183 External Network - None                    | Docker, Docker Compose                                         | None                                                                                                                                              | Mount a single large block device on docker path `/var/lib/docker` as data is stored in docker volumes. or 3 smaller block devices for each path of the kafka broker docker volumes.                  |
+| [kafka-brokers](/kafka-brokers)       | Consists of exposed Kafka brokers and Zookeeper ensemble                                                                                                                                                                                | kafka-1, kafka-2, kafka-3, zookeeper-1, zookeeper-2, zookeeper-3                                                                                 | Internal Network - 9092, 9093, 9094, 2181, 2182, 2183 External Network - None                    | Docker, Docker Compose                                         | None                                                                                                                                              | Mount a single block device on docker path `/var/lib/docker` as zookeeper data is stored in docker volumes and 3 other block devices for each path of the kafka broker logs path as set in the `.env` file.                  |
 | [connectors](/connectors)             | Consists of all the kafka-connect instances. HDFS connector, Fitbit Connector and Mongodb connector                                                                                                                                     | radar-mongodb-connector, radar-hdfs-connector,  radar-fitbit-connector                                                                           | None                                                                                             | Docker, Docker Compose                                         | [kafka-brokers](/kafka-brokers), [hdfs-namenode](/hdfs-namenode), [hdfs-datanode](/hdfs-datanode), [frontend](/frontend), [dashboard](/dashboard) | A small size block device mounted on docker path `/var/lib/docker` as Fitbit connector stores offsets in docker volumes.                                                                              |
 | [hdfs-namenode](/hdfs-namenode)       | Hadoop File System Name Node                                                                                                                                                                                                            | hdfs-namenode                                                                                                                                    | Internal Network - 8020, 9870, 8022 External Network - None                                      | Docker, Docker Compose                                         | None                                                                                                                                              | Two small size block devices mounted on `HDFS_NAME_DIR_1=/usr/local/var/lib/docker/hdfs-name-1` `HDFS_NAME_DIR_2=/usr/local/var/lib/docker/hdfs-name-2` or whatever you configure the namenode paths. |
-| [hdfs-datanode](/hdfs-datanode)       | Hadoop File System Data Nodes. This contains docker config for a single Datanode. These can be **deployed several times on different hosts** to add multiple data nodes.                                                                | hdfs-datanode                                                                                                                                    | Internal Network - 9864, 50010, 50020, 50475 External Network - None                             | Docker, Docker Compose                                         | [hdfs-namenode](/hdfs-namenode)                                                                                                                   | A single large size block device mounted on `HDFS_DATA_DIR_1=/usr/local/var/lib/docker/hdfs-data`  or wherever the data node path is configured.                                                      |
+| [hdfs-datanode](/hdfs-datanode)       | Hadoop File System Data Nodes. This contains docker config for a single Datanode. These can be **deployed several times on different hosts** to add multiple data nodes.                                                                | hdfs-datanode                                                                                                                                    | Internal Network - 9864, 9866, 9867, 50010, 50020, 50475 External Network - None                             | Docker, Docker Compose                                         | [hdfs-namenode](/hdfs-namenode)                                                                                                                   | A single large size block device mounted on `HDFS_DATA_DIR_1=/usr/local/var/lib/docker/hdfs-data`  or wherever the data node path is configured.                                                      |
 | [dashboard](/dashboard)               | Consists of services required to accumulate the data and display the dashboard. You can add more Streams applications on a different hosts and they will rebalance the computations between themselves making it horizontally scalable. | hotstorage, rest-api, dashboard, radar-backend-stream                                                                                            | Internal Network - 80, 8080, 27017 External Network - None                                       | Docker, Docker Compose                                         | [proxies](/proxies), [frontend](/frontend), [kafka-brokers](/kafka-brokers)                                                                       | A single large size block device mounted on `MONGODB_DIR=/usr/local/var/lib/docker/mongodb` or whatever you configure the MongoDb path. This will be used to store aggregated data.                   |
 | [frontend](/frontend)                 | Consists of all the services which require user interaction in the frontend(through browsers). Services like Management Portal, Rest Source Authoriser and their backends. Also includes an SMTP mail server.                           | smtp, managementportal-app, radarbase-postgresql, catalog-server, radar-rest-sources-backend,  radar-rest-sources-authorizer, redcap-integration | Internal Network - 25, 8080, 8090, 9000, 9010 External Network - None (May expose in the future) | Docker, Docker Compose, Java (JDK or JRE required for keytool) | None                                                                                                                                              | A single medium size block device mounted on `MP_POSTGRES_DIR=/usr/local/var/lib/docker/postgres` or whatever you configure the postgres path.                                                        |
 | [proxies](/proxies)                   | Consists of services used for proxying information like nginx reverse proxy, gateway, rest-proxy, etc. This also contains radar kafka-init for initialising the topics and schemas.                                                     | schema-registry-1, rest-proxy-1, kafka-init, gateway, webserver                                                                                  | Internal Network - 8081, 8082 External Network - 80, 443                                         | Docker, Docker Compose                                         | [kafka-brokers](/kafka-brokers), [frontend](/frontend), <All services that need to be  proxied by the webserver>                                  | None                                                                                                                                                                                                  |
@@ -75,16 +75,16 @@ A script for checking the health of docker containers(and notifying in case of u
 
 To enable system health notifications to Slack, install its [Incoming Webhooks app](https://api.slack.com/incoming-webhooks). With the webhook URL that you configure there, set in `/commons/.env`:
 
-      ```shell
-      HEALTHCHECK_SLACK_NOTIFY=yes
-      HEALTHCHECK_SLACK_WEBHOOK_URL=https://...
-      ```
+  ```shell
+  HEALTHCHECK_SLACK_NOTIFY=yes
+  HEALTHCHECK_SLACK_WEBHOOK_URL=https://...
+  ```
 To configure the Email health notifications settings, add the following in the `/commons/.env` file:
-      ```shell
-      SERVER_NAME=
-      MAINTAINER_EMAIL=
-      SMTP_SERVER_HOST=
-      ```
+  ```shell
+  SERVER_NAME=
+  MAINTAINER_EMAIL=
+  SMTP_SERVER_HOST=
+  ```
 where,
 - `COMPONENT_NAME` is the your component name where you are configuring this. This should exactly match the component's name as in the path. For example `admin-and-others`.
 - `MAINTAINER_EMAIL` is the email address to send the notification to.
@@ -98,18 +98,18 @@ If not running the script as a `systemd` service, it can also be run as a job in
 
 ### NetData Alerts
 Alerting is also provided with Netdata Health Monitoring. These can be configured for the Netdata master instance provided in the [admin-and-others](/admin-and-others) component. By default, Alerting by email is provided. To configure it, add the following to the `.env` file -
-      ```shell
-      MAINTAINER_EMAIL=
-      SMTP_SERVER_HOST=
-      ```
+  ```shell
+  MAINTAINER_EMAIL=
+  SMTP_SERVER_HOST=
+  ```
 These are the same configs as mentioned in the [Health Check section](#health-check)
 
 Alerts can also be received through Slack. But these are disabled by default. To enable and configure, add the following to the `.env` file -
-    ```shell
-    NETDATA_ALERT_SLACK_ENABLE=YES
-    NETDATA_ALERT_SLACK_WEBHOOK=https://hooks.slack.com/services/XXXXXXXX/XXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    NETDATA_ALERT_SLACK_CHANNEL="# #netdata-alarms"
-    ```
+  ```shell
+  NETDATA_ALERT_SLACK_ENABLE=YES
+  NETDATA_ALERT_SLACK_WEBHOOK=https://hooks.slack.com/services/XXXXXXXX/XXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  NETDATA_ALERT_SLACK_CHANNEL="# #netdata-alarms"
+  ```
 Replace the `NETDATA_ALERT_SLACK_WEBHOOK` with the actual webhook that you generate from slack. For more info, take a look at [official docs](https://docs.netdata.cloud/health/notifications/slack/).
 
 ## Updates

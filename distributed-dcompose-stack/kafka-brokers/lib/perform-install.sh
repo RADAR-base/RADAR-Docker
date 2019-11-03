@@ -12,6 +12,10 @@ check_config_present .env etc/env.template
 
 . ./.env
 
+check_parent_exists KAFKA_BROKER_1_LOGS_PATH ${KAFKA_BROKER_1_LOGS_PATH}
+check_parent_exists KAFKA_BROKER_2_LOGS_PATH ${KAFKA_BROKER_2_LOGS_PATH}
+check_parent_exists KAFKA_BROKER_3_LOGS_PATH ${KAFKA_BROKER_3_LOGS_PATH}
+
 ensure_env_password HOSTNAME "Host Name is not set .env."
 
 echo "==> Configuring Netdata Host monitoring"
