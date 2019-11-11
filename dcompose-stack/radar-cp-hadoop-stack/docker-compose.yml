@@ -636,7 +636,7 @@ services:
   # Docker Monitoring                                                         #
   #---------------------------------------------------------------------------#
   portainer:
-    image: portainer/portainer:1.19.1
+    image: portainer/portainer:1.22.0
     command: --admin-password '${PORTAINER_PASSWORD_HASH}'
     networks:
       - monitor
@@ -681,7 +681,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.5.3
+    image: radarbase/management-portal:0.5.5
     networks:
       - default
       - api
@@ -767,7 +767,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.3.3
+    image: radarbase/radar-gateway:0.3.9
     networks:
       - api
       - kafka
@@ -776,8 +776,6 @@ services:
     volumes:
       - ./etc/gateway:/etc/radar-gateway
     command: ["radar-gateway", "/etc/radar-gateway/gateway.yml"]
-    environment:
-      RADAR_IS_CONFIG_LOCATION: /etc/radar-gateway/radar-is.yml
     healthcheck:
       # should give an unauthenticated response, rather than a 404
       test: ["CMD-SHELL", "wget --spider localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]
