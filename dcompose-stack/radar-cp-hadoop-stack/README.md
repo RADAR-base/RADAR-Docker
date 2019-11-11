@@ -128,6 +128,12 @@ sudo rm /etc/rsyslog.d/00-radar.conf /etc/logrotate.d/radar /etc/cron.hourly/log
 sudo systemctl restart rsyslog
 ```
 
+## Upgrading the environment to the latest versions.
+You can upgrade to the latest set-up by simply pulling latest version of RADAR-Docker. 
+Then run `bin/radar-docker install` and take necessary steps based on the command line logs.
+
+**NOTE:** If you are upgrading from **ManagementPortal version 0.5.3 to higher** or **from [RADAR-Docker:2.0.2](https://github.com/RADAR-base/RADAR-Docker/releases/tag/v2.0.2) or lower to higher version**, read the [migration-guide](Migrating-ManagementPortal-from-0.5.3-to-higher.md) to follow the steps manually. 
+
 ### Monitoring a topic
 
 To see current data coming out of a Kafka topic, run
