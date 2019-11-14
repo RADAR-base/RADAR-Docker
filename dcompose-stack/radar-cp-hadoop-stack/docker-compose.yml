@@ -822,7 +822,7 @@ services:
       - hdfs-datanode-3
     volumes:
       - ${RESTRUCTURE_OUTPUT_DIR}:/output
-      - ./etc/restructure.yml:/etc/restructure.yml
+      - ./etc/hdfs-restructure/restructure.yml:/etc/restructure.yml
     environment:
       RADAR_HDFS_RESTRUCTURE_OPTS: -Xms250m -Xmx4g
     command: -F /etc/restructure.yml -S
