@@ -20,6 +20,7 @@ copy_template_if_absent etc/webserver/ip-access-control.conf
 copy_template_if_absent etc/webserver/optional-services.conf
 copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
 copy_template_if_absent etc/rest-source-authorizer/rest_source_clients_configs.yml
+copy_template_if_absent etc/restructure.yml
 
 # Set permissions
 sudo-linux chmod og-rw ./.env

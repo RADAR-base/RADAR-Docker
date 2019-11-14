@@ -808,3 +808,21 @@ services:
         interval: 1m30s
         timeout: 5s
         retries: 3
+
+  radar-output:
+    image: radarbase/radar-hdfs-restructure:0.6.0
+    restart: always
+    stop_signal: SIGINT
+    networks:
+      - hadoop
+    depends_on:
+      - hdfs-namenode-1
+      - hdfs-datanode-1
+      - hdfs-datanode-2
+      - hdfs-datanode-3
+    volumes:
+      - ${RESTRUCTURE_OUTPUT_DIR}:/output
+      - ./etc/restructure.yml:/etc/restructure.yml
+    environment:
+      RADAR_HDFS_RESTRUCTURE_OPTS: -Xms250m -Xmx4g
+    command: -F /etc/restructure.yml -S
