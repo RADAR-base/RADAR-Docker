@@ -1,2 +1,2 @@
 resourceName: res_ManagementPortal
-publicKeyEndpoints: http://managementportal-app:8080/managementportal/oauth/token_key
+publicKeyEndpoints: http://${SERVER_NAME}/managementportal/oauth/token_key
