@@ -30,7 +30,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.5.3
+    image: radarbase/management-portal:0.5.6
     networks:
       - management
       - mail
@@ -54,6 +54,8 @@ services:
       MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD: ${MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD}
       MANAGEMENTPORTAL_COMMON_PRIVACY_POLICY_URL: ${MANAGEMENTPORTAL_COMMON_PRIVACY_POLICY_URL}
       MANAGEMENTPORTAL_OAUTH_META_TOKEN_TIMEOUT: PT2H
+      MANAGEMENTPORTAL_OAUTH_ENABLE_PUBLIC_KEY_VERIFIERS: "true"
+      RADAR_IS_CONFIG_LOCATION: /mp-includes/config/radar-is.yml
       SPRING_APPLICATION_JSON: '{"managementportal":{"oauth":{"checkingKeyAliases":["${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_0}","${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_1}"]}}}'
       JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
       JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary

@@ -72,14 +72,14 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.3.3
+    image: radarbase/radar-gateway:0.3.8
     depends_on:
       - rest-proxy-1
     volumes:
       - ./etc/gateway:/etc/radar-gateway
     command: ["radar-gateway", "/etc/radar-gateway/gateway.yml"]
-    environment:
-      RADAR_IS_CONFIG_LOCATION: /etc/radar-gateway/radar-is.yml
+    # environment:
+    #   RADAR_IS_CONFIG_LOCATION: /etc/radar-gateway/radar-is.yml
     healthcheck:
       # should give an unauthenticated response, rather than a 404
       test: ["CMD-SHELL", "wget --spider localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]

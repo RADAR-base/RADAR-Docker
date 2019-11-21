@@ -15,6 +15,7 @@ check_config_present etc/smtp.env
 check_config_present etc/redcap-integration/radar.yml
 copy_template_if_absent etc/managementportal/config/oauth_client_details.csv
 copy_template_if_absent etc/rest-source-authorizer/rest_source_clients_configs.yml
+copy_template_if_absent etc/gateway/radar-is.yml
 
 . ./.env
 
@@ -30,6 +31,8 @@ ensure_env_password MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET "ManagementPortal fr
 ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for ManagementPortal is not set in .env."
 
 bin/keystore-init
+
+#inline_variable 'publicKeyEndpoints:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}managementportal/oauth/token_key" etc/gateway/radar-is.yml
 
 echo "==> Configuring Rest Source Authorizer"
 inline_variable 'client_id:[[:space:]]' "$FITBIT_API_CLIENT_ID" etc/rest-source-authorizer/rest_source_clients_configs.yml

@@ -24,7 +24,7 @@ if ! sudo-linux docker volume ls -q | grep -q "^certs-data$"; then
   sudo-linux docker volume create --name=certs-data --label certs
 fi
 
-if [[ ${1} == "--register-schemas" ]]; then
+if [[ "${1}" == "--register-schemas" ]]; then
   # Initializing Kafka
   echo "==> Setting up topics"
   sudo-linux docker-compose run --rm kafka-init
@@ -33,13 +33,13 @@ else
 fi
 
 echo "==> Configure gateway"
-if [[ (-f etc/managementportal/config/keystore.jks) || (-f etc/managementportal/config/keystore.p12) ]]; then
-  ./bin/keys-init
-else
-  echo "No Keystore File Found. Configuring using publicKeyEndpoint..."
-  copy_template_if_absent etc/gateway/radar-is.yml
-  inline_variable 'publicKeyEndpoints:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}managementportal/oauth/token_key" etc/gateway/radar-is.yml
-fi
+# if [[ (-f etc/managementportal/config/keystore.jks) || (-f etc/managementportal/config/keystore.p12) ]]; then
+#   ./bin/keys-init
+# else
+#   echo "No Keystore File Found. Configuring using publicKeyEndpoint..."
+#   copy_template_if_absent etc/gateway/radar-is.yml
+#   inline_variable 'publicKeyEndpoints:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}managementportal/oauth/token_key" etc/gateway/radar-is.yml
+# fi
 inline_variable 'managementPortalUrl:[[:space:]]*' "${MANAGEMENT_PORTAL_URL}managementportal" etc/gateway/gateway.yml
 
 echo "==> Configuring nginx"
