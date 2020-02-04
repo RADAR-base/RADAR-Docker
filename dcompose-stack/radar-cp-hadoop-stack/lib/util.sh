@@ -143,7 +143,7 @@ letsencrypt_certonly() {
   sudo-linux docker run --rm -v certs:/etc/openssl alpine:3.7 /bin/sh -c "find /etc/openssl -name '${SERVER_NAME}*' -prune -exec rm -rf '{}' +"
 
   CERTBOT_DOCKER_OPTS=(--rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
-  CERTBOT_OPTS=(--webroot --webroot-path=/data/letsencrypt --agree-tos -m "${MAINTAINER_EMAIL}" -d "${SERVER_NAME}" --non-interactive)
+  CERTBOT_OPTS=(--server "https://acme-v02.api.letsencrypt.org/directory" --webroot --webroot-path=/data/letsencrypt --agree-tos -m "${MAINTAINER_EMAIL}" -d "${SERVER_NAME}" --non-interactive)
   sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
 
   # mark the directory as letsencrypt dir
@@ -154,7 +154,7 @@ letsencrypt_renew() {
   SERVER_NAME=$1
   echo "==> Renewing Let's Encrypt SSL certificate for ${SERVER_NAME}"
   CERTBOT_DOCKER_OPTS=(--rm -v certs:/etc/letsencrypt -v certs-data:/data/letsencrypt deliverous/certbot)
-  CERTBOT_OPTS=(-n --webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}" --non-interactive)
+  CERTBOT_OPTS=(-n --server "https://acme-v02.api.letsencrypt.org/directory" --webroot --webroot-path=/data/letsencrypt -d "${SERVER_NAME}" --non-interactive)
   sudo-linux docker run "${CERTBOT_DOCKER_OPTS[@]}" certonly "${CERTBOT_OPTS[@]}"
 }
 
