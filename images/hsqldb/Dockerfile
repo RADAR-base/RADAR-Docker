@@ -8,7 +8,7 @@ RUN mkdir -p /opt/hsqldb/lib /etc/opt/hsqldb/conf /var/opt/hsqldb/data && \
     useradd --system -g hsqldb -u 9999 hsqldb && \
     chown hsqldb:hsqldb -R /var/opt/hsqldb
 
-ENV MVN_CENTRAL_URL http://central.maven.org/maven2
+ENV MVN_CENTRAL_URL https://repo1.maven.org/maven2/
 ENV HSQLDB_MVN_GRP org/hsqldb
 ENV HSQLDB_VERSION 2.5.0
 ENV LOG4J_VERSION 1.2.17
