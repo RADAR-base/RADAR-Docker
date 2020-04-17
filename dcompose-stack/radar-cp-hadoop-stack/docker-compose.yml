@@ -25,6 +25,9 @@ networks:
     internal: true
     # driver_opts:
     #     com.docker.network.driver.mtu: 1450
+  redis:
+    driver: bridge
+    internal: true
   hadoop:
     external: true
 
@@ -39,6 +42,7 @@ volumes:
   zookeeper-2-log: {}
   zookeeper-3-log: {}
   radar-backend-monitor-disconnect-data: {}
+  redis-data: {}
   certs:
     external: true
   certs-data:
@@ -810,12 +814,14 @@ services:
         retries: 3
 
   radar-output:
-    image: radarbase/radar-hdfs-restructure:0.6.0
+    image: radarbase/radar-hdfs-restructure:redis-hdfs
     restart: always
     stop_signal: SIGINT
     networks:
+      - redis
       - hadoop
     depends_on:
+      - output-redis
       - hdfs-namenode-1
       - hdfs-datanode-1
       - hdfs-datanode-2
@@ -826,3 +832,15 @@ services:
     environment:
       RADAR_HDFS_RESTRUCTURE_OPTS: -Xms250m -Xmx4g
     command: -F /etc/restructure.yml -S
+
+  output-redis:
+    image: bitnami/redis:5.0.8
+    volumes:
+      - redis-data:/data
+    networks:
+      - redis
+    command:
+      - server
+      - /data
+    environment:
+      ALLOW_EMPTY_PASSWORD: 'yes'

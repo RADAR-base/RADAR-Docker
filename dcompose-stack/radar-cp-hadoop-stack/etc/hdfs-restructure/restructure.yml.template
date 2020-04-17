@@ -4,6 +4,25 @@ service:
   # Polling interval in seconds.
   interval: 300
 
+source:
+  type: hdfs
+  # HDFS settings
+  hdfs:
+    # HDFS name node host names
+    nameNodes:
+    - hdfs-namenode-1
+    # Additional raw HDFS configuration properties
+    # properties: {}
+
+target:
+  type: local
+  local:
+    userId: 0
+    groupId: 0
+
+redis:
+  uri: redis://output-redis:6379
+
 # Compression characteristics
 compression:
   # Compression type: none, zip or gzip
@@ -39,12 +58,6 @@ worker:
   # Maximum number of files to process in any given topic.
   # maxFilesPerTopic: null
 
-storage:
-  factory: org.radarbase.hdfs.storage.LocalStorageDriver
-  properties:
-    localUid: 0
-    localGid: 0
-
 # Path settings
 paths:
   # Input directories in HDFS
@@ -74,19 +87,4 @@ topics: {}
 #    # Disable deduplication
 #    deduplication:
 #      enable: false
-
-# HDFS settings
-hdfs:
-  # HDFS name node in case of a single name node, or HDFS cluster ID in case of high availability.
-  name: hdfs-namenode-1
-  # High availability settings:
-  # nameNodes:
-  #   - name: hdfs1
-  #     hostname: hdfs-namenode-1
-  #   - name: hdfs2
-  #     hostname: hdfs-namenode-2
-  # Where files will be locked. This value should be the same for all restructure processes.
-  lockPath: /logs/org.radarbase.hdfs/lock
-  # Additional raw HDFS configuration properties
-  # properties: {}
 
