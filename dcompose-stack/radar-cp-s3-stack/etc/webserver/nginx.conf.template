@@ -1,0 +1,158 @@
+worker_rlimit_nofile 8192;
+
+events {
+  worker_connections  4096;  ## Default: 1024
+}
+
+http {
+  default_type application/octet-stream;
+  log_format   main '$remote_addr - $remote_user [$time_local]  $status '
+    '"$request" $body_bytes_sent "$http_referer" '
+    '"$http_user_agent" "$http_x_forwarded_for"';
+  tcp_nodelay  on;
+
+  # hide nginx version
+  server_tokens off;
+
+  # add nosniff header (https://www.owasp.org/index.php/List_of_useful_HTTP_headers)
+  add_header X-Content-Type-Options nosniff;
+
+  # For logins, make 2 requests per second at most
+  limit_req_zone $binary_remote_addr zone=login_limit:10m rate=2r/s;
+
+  server {
+    listen                    80 default_server;
+    listen                    [::]:80 default_server;
+    server_name               localhost;
+    location / {
+      return                    301 https://$server_name$request_uri;
+    }
+    location ^~ /.well-known {
+      allow all;
+      root  /data/letsencrypt/;
+    }
+  }
+
+  server { # simple reverse-proxy
+    listen                    443 ssl http2 default_server;
+    listen                    [::]:443 ssl http2 default_server;
+    server_name               localhost;
+
+    ssl                       on;
+
+    add_header                Strict-Transport-Security "max-age=31536000" always;
+
+    ssl_session_cache         shared:SSL:20m;
+    ssl_session_timeout       10m;
+
+    ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers               "ECDH+AESGCM:ECDH+AES256:ECDH+AES128:!ADH:!AECDH:!MD5;";
+
+    ssl_stapling              on;
+    ssl_stapling_verify       on;
+    resolver                  8.8.8.8 8.8.4.4;
+
+    ssl_certificate           /etc/letsencrypt/live/localhost/fullchain.pem;
+    ssl_certificate_key       /etc/letsencrypt/live/localhost/privkey.pem;
+    ssl_trusted_certificate   /etc/letsencrypt/live/localhost/chain.pem;
+
+    access_log                /var/log/nginx/access.log;
+    error_log                 /var/log/nginx/error.log;
+
+    location /kafka/ {
+      include cors.conf;
+      proxy_pass         http://gateway/radar-gateway/;
+      proxy_set_header   Host $host;
+      proxy_http_version 1.1;
+      proxy_set_header   Connection "";
+    }
+    location ^~ /kafka/consumers {
+      deny all;
+    }
+    location ^~ /kafka/brokers {
+      deny all;
+    }
+    location ~* /kafka/topics/.+/partitions {
+      deny all;
+    }
+    location /schema/ {
+      if ($request_method = 'OPTIONS') {
+        # Tell client that this pre-flight info is valid for 20 days
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With' always;
+        add_header 'Access-Control-Max-Age' 1728000;
+        add_header 'Content-Type' 'text/plain charset=UTF-8';
+        add_header 'Content-Length' 0;
+        return 204;
+      }
+
+      if ($request_method = 'GET') {
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With' always;
+      }
+
+      limit_except GET OPTIONS {
+        deny all;
+      }
+      proxy_pass         http://schema-registry-1:8081/;
+      proxy_set_header   Host $host;
+      proxy_http_version 1.1;
+      proxy_set_header   Connection "";
+    }
+    location /dashboard/ {
+      proxy_pass         http://dashboard:80/;
+      proxy_set_header   Host $host;
+    }
+    location /portainer/ {
+      include ip-access-control.conf;
+
+      proxy_pass         http://portainer:9000/;
+      proxy_http_version 1.1;
+      proxy_set_header   Connection "";
+    }
+    location /portainer/api/websocket/ {
+      include ip-access-control.conf;
+      proxy_pass         http://portainer:9000/api/websocket/;
+      proxy_set_header   Upgrade $http_upgrade;
+      proxy_set_header   Connection "upgrade";
+      proxy_http_version 1.1;
+    }
+    location /api/ {
+      include cors.conf;
+      proxy_pass         http://rest-api:8080/api/;
+      proxy_set_header   Host $host;
+    }
+    location /managementportal/ {
+      include cors.conf;
+      proxy_pass         http://managementportal-app:8080/managementportal/;
+      proxy_set_header   Host $host;
+    }
+    location /managementportal/oauth/ {
+      # Allow 20 fast-following requests, like when authorizing a user.
+      limit_req zone=login_limit burst=20;
+      include cors.conf;
+      proxy_pass         http://managementportal-app:8080/managementportal/oauth/;
+      proxy_set_header   Host $host;
+    }
+    location /managementportal/api/meta-token/ {
+      limit_req zone=login_limit;
+      include cors.conf;
+      proxy_pass         http://managementportal-app:8080/managementportal/api/meta-token/;
+      proxy_set_header   Host $host;
+    }
+    location /kafkamanager/{
+      include ip-access-control.conf;
+      auth_basic         "Kafka manager";
+      auth_basic_user_file kafka-manager.htpasswd;
+
+      proxy_pass         http://kafka-manager:9000;
+      proxy_set_header   Host $host;
+    }
+    include optional-services.conf;
+  }
+}

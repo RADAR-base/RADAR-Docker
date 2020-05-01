@@ -1,0 +1,7 @@
+rest_source_clients:
+  - source_type: FitBit
+    authorization_endpoint: https://www.fitbit.com/oauth2/authorize
+    token_endpoint: https://api.fitbit.com/oauth2/token
+    client_id: FITBITIT
+    client_secret: FITBITSECRET
+    scope: activity heartrate sleep profile
