@@ -134,16 +134,9 @@ if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
 fi
 ensure_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/s3-connector/sink-s3.properties
 ensure_variable 's3.bucket.name=' "${MINIO_INTERMEDIATE_BUCKET_NAME}" etc/s3-connector/sink-s3.properties
-
-echo "==> Configuring S3 Sink Connector"
-if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
-  COMBINED_RAW_TOPIC_LIST=$(sudo-linux docker run "${KAFKA_INIT_OPTS[@]}" list_raw.sh 2>/dev/null | tail -n 1)
-  if [ -n "${RADAR_RAW_TOPIC_LIST}" ]; then
-    COMBINED_RAW_TOPIC_LIST="${RADAR_RAW_TOPIC_LIST},${COMBINED_RAW_TOPIC_LIST}"
-  fi
-fi
-ensure_variable 'topics=' "${COMBINED_RAW_TOPIC_LIST}" etc/s3-connector/sink-s3.properties
-ensure_variable 's3.bucket.name=' "${MINIO_INTERMEDIATE_BUCKET_NAME}" etc/s3-connector/sink-s3.properties
+ensure_variable 'store.url=' "${MINIO_ENDPOINT}" etc/s3-connector/sink-s3.properties
+ensure_variable 'aws.access.key.id=' "${MINIO_ACCESS_KEY}" etc/s3-connector/sink-s3.properties
+ensure_variable 'aws.secret.access.key=' "${MINIO_SECRET_KEY}" etc/s3-connector/sink-s3.properties
 
 echo "==> Configuring Management Portal"
 sudo-linux bin/radar-docker build --no-cache radarbase-postgresql
