@@ -373,7 +373,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_INTERMEDIATE_BUCKET_NAME: ${MINIO_INTERMEDIATE_BUCKET_NAME}
       MINIO_OUTPUT_BUCKET_NAME: ${MINIO_OUTPUT_BUCKET_NAME}
-      MINIO_ENDPOINT: "http://minio1:9000"
+      MINIO_ENDPOINT: "http://minio1:9000/"
     depends_on:
       - minio1
       - minio2
@@ -388,7 +388,7 @@ services:
       done;
       echo Connected to minio!;
 
-      /usr/bin/mc config host add minio ${MINIO_ENDPOINT} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
+      /usr/bin/mc config host add minio http://minio1:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
       /usr/bin/mc mb -p minio/${MINIO_INTERMEDIATE_BUCKET_NAME};
       /usr/bin/mc mb -p minio/${MINIO_OUTPUT_BUCKET_NAME};
       exit 0;
