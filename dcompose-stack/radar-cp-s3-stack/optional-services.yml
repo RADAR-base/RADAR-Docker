@@ -174,8 +174,8 @@ services:
   radarbase-upload-postgresql:
     image: postgres:${POSTGRES_VERSION}
     volumes:
-      - "${UPLOAD_CONNECT_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
+      - "${UPLOAD_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
     environment:
       - POSTGRES_USER=radarcns
       - POSTGRES_PASSWORD=radarcns
-      - POSTGRES_MULTIPLE_DATABASES=managementportal,uploadconnector
+      - POSTGRES_DB=uploadconnector

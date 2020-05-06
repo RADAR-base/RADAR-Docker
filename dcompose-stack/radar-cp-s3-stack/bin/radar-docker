@@ -23,7 +23,7 @@ function print_usage() {
   echo '                            if services are provided in the arguments, only those services'
   echo '                            are actually started.'
   echo '  install-systemd           Install systemd wrappers to manage the RADAR platform'
-  echo '  hdfs                      Start the HDFS cluster stack.'
+  echo '  minio                     Start the minio cluster.'
   echo '  health                    Check the health of the cluster and restart failing services.'
   echo '  quit SERVICE...           Stop and remove given services.'
   echo '  rebuild SERVICE...        Rebuild and restart given services.'

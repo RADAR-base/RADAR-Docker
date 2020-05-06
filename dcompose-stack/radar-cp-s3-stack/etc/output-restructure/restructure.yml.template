@@ -9,7 +9,7 @@ source:
   # Minio S3 settings
   s3:
     endpoint: http://minio1:9000
-    bucket:
+    bucket: radarbase-cold-storage
     accessToken:
     secretKey:
 
