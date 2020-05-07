@@ -51,13 +51,9 @@ fi
 
 # Check provided directories and configurations
 check_parent_exists MINIO1_DATA1 ${MINIO1_DATA1}
-check_parent_exists MINIO1_DATA2 ${MINIO1_DATA2}
 check_parent_exists MINIO2_DATA1 ${MINIO2_DATA1}
-check_parent_exists MINIO2_DATA2 ${MINIO2_DATA2}
 check_parent_exists MINIO3_DATA1 ${MINIO3_DATA1}
-check_parent_exists MINIO3_DATA2 ${MINIO3_DATA2}
 check_parent_exists MINIO4_DATA1 ${MINIO4_DATA1}
-check_parent_exists MINIO4_DATA2 ${MINIO4_DATA2}
 check_parent_exists MONGODB_DIR ${MONGODB_DIR}
 check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 check_parent_exists UPLOAD_POSTGRES_DIR ${UPLOAD_POSTGRES_DIR}

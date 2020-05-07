@@ -298,13 +298,12 @@ services:
       - minio
     volumes:
       - "${MINIO1_DATA1}/data/:/data1"
-      - "${MINIO2_DATA2}/data/:/data2"
     ports:
       - "9001:9000"
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server http://minio{1...4}/data{1...2}
+    command: server http://minio{1...4}/data{1}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -317,11 +316,10 @@ services:
       - minio
     volumes:
       - "${MINIO2_DATA1}/data/:/data1"
-      - "${MINIO2_DATA2}/data/:/data2"
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server http://minio{1...4}/data{1...2}
+    command: server http://minio{1...4}/data{1}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -334,11 +332,10 @@ services:
       - minio
     volumes:
       - "${MINIO3_DATA1}/data/:/data1"
-      - "${MINIO3_DATA2}/data/:/data2"
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server http://minio{1...4}/data{1...2}
+    command: server http://minio{1...4}/data{1}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -351,11 +348,10 @@ services:
       - minio
     volumes:
       - "${MINIO4_DATA1}/data/:/data1"
-      - "${MINIO4_DATA2}/data/:/data2"
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server http://minio{1...4}/data{1...2}
+    command: server http://minio{1...4}/data{1}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
