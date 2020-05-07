@@ -54,7 +54,7 @@ services:
       - zookeeper
     volumes:
       - zookeeper-1-data:/var/lib/zookeeper/data
-      - zookeeper-1-log:/var/lib/zookeeper/logs
+      - zookeeper-1-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 1
@@ -75,7 +75,7 @@ services:
       - zookeeper
     volumes:
       - zookeeper-2-data:/var/lib/zookeeper/data
-      - zookeeper-2-log:/var/lib/zookeeper/logs
+      - zookeeper-2-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 2
@@ -96,7 +96,7 @@ services:
       - zookeeper
     volumes:
       - zookeeper-3-data:/var/lib/zookeeper/data
-      - zookeeper-3-log:/var/lib/zookeeper/logs
+      - zookeeper-3-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 3
