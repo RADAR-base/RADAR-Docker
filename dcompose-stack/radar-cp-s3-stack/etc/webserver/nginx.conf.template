@@ -104,10 +104,6 @@ http {
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
     }
-    location /dashboard/ {
-      proxy_pass         http://dashboard:80/;
-      proxy_set_header   Host $host;
-    }
     location /portainer/ {
       include ip-access-control.conf;
 
@@ -121,11 +117,6 @@ http {
       proxy_set_header   Upgrade $http_upgrade;
       proxy_set_header   Connection "upgrade";
       proxy_http_version 1.1;
-    }
-    location /api/ {
-      include cors.conf;
-      proxy_pass         http://rest-api:8080/api/;
-      proxy_set_header   Host $host;
     }
     location /managementportal/ {
       include cors.conf;
@@ -153,6 +144,7 @@ http {
       proxy_pass         http://kafka-manager:9000;
       proxy_set_header   Host $host;
     }
-    include optional-services.conf;
+    # include optional-services.conf;
+    # include dashboard-pipeline.conf;
   }
 }

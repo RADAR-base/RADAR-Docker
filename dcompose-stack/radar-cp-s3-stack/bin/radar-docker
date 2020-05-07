@@ -15,18 +15,21 @@ function print_usage() {
   echo "Usage: $0 [COMMAND|-h|--help] ..."
   echo
   echo 'Commands:'
-  echo '  cert-renew                Request or renew SSL certificate'
-  echo '  foreground [SERVICE...]   Install the RADAR-base platform and start it in the foreground.'
-  echo '                            if services are provided in the arguments, only those services'
-  echo '                            are actually started.'
-  echo '  install [SERVICE...]      Install the RADAR-base platform, starting it in the background.'
-  echo '                            if services are provided in the arguments, only those services'
-  echo '                            are actually started.'
-  echo '  install-systemd           Install systemd wrappers to manage the RADAR platform'
-  echo '  minio                     Start the minio cluster.'
-  echo '  health                    Check the health of the cluster and restart failing services.'
-  echo '  quit SERVICE...           Stop and remove given services.'
-  echo '  rebuild SERVICE...        Rebuild and restart given services.'
+  echo '  cert-renew                            Request or renew SSL certificate'
+  echo '  foreground [SERVICE...]               Install the RADAR-base platform and start it in the foreground.'
+  echo '                                        if services are provided in the arguments, only those services'
+  echo '                                        are actually started.'
+  echo '  install [SERVICE...]                  Install the RADAR-base platform, starting it in the background.'
+  echo '                                        if services are provided in the arguments, only those services'
+  echo '                                        are actually started.'
+  echo '  install-dashboard [SERVICE...]        Optionally install the RADAR-base dashboard pipeline.'
+  echo '                                        Starting it in the background. This should be installed after '
+  echo '                                        running "install" command.'
+  echo '  install-systemd                       Install systemd wrappers to manage the RADAR platform'
+  echo '  minio                                 Start the minio cluster.'
+  echo '  health                                Check the health of the cluster and restart failing services.'
+  echo '  quit SERVICE...                       Stop and remove given services.'
+  echo '  rebuild SERVICE...                    Rebuild and restart given services.'
   echo
   echo 'Options:'
   echo '  -h, --help                Print this usage information.'
@@ -56,6 +59,9 @@ cert-renew)
 install)
   . lib/perform-install.sh
   ;;
+install-dashboard)
+  . lib/install-dashboard-pipeline.sh
+  ;;
 install-systemd)
   . lib/install-systemd-wrappers.sh
   ;;
@@ -70,8 +76,8 @@ quit)
 health)
   . lib/check-health.sh
   ;;
-hdfs)
-  exec $stack up -d --remove-orphans hdfs-datanode-1 hdfs-datanode-2 hdfs-datanode-3
+minio)
+  exec $stack up -d --remove-orphans minio1 minio2 minio3 minio4
   ;;
 foreground)
   . lib/perform-install.sh

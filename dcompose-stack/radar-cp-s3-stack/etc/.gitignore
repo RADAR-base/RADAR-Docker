@@ -4,6 +4,7 @@
 /webserver/kafka-manager.htpasswd
 /webserver/ip-access-control.conf
 /webserver/optional-services.conf
+/webserver/dashboard-pipeline.conf
 /radar-backend/radar.yml
 /smtp.env
 /rest-api/device-catalog.yml

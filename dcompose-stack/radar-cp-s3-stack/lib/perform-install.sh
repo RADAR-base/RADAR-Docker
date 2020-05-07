@@ -15,9 +15,9 @@ check_config_present etc/radar-backend/radar.yml
 copy_template_if_absent etc/managementportal/config/oauth_client_details.csv
 copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/s3-connector/sink-s3.properties
-copy_template_if_absent etc/rest-api/radar.yml
 copy_template_if_absent etc/webserver/ip-access-control.conf
 copy_template_if_absent etc/webserver/optional-services.conf
+copy_template_if_absent etc/webserver/dashboard-pipeline.conf
 copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
 copy_template_if_absent etc/rest-source-authorizer/rest_source_clients_configs.yml
 copy_template_if_absent etc/output-restructure/restructure.yml
@@ -54,16 +54,11 @@ check_parent_exists MINIO1_DATA1 ${MINIO1_DATA1}
 check_parent_exists MINIO2_DATA1 ${MINIO2_DATA1}
 check_parent_exists MINIO3_DATA1 ${MINIO3_DATA1}
 check_parent_exists MINIO4_DATA1 ${MINIO4_DATA1}
-check_parent_exists MONGODB_DIR ${MONGODB_DIR}
 check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
 check_parent_exists UPLOAD_POSTGRES_DIR ${UPLOAD_POSTGRES_DIR}
 
 # Checking provided passwords and environment variables
 ensure_env_default SERVER_NAME localhost
-
-ensure_env_default HOTSTORAGE_USERNAME hotstorage
-ensure_env_password HOTSTORAGE_PASSWORD "Hot storage (MongoDB) password not set in .env."
-ensure_env_default HOTSTORAGE_NAME hotstorage
 
 ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
 ensure_env_default KAFKA_MANAGER_USERNAME kafkamanager-user
@@ -101,12 +96,6 @@ echo "==> Setting up minio cluster and bucket"
 sudo-linux bin/radar-docker up -d minio1 minio2 minio3 minio4
 sudo-linux bin/radar-docker run --rm mc
 
-echo "==> Configuring MongoDB Connector"
-# Update sink-mongo.properties
-ensure_variable 'mongo.username=' $HOTSTORAGE_USERNAME etc/mongodb-connector/sink-mongo.properties
-ensure_variable 'mongo.password=' $HOTSTORAGE_PASSWORD etc/mongodb-connector/sink-mongo.properties
-ensure_variable 'mongo.database=' $HOTSTORAGE_NAME etc/mongodb-connector/sink-mongo.properties
-
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"
     radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
@@ -119,7 +108,6 @@ if [ -z "${COMBINED_AGG_TOPIC_LIST}"]; then
     COMBINED_AGG_TOPIC_LIST="${RADAR_AGG_TOPIC_LIST},${COMBINED_AGG_TOPIC_LIST}"
   fi
 fi
-ensure_variable 'topics=' "${COMBINED_AGG_TOPIC_LIST}" etc/mongodb-connector/sink-mongo.properties
 
 echo "==> Configuring S3 Sink Connector"
 if [ -z "${COMBINED_RAW_TOPIC_LIST}"]; then
@@ -134,6 +122,13 @@ ensure_variable 'store.url=' "${MINIO_ENDPOINT}" etc/s3-connector/sink-s3.proper
 ensure_variable 'aws.access.key.id=' "${MINIO_ACCESS_KEY}" etc/s3-connector/sink-s3.properties
 ensure_variable 'aws.secret.access.key=' "${MINIO_SECRET_KEY}" etc/s3-connector/sink-s3.properties
 
+
+echo "==> Configuring output restructure..."
+ensure_variable 'accessToken:' " ${MINIO_ACCESS_KEY}" etc/output-restructure/restructure.yml
+ensure_variable 'secretKey:' " ${MINIO_SECRET_KEY}" etc/output-restructure/restructure.yml
+ensure_variable 'bucket:' " ${MINIO_INTERMEDIATE_BUCKET_NAME}" etc/output-restructure/restructure.yml
+
+
 echo "==> Configuring Management Portal"
 sudo-linux bin/radar-docker build --no-cache radarbase-postgresql
 sudo-linux bin/radar-docker up -d --force-recreate radarbase-postgresql
@@ -143,20 +138,13 @@ ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for M
 
 bin/keystore-init
 
-echo "==> Configuring REST-API"
-
-# Set MongoDb credential
-inline_variable 'username:[[:space:]]' "$HOTSTORAGE_USERNAME" etc/rest-api/radar.yml
-inline_variable 'password:[[:space:]]' "$HOTSTORAGE_PASSWORD" etc/rest-api/radar.yml
-inline_variable 'database_name:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/radar.yml
-
 echo "==> Configuring Kafka-manager"
 sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${KAFKA_MANAGER_USERNAME}" "${KAFKA_MANAGER_PASSWORD}" > etc/webserver/kafka-manager.htpasswd
 
 echo "==> Configuring nginx"
 inline_variable 'server_name[[:space:]]*' "${SERVER_NAME};" etc/webserver/nginx.conf
 if [ "${ENABLE_HTTPS:-yes}" = yes ]; then
-  sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1'"${SERVER_NAME}"'\2|' etc/webserver/nginx.conf
+  sed_i 's|\(/etc/letsencrypt/live/\)[^/]*\(/.*\.pem\)|\1':q"${SERVER_NAME}"'\2|' etc/webserver/nginx.conf
   init_certificate "${SERVER_NAME}"
 else
   # Fill in reverse proxy servers
@@ -178,6 +166,10 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   inline_variable 'client_secret:[[:space:]]' "$FITBIT_API_CLIENT_SECRET" etc/rest-source-authorizer/rest_source_clients_configs.yml
 
   check_config_present etc/redcap-integration/radar.yml
+
+  echo "==> Including optional-services.conf; to nginx.conf"
+
+  sed_i  '/\#\sinclude\soptional\-services\.conf\;*/s/#//g' etc/webserver/nginx.conf
 fi
 
 echo "==> Starting RADAR-base Platform"
