@@ -359,8 +359,6 @@ services:
     image: minio/mc:RELEASE.2020-04-02T21-50-12Z
     networks:
       - minio
-    volumes:
-      - ./images/mc/entrypoint.sh:/etc/entrypoint.sh
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
