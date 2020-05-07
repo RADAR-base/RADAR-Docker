@@ -17,9 +17,6 @@ networks:
   monitor:
     driver: bridge
     internal: true
-#  hotstorage:
-#    driver: bridge
-#    internal: true
   management:
     driver: bridge
     internal: true
@@ -61,7 +58,7 @@ services:
       - zookeeper
     volumes:
       - zookeeper-1-data:/var/lib/zookeeper/data
-      - zookeeper-1-log:/var/lib/zookeeper/logs
+      - zookeeper-1-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 1
@@ -82,7 +79,7 @@ services:
       - zookeeper
     volumes:
       - zookeeper-2-data:/var/lib/zookeeper/data
-      - zookeeper-2-log:/var/lib/zookeeper/logs
+      - zookeeper-2-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 2
@@ -103,7 +100,7 @@ services:
       - zookeeper
     volumes:
       - zookeeper-3-data:/var/lib/zookeeper/data
-      - zookeeper-3-log:/var/lib/zookeeper/logs
+      - zookeeper-3-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 3
@@ -303,7 +300,7 @@ services:
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server http://minio{1...4}/data{1}
+    command: server http://minio{1...4}/data1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -319,7 +316,7 @@ services:
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server http://minio{1...4}/data{1}
+    command: server http://minio{1...4}/data1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -335,7 +332,7 @@ services:
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server http://minio{1...4}/data{1}
+    command: server http://minio{1...4}/data1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -351,7 +348,7 @@ services:
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server http://minio{1...4}/data{1}
+    command: server http://minio{1...4}/data1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -548,6 +545,7 @@ services:
       - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
       - "./etc/webserver/kafka-manager.htpasswd:/etc/nginx/kafka-manager.htpasswd:ro"
       - "./etc/webserver/optional-services.conf:/etc/nginx/optional-services.conf"
+      - "./etc/webserver/dashboard-pipeline.conf:/etc/nginx/optional-services.conf"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
