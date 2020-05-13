@@ -20,6 +20,14 @@ http {
   # For logins, make 2 requests per second at most
   limit_req_zone $binary_remote_addr zone=login_limit:10m rate=2r/s;
 
+  upstream minio_servers {
+    server minio1:9000;
+    server minio2:9000;
+    server minio3:9000;
+    server minio4:9000;
+  }
+
+
   server {
     listen                    80 default_server;
     listen                    [::]:80 default_server;
@@ -143,6 +151,10 @@ http {
 
       proxy_pass         http://kafka-manager:9000;
       proxy_set_header   Host $host;
+    }
+    location /minio/ {
+      proxy_set_header   Host $host;
+      proxy_pass http://minio_servers;
     }
     # include optional-services.conf;
     # include dashboard-pipeline.conf;

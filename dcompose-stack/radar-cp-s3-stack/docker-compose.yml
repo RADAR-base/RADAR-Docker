@@ -295,8 +295,6 @@ services:
       - minio
     volumes:
       - "${MINIO1_DATA1}/data/:/data1"
-    ports:
-      - "9001:9000"
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
