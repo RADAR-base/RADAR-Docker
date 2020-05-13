@@ -13,7 +13,6 @@ fi
 if [[ "${ENABLE_DASHBOARD_PIPELINE}" = "true" ]]; then
   stack_array+=("-f dashboard-pipeline.yml ")
 fi
-echo " stack is: ${stack_array[@]}"
 
 function print_usage() {
   echo 'Control the RADAR-base platform directly'
