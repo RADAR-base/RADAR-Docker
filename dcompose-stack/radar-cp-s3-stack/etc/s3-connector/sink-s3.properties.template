@@ -15,4 +15,4 @@ s3.part.retries=3
 store.url=http://minio1:9000/
 storage.class=io.confluent.connect.s3.storage.S3Storage
 format.class=org.radarbase.connect.s3.RadarBaseAvroFormat
-avro.codec=snappy
+avro.codec=deflate

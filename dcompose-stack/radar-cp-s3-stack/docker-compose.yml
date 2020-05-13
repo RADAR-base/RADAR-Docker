@@ -362,7 +362,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_INTERMEDIATE_BUCKET_NAME: ${MINIO_INTERMEDIATE_BUCKET_NAME}
       MINIO_OUTPUT_BUCKET_NAME: ${MINIO_OUTPUT_BUCKET_NAME}
-      MINIO_ENDPOINT: "http://minio1:9000/"
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
     depends_on:
       - minio1
       - minio2
@@ -444,6 +444,11 @@ services:
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
       AWS_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       AWS_SECRET_KEY: ${MINIO_SECRET_KEY}
+    healthcheck:
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-s3-sink-connector/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
 
   #---------------------------------------------------------------------------#
