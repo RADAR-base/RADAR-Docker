@@ -15,10 +15,9 @@ before_install:
   - sudo $DOCKER_COMPOSE --version
 script:
   # Standard stack
-  - cd dcompose-stack
 
   # With email and HDFS support
-  - cd ../radar-cp-hadoop-stack/travis
+  - cd dcompose-stack/radar-cp-hadoop-stack/travis
   - ./setup-env.sh
   - cd ../
   - bin/radar-docker install && sleep 120 && bin/radar-docker ps && [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]
