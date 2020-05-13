@@ -41,6 +41,6 @@ MINIO1_DATA1=/home/travis/data/data11
 MINIO2_DATA1=/home/travis/data/data21
 MINIO3_DATA1=/home/travis/data/data31
 MINIO4_DATA1=/home/travis/data/data41
-UPLOAD_POSTGRES_DIR=/usr/local/var/lib/docker/upload
+UPLOAD_POSTGRES_DIR=/home/travis/data/upload
 ENABLE_DASHBOARD_PIPELINE=false
 ENABLE_KAFKA_STREAMS=false
