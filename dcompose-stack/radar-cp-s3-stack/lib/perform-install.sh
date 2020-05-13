@@ -11,9 +11,7 @@ check_command_exists docker-compose
 # Initialize and check all config files
 check_config_present .env etc/env.template
 check_config_present etc/smtp.env
-check_config_present etc/radar-backend/radar.yml
 copy_template_if_absent etc/managementportal/config/oauth_client_details.csv
-copy_template_if_absent etc/mongodb-connector/sink-mongo.properties
 copy_template_if_absent etc/s3-connector/sink-s3.properties
 copy_template_if_absent etc/webserver/ip-access-control.conf
 copy_template_if_absent etc/webserver/optional-services.conf
@@ -155,6 +153,13 @@ else
   sed_i "s/^\(\s*\).*# NGINX_PROXIES/\1$proxies# NGINX_PROXIES/" etc/webserver/nginx.conf
 fi
 
+
+if [[ "${ENABLE_KAFKA_STREAMS}" = "true" ]]; then
+  echo "==> Configuring Kafka Streams..."
+  check_config_present etc/radar-backend/radar.yml
+fi
+
+
 # Configure Optional services
 if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   echo "==> Configuring Fitbit Connector"
@@ -172,7 +177,7 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   sed_i  '/\#\sinclude\soptional\-services\.conf\;*/s/#//g' etc/webserver/nginx.conf
 fi
 
-# Configure Optional services
+# Configure Dashboard services
 if [[ "${ENABLE_DASHBOARD_PIPELINE}" = "true" ]]; then
   . lib/install-dashboard-pipeline.sh
 fi

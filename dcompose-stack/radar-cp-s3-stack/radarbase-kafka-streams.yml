@@ -1,0 +1,60 @@
+---
+version: '3.5'
+
+services:
+
+  #---------------------------------------------------------------------------#
+  # RADAR backend streams                                                     #
+  #---------------------------------------------------------------------------#
+  radar-backend-stream:
+    image: radarbase/radar-backend:0.4.0
+    command:
+      - stream
+    networks:
+      - zookeeper
+      - kafka
+      # for getting the play store category
+      - default
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - kafka-init
+    volumes:
+      - ./etc/radar-backend/radar.yml:/etc/radar.yml
+    restart: always
+    environment:
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
+      KAFKA_BROKERS: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR backend monitor                                                     #
+  #---------------------------------------------------------------------------#
+  radar-backend-monitor:
+    image: radarbase/radar-backend:0.4.0
+    command: monitor
+    networks:
+      - zookeeper
+      - kafka
+      - mail
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - kafka-init
+      - smtp
+    volumes:
+      - ./etc/radar-backend/radar.yml:/etc/radar.yml
+      - radar-backend-monitor-disconnect-data:/var/lib/radar/data
+    restart: always
+    environment:
+      KAFKA_REST_PROXY: http://rest-proxy-1:8082
+      KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
+      KAFKA_BROKERS: 3
+      # For backwards compatibility
+      TOPIC_LIST: "application_record_counts"

@@ -61,22 +61,33 @@ This is a set of optional configuration which is not required but could be usefu
 
       3.2 For the Fitbit Connector, please specify the `FITBIT_API_CLIENT_ID` and `FITBIT_API_CLIENT_SECRET` in the .env file. Then copy the `etc/fitbit/docker/users/fitbit-user.yml.template` to `etc/fitbit/docker/users/fitbit-user.yml` and fill out all the details of the fitbit user. If multiple users, then for each user create a separate file in the `etc/fitbit/docker/users/` directory containing all the fields as in the template. For more information about users configuration for fitbit, read [here](https://github.com/RADAR-base/RADAR-REST-Connector#usage).
 
-4. The systemd scripts described in the next paragraph include a health check. To enable system health notifications to Slack, install its [Incoming Webhooks app](https://api.slack.com/incoming-webhooks). With the webhook URL that you configure there, set in `.env`:
+3. The `systemd` scripts described in the next paragraph include a health check. To enable system health notifications to Slack, install its [Incoming Webhooks app](https://api.slack.com/incoming-webhooks). With the webhook URL that you configure there, set in `.env`:
 
       ```shell
       HEALTHCHECK_SLACK_NOTIFY=yes
       HEALTHCHECK_SLACK_WEBHOOK_URL=https://...
       ```
-## Optionally install Dashboard pipeline.
-Unlike radar-cp-hadoop-stack, we have separated the real-time dashboard visualization stack to a separate docker-compose file [dashboard-pipeline.yml](dashboard-pipeline.yml).
-This part of the pipeline is not actively used in community. Thus, we have made it as an on-demand installation.
+4.  **Optionally install Dashboard pipeline.**
+    Unlike radar-cp-hadoop-stack, we have separated the real-time dashboard visualization stack to a separate docker-compose file [dashboard-pipeline.yml](dashboard-pipeline.yml).
+    This part of the pipeline is not actively used in community. Thus, we have made it as an on-demand installation.
+    
+    To enable dashboard pipeline, please set the `ENABLE_DASHBOARD_PIPELINE` parameter in `.env` file to `true`.
+    
+    Then run
+    ```
+    bin/radar-docker install
+    ```     
+5.  **Optionally install Kakfa Streams for data aggregation and monitoring.**
+    Unlike radar-cp-hadoop-stack, we have separated the Kafka-Streams applications of RADAR-base into separate docker-compose file [radarbase-kafka-streams.yml](radarbase-kafka-streams.yml).
+    This part of the pipeline is not actively used in community. Thus, we have made it as an on-demand installation.
+    
+    To enable Kafka streams and monitoring services, please set the `ENABLE_KAFKA_STREAMS` parameter in `.env` file to `true`.
+    
+    Then run
+    ```
+    bin/radar-docker install
+    ```     
 
-To enable dashboard pipeline, please set the `ENABLE_DASHBOARD_PIPELINE` parameter in `.env` file to `true`.
-
-Then run
-```
-bin/radar-docker install
-```
       
 #### Using S3 as the target for eventual restructured data.
 Current stack integrates the radar-output as a service, to restructure data from cold storage into `project-> subject-> topic -> hourlydataincsv` format. This service supports writing restructured data into `local filesystem` or to `S3` bucket as well.
