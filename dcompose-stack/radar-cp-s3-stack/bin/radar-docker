@@ -3,12 +3,17 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 . .env
 
+stack_array=()
+stack_array+=("-f docker-compose.yml ")
+
 if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
-  stack="${DOCKER_COMPOSE:-docker-compose} -f docker-compose.yml -f optional-services.yml"
-else
-  stack=${DOCKER_COMPOSE:-docker-compose}
+  stack_array+=("-f optional-services.yml ")
 fi
 
+if [[ "${ENABLE_DASHBOARD_PIPELINE}" = "true" ]]; then
+  stack_array+=("-f dashboard-pipeline.yml ")
+fi
+echo " stack is: ${stack_array[@]}"
 
 function print_usage() {
   echo 'Control the RADAR-base platform directly'
@@ -22,9 +27,6 @@ function print_usage() {
   echo '  install [SERVICE...]                  Install the RADAR-base platform, starting it in the background.'
   echo '                                        if services are provided in the arguments, only those services'
   echo '                                        are actually started.'
-  echo '  install-dashboard [SERVICE...]        Optionally install the RADAR-base dashboard pipeline.'
-  echo '                                        Starting it in the background. This should be installed after '
-  echo '                                        running "install" command.'
   echo '  install-systemd                       Install systemd wrappers to manage the RADAR platform'
   echo '  minio                                 Start the minio cluster.'
   echo '  health                                Check the health of the cluster and restart failing services.'
@@ -41,11 +43,13 @@ function print_usage() {
 
 if [ $# = 0 ]; then
   print_usage
+  stack="${DOCKER_COMPOSE:-docker-compose} ${stack_array[@]}"
   exec $stack
 fi
 
 
 CMD=$1
+stack="${DOCKER_COMPOSE:-docker-compose} ${stack_array[@]}"
 shift
 
 # advanced pattern matching
@@ -58,9 +62,6 @@ cert-renew)
   ;;
 install)
   . lib/perform-install.sh
-  ;;
-install-dashboard)
-  . lib/install-dashboard-pipeline.sh
   ;;
 install-systemd)
   . lib/install-systemd-wrappers.sh

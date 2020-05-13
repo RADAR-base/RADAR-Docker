@@ -40,6 +40,3 @@ inline_variable 'database_name:[[:space:]]' "$HOTSTORAGE_NAME" etc/rest-api/rada
 
 echo "==> Including dashboard-pipeline.conf to nginx"
   sed_i  '/\#\sinclude\sdashboard\-pipeline\.conf\;*/s/#//g' etc/webserver/nginx.conf
-
-echo "==> Starting RADAR-base Platform"
-sudo-linux bin/radar-docker -f docker-compose.yml -f dashboard-pipeline.yml up -d --remove-orphans

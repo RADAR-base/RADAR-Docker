@@ -67,6 +67,17 @@ This is a set of optional configuration which is not required but could be usefu
       HEALTHCHECK_SLACK_NOTIFY=yes
       HEALTHCHECK_SLACK_WEBHOOK_URL=https://...
       ```
+## Optionally install Dashboard pipeline.
+Unlike radar-cp-hadoop-stack, we have separated the real-time dashboard visualization stack to a separate docker-compose file [dashboard-pipeline.yml](dashboard-pipeline.yml).
+This part of the pipeline is not actively used in community. Thus, we have made it as an on-demand installation.
+
+To enable dashboard pipeline, please set the `ENABLE_DASHBOARD_PIPELINE` parameter in `.env` file to `true`.
+
+Then run
+```
+bin/radar-docker install
+```
+      
 #### Using S3 as the target for eventual restructured data.
 Current stack integrates the radar-output as a service, to restructure data from cold storage into `project-> subject-> topic -> hourlydataincsv` format. This service supports writing restructured data into `local filesystem` or to `S3` bucket as well.
 The default configuration of this setup uses S3 as the intermediate storage and uses local file system as the eventual data storage. 
@@ -143,28 +154,7 @@ sudo rm /etc/rsyslog.d/00-radar.conf /etc/logrotate.d/radar /etc/cron.hourly/log
 sudo systemctl restart rsyslog
 ```
 
-## Optionally install Dashboard pipeline.
-Unlike radar-cp-hadoop-stack, we have separated the real-time dashboard visualization stack to a separate docker-compose file [dashboard-pipeline.yml](dashboard-pipeline.yml).
-This part of the pipeline is not actively used in community. Thus, we have made it as an on-demand installation.
 
-To install dashboard, 
-1. Please install the core stack first by successfully running 
-```bash
-bin/radar-docker install
-```
-
-2. Once the core stack is running, you can optionally install dashboard pipeline by running
-```bash
-bin/radar-docker install-dashboard
-```
-3. If you would like to stop the stack after installing dashboard, you can do so buy running
-```bash
-bin/radar-docker -f docker-compose.yml -f dashboard-pipeline.yml down
-```
-4. If you would like to only stop part of the services after running dashboard, use
-```bash
-bin/radar-docker -f docker-compose.yml -f dashboard-pipeline.yml stop <service name>
-```
 ## Upgrading the environment to the latest versions.
 You can upgrade to the latest set-up by simply pulling latest version of RADAR-Docker. 
 Then run `bin/radar-docker install` and take necessary steps based on the command line logs.

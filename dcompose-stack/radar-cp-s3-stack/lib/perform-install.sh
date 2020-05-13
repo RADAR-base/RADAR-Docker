@@ -172,6 +172,11 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   sed_i  '/\#\sinclude\soptional\-services\.conf\;*/s/#//g' etc/webserver/nginx.conf
 fi
 
+# Configure Optional services
+if [[ "${ENABLE_DASHBOARD_PIPELINE}" = "true" ]]; then
+  . lib/install-dashboard-pipeline.sh
+fi
+
 echo "==> Starting RADAR-base Platform"
 sudo-linux bin/radar-docker up -d --remove-orphans "$@"
 
