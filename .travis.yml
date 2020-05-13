@@ -14,16 +14,20 @@ before_install:
   - chmod +x "$DOCKER_COMPOSE";
   - sudo $DOCKER_COMPOSE --version
 script:
-  # Standard stack
-  - cd dcompose-stack/radar-cp-stack
-  - sudo $DOCKER_COMPOSE up -d --build && sleep 15 && [ -z "$(sudo $DOCKER_COMPOSE ps | tail -n +3 | grep " Exit ")" ]
-  - sudo $DOCKER_COMPOSE down
 
   # With email and HDFS support
   - cd ../radar-cp-hadoop-stack/travis
   - ./setup-env.sh
   - cd ../
   - bin/radar-docker install && sleep 120 && bin/radar-docker ps && [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]
+
+
+  # With s3 stack
+  - cd ../radar-cp-s3-stack/travis
+  - ./setup-env.sh
+  - cd ../
+  - bin/radar-docker install && sleep 120 && bin/radar-docker ps && [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]
+
 
   # Firebase messaging stack
   - cd  ../firebase-app-server
