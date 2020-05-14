@@ -17,11 +17,21 @@ http {
     '"$http_user_agent" "$http_x_forwarded_for"';
   tcp_nodelay  on;
 
+  # hide nginx version
+  server_tokens off;
+
   # add nosniff header (https://www.owasp.org/index.php/List_of_useful_HTTP_headers)
   add_header X-Content-Type-Options nosniff;
 
   # For logins, make 2 requests per second at most
   limit_req_zone $binary_remote_addr zone=login_limit:10m rate=2r/s;
+
+  upstream minio_servers {
+    server minio1:9000;
+    server minio2:9000;
+    server minio3:9000;
+    server minio4:9000;
+  }
 
   server {
     listen                    80 default_server;
@@ -37,6 +47,7 @@ http {
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
+      add_header 'Allow' 'GET,OPTIONS';
     }
     location ^~ /kafka/consumers {
       deny all;
@@ -75,9 +86,8 @@ http {
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
     }
-    location /dashboard/ {
-      proxy_pass         http://dashboard:80/;
-      proxy_set_header   Host $host;
+    location = /schema/application.wadl {
+      deny all;
     }
     location /portainer/ {
       include ip-access-control.conf;
@@ -92,11 +102,6 @@ http {
       proxy_set_header   Upgrade $http_upgrade;
       proxy_set_header   Connection "upgrade";
       proxy_http_version 1.1;
-    }
-    location /api/ {
-      include cors.conf;
-      proxy_pass         http://rest-api:8080/api/;
-      proxy_set_header   Host $host;
     }
     location /managementportal/ {
       include cors.conf;
@@ -124,6 +129,11 @@ http {
       proxy_pass         http://kafka-manager:9000;
       proxy_set_header   Host $host;
     }
-    include optional-services.conf;
+    location /minio/ {
+      proxy_set_header   Host $host;
+      proxy_pass http://minio_servers;
+    }
+    # include optional-services.conf;
+    # include dashboard-pipeline.conf;
   }
 }
