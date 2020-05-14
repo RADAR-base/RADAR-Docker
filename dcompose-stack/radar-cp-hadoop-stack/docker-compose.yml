@@ -839,8 +839,5 @@ services:
       - redis-data:/data
     networks:
       - redis
-    command:
-      - server
-      - /data
     environment:
       ALLOW_EMPTY_PASSWORD: 'yes'
