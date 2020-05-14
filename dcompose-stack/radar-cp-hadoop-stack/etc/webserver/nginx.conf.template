@@ -45,7 +45,7 @@ http {
     ssl_session_cache         shared:SSL:20m;
     ssl_session_timeout       10m;
 
-    ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+    ssl_protocols             TLSv1.2;
     ssl_prefer_server_ciphers on;
     ssl_ciphers               "ECDH+AESGCM:ECDH+AES256:ECDH+AES128:!ADH:!AECDH:!MD5;";
 
@@ -86,6 +86,7 @@ http {
         add_header 'Access-Control-Max-Age' 1728000;
         add_header 'Content-Type' 'text/plain charset=UTF-8';
         add_header 'Content-Length' 0;
+        add_header 'Allow' 'GET,OPTIONS';
         return 204;
       }
 
@@ -103,6 +104,9 @@ http {
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
+    }
+    location = /schema/application.wadl {
+      deny all;
     }
     location /dashboard/ {
       proxy_pass         http://dashboard:80/;
