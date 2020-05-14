@@ -621,7 +621,7 @@ services:
         retries: 3
 
   radar-output:
-    image: radarbase/radar-hdfs-restructure:redis-hdfs
+    image: radarbase/radar-output-restructure:1.0.0
     restart: always
     stop_signal: SIGINT
     networks:
