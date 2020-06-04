@@ -1,0 +1,4 @@
+urlid db
+url jdbc:hsqldb:hsql://hsqldb/status
+username SA
+password
