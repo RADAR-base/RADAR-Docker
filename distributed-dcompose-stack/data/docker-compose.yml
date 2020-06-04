@@ -10,7 +10,7 @@ services:
     image: radarbase/radar-output-restructure:1.0.0-hdfs
     restart: always
     stop_signal: SIGINT
-    network:
+    networks:
       - redis
     volumes:
       - ${RESTRUCTURE_OUTPUT_DIR}:/output
@@ -26,7 +26,7 @@ services:
     environment:
       REDIS_PASSWORD: "${REDIS_PASSWORD}"
     restart: always
-    network:
+    networks:
       - redis
     volumes:
       - "${REDIS_DATA_PATH}:/bitnami/redis/data"
