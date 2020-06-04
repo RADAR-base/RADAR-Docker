@@ -35,7 +35,7 @@ target:
 # @since: 0.7.0
 redis:
   # Redis URI
-  uri: redis://redis:6379
+  uri: redis://redis:6379?password=radar
   # Key prefix for locks
   lockPrefix: radar-output/lock/
 

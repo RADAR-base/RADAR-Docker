@@ -1,7 +1,7 @@
 ---
 version: '2.2'
 
-network:
+networks:
   redis:
     external: true
 
