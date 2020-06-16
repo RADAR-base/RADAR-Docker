@@ -21,8 +21,6 @@ copy_template_if_absent etc/managementportal/config/radar-is.yml
 
 . ./.env
 
-check_parent_exists MP_POSTGRES_DIR ${MP_POSTGRES_DIR}
-
 ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
 
 echo "==> Configuring Management Portal"
