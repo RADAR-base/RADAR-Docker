@@ -6,7 +6,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 . .env
 
-PSQL_CONNECT="psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} --username ${POSTGRES_USER} --password ${POSTGRES_PASSWORD}"
+PSQL_CONNECT="psql postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}"
 
 function create_user_and_database() {
   local database=$1
