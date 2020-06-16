@@ -24,7 +24,7 @@ copy_template_if_absent etc/managementportal/config/radar-is.yml
 ensure_env_password POSTGRES_PASSWORD "PostgreSQL password not set in .env."
 
 echo "==> Configuring Management Portal"
-on-db-ready lib/multi-db-init.sh
+./lib/on-db-ready lib/multi-db-init.sh
 ensure_env_password MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET "ManagementPortal front-end client secret is not set in .env"
 ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for ManagementPortal is not set in .env."
 
