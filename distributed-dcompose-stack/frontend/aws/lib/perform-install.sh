@@ -16,7 +16,6 @@ check_config_present .env etc/env.template
 check_config_present etc/smtp.env
 check_config_present etc/redcap-integration/radar.yml
 copy_template_if_absent etc/managementportal/config/oauth_client_details.csv
-copy_template_if_absent etc/rest-source-authorizer/rest_source_clients_configs.yml
 copy_template_if_absent etc/managementportal/config/radar-is.yml
 
 . ./.env
@@ -31,11 +30,6 @@ ensure_env_password MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD "Admin password for M
 bin/keystore-init
 
 inline_variable 'publicKeyEndpoints:[[:space:]]*' "http://${SERVER_NAME}/managementportal/oauth/token_key" etc/managementportal/config/radar-is.yml
-
-echo "==> Configuring Rest Source Authorizer"
-inline_variable 'client_id:[[:space:]]' "$FITBIT_API_CLIENT_ID" etc/rest-source-authorizer/rest_source_clients_configs.yml
-inline_variable 'client_secret:[[:space:]]' "$FITBIT_API_CLIENT_SECRET" etc/rest-source-authorizer/rest_source_clients_configs.yml
-
 
 echo "==> Configuring Netdata Host monitoring"
 if [[ -n "${NETDATA_MASTER_HOST}" ]]; then
