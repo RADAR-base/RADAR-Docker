@@ -50,7 +50,7 @@ services:
       MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET: ${MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET}
       MANAGEMENTPORTAL_OAUTH_CLIENTS_FILE: /mp-includes/config/oauth_client_details.csv
       MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT: ${MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT}
-      MANAGEMENTPORTAL_CATALOGUE_SERVER_SERVER_URL: http://catalog-server:9010/source-types
+      MANAGEMENTPORTAL_CATALOGUE_SERVER_SERVER_URL: ${MANAGEMENTPORTAL_CATALOGUE_SERVER_URL}
       MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD: ${MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD}
       MANAGEMENTPORTAL_COMMON_PRIVACY_POLICY_URL: ${MANAGEMENTPORTAL_COMMON_PRIVACY_POLICY_URL}
       MANAGEMENTPORTAL_OAUTH_META_TOKEN_TIMEOUT: PT2H
@@ -89,32 +89,6 @@ services:
       interval: 1m30s
       timeout: 5s
       retries: 3
-
-  #---------------------------------------------------------------------------#
-  # Catalog server from radar-schemas                                         #
-  #---------------------------------------------------------------------------#
-  catalog-server:
-    build:
-      context: ../../dcompose-stack/radar-cp-hadoop-stack/images/radar-kafka-init
-      args:
-        SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
-    image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
-    networks:
-      - management
-    command: radar-schemas-tools serve /schema/merged
-    volumes:
-      - ./etc/schema:/schema/conf
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: ${ZOOKEEPER_1_HOST},${ZOOKEEPER_2_HOST},${ZOOKEEPER_3_HOST}
-      KAFKA_SCHEMA_REGISTRY: ${SCHEMA_REGISTRY_URL}
-      KAFKA_NUM_BROKERS: 3
-      RADAR_NUM_PARTITIONS: 3
-      RADAR_NUM_REPLICATION_FACTOR: 3
-    healthcheck:
-        test: ["CMD", "curl", "-f", "localhost:9010/source-types"]
-        interval: 1m30s
-        timeout: 5s
-        retries: 3
 
   radar-rest-sources-backend:
     image: radarbase/radar-rest-source-auth-backend:1.1.0

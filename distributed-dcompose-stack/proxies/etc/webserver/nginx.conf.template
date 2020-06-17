@@ -181,6 +181,11 @@ http {
       auth_basic_user_file netdata.htpasswd;
     }
 
+    location /rest-sources/backend/ {
+      proxy_pass         http://catalog-server:9010/;
+      proxy_set_header   Host $host;
+    }
+
     location /hdfsnamenode/ {
       proxy_pass         ${HDFS_NAMENODE_UI_URL};
       proxy_set_header   Host $host;
