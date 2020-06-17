@@ -144,7 +144,7 @@ http {
       proxy_set_header   Host $host;
     }
 
-    location /rest-sources/backend/ {
+    location /catalog-server/ {
       proxy_pass         http://catalog-server:9010/;
       proxy_set_header   Host $host;
     }

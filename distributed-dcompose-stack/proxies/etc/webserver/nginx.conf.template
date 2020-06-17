@@ -181,7 +181,7 @@ http {
       auth_basic_user_file netdata.htpasswd;
     }
 
-    location /rest-sources/backend/ {
+    location /catalog-server/ {
       proxy_pass         http://catalog-server:9010/;
       proxy_set_header   Host $host;
     }
