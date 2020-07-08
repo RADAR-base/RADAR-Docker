@@ -72,6 +72,10 @@ worker:
   numThreads: 8
   # Maximum number of files to process in any given topic.
   maxFilesPerTopic: null
+  # Minimum time in seconds since a source file was last modified before it is
+  # considered for processing. This avoids synchronization issues when a file has just been
+  # written.
+  minimumFileAge: 60
 
 # Path settings
 paths:

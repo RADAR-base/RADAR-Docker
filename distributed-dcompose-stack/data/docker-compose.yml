@@ -7,10 +7,12 @@ networks:
 
 services:
   radar-output:
-    image: radarbase/radar-output-restructure:1.0.0-hdfs
+    image: radarbase/radar-output-restructure:1.1.1-hdfs
     restart: always
     stop_signal: SIGINT
     networks:
+      - redis
+    depends_on:
       - redis
     volumes:
       - ${RESTRUCTURE_OUTPUT_DIR}:/output
