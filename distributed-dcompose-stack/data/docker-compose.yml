@@ -18,7 +18,7 @@ services:
       - ${RESTRUCTURE_OUTPUT_DIR}:/output
       - ./etc/radar-output/restructure.yml:/etc/restructure.yml
     environment:
-      JAVA_OPTS: ${RADAR_HDFS_RESTRUCTURE_OPTS}
+      RADAR_OUTPUT_RESTRUCTURE_OPTS: ${RADAR_HDFS_RESTRUCTURE_OPTS}
     command: -F /etc/restructure.yml -S
 
   redis:
