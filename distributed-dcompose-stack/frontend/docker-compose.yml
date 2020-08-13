@@ -142,7 +142,7 @@ services:
     ports:
       - 9010:8080
     healthcheck:
-      test: ["CMD-SHELL", "wget --post-data {} http://localhost:8080/redcap/trigger 2>&1 | grep -q 500 || exit 1"]
+      test: ["CMD-SHELL", "wget --post-data {} http://localhost:8080/redcap/trigger 2>&1 | grep -q 400 || exit 1"]
       interval: 1m
       timeout: 5s
       retries: 3
