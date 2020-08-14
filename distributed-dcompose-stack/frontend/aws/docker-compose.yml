@@ -71,7 +71,7 @@ services:
   # RADAR REDCap Integration                                                  #
   #---------------------------------------------------------------------------#
   redcap-integration:
-    image: radarbase/radar-redcapintegration:1.0.1
+    image: radarbase/radar-redcapintegration:1.0.3
     networks:
       - management
       - default
