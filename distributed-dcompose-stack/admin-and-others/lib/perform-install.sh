@@ -38,4 +38,4 @@ sed_i "s|\${WEBSERVER_STATUS_STUB_URL}|${WEBSERVER_STATUS_STUB_URL}|" "etc/netda
 
 sudo-linux docker-compose up -d
 
-sudo-linux docker-compose exec -T netdata-master apk add --no-cache msmtp
+#sudo-linux docker-compose exec -T netdata-master apk add --no-cache msmtp
