@@ -16,7 +16,7 @@ services:
       - ${GOOGLE_APPLICATION_CREDENTIALS_FILE_PATH}:/resources/google-credentials.json
     environment:
       JDK_JAVA_OPTIONS: -Xmx4G -Djava.security.egd=file:/dev/./urandom
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_DB_URL}/radar
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_DB_URL}/${POSTGRES_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SECURITY_RADAR_MANAGEMENTPORTAL_URL: ${MANAGEMENT_PORTAL_URL}
