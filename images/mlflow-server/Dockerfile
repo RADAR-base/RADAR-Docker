@@ -1,0 +1,53 @@
+FROM conda/miniconda3:latest
+
+ARG MLFLOW_HOME
+ARG MLFLOW_VERSION
+ARG SERVER_PORT
+ARG SERVER_HOST
+ARG DB_URI
+ARG ARTIFACT_STORE
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_DEFAULT_REGION
+ARG MLFLOW_S3_ENDPOINT_URL
+ARG AWS_BUCKET_NAME
+
+ENV MLFLOW_HOME=${MLFLOW_HOME}
+ENV MLFLOW_VERSION=${MLFLOW_VERSION}
+ENV SERVER_PORT=${SERVER_PORT}
+ENV SERVER_HOST=${SERVER_HOST}
+ENV DB_URI=${DB_URI}
+ENV ARTIFACT_STORE=${MLFLOW_HOME}/artifactStore
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEYS}
+ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGIONS}
+ENV MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
+ENV ARTIFACT_STORE=s3://${AWS_BUCKET_NAME}/
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libpq-dev
+
+RUN apt-get -y install python-pip
+
+RUN pip install --upgrade pip
+
+RUN pip install mlflow sqlalchemy psycopg2-binary && \
+    mkdir -p ${MLFLOW_HOME}/scripts && \
+    #mkdir -p ${FILE_STORE} && \
+    mkdir -p ${ARTIFACT_STORE}
+
+COPY ./start.sh ${MLFLOW_HOME}/script/start.sh
+
+RUN chmod +x ${MLFLOW_HOME}/script/start.sh
+
+
+EXPOSE ${SERVER_PORT}/tcp
+
+#VOLUME ["${MLFLOW_HOME}/scripts/", "${FILE_STORE}", "${ARTIFACT_STORE}"]
+VOLUME ["${MLFLOW_HOME}/scripts/", "${ARTIFACT_STORE}"]
+
+WORKDIR ${MLFLOW_HOME}
+
+ENTRYPOINT ["./script/start.sh"]
