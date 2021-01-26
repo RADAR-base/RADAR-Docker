@@ -19,7 +19,7 @@ services:
           POSTGRES_DB: mlflow-db
         restart: always
         volumes:
-          - ${MP_POSTGRES_DIR}/data:/var/lib/postgresql/data/
+          - ${MP_MLFLOW_DIR}/data:/var/lib/postgresql/data/
         networks:
             - backend
 
@@ -31,12 +31,12 @@ services:
             - DB_URI=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@pgdb:5432/mlflow-db
             - SERVER_HOST=${HOST}
             - SERVER_PORT=${MLFLOW_PORT}
-            - MLFLOW_HOME=${MLFLOW_HOME}
+            - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+        environment:
             - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
             - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
             - AWS_DEFAULT_REGION=${AWS_REGION}
             - MLFLOW_S3_ENDPOINT_URL=http://s3:9000
-            - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
         ports:
             - ${MLFLOW_PORT}:${MLFLOW_PORT}
         expose:
@@ -56,13 +56,11 @@ services:
         environment:
           - MINIO_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
           - MINIO_SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
-          - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
-          - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
         command: server /date
         networks:
           - backend
         volumes:
-          - ${MP_POSTGRES_DIR}/s3:/date
+          - ${MP_MLFLOW_DIR}/s3:/date
 
 networks:
     backend:
