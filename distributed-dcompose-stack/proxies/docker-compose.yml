@@ -72,7 +72,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.3.8
+    image: radarbase/radar-gateway:0.3.10
     depends_on:
       - rest-proxy-1
     volumes:
