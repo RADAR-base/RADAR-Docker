@@ -5,6 +5,7 @@ from minio.error import InvalidResponseError
 
 accessID = os.environ.get('AWS_ACCESS_KEY_ID')
 accessSecret =  os.environ.get('AWS_SECRET_ACCESS_KEY')
+awsRegion = os.environ.get('AWS_REGION')
 minioUrl =  os.environ.get('MLFLOW_S3_ENDPOINT_URL')
 bucketName =  os.environ.get('AWS_BUCKET_NAME')
 
@@ -32,6 +33,7 @@ s3Client = Minio(
     minioUrlHostWithPort,
     access_key=accessID,
     secret_key=accessSecret,
+    region=awsRegion,
     secure=False
 )
 

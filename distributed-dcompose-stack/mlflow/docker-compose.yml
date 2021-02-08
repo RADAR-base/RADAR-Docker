@@ -6,8 +6,6 @@ services:
       depends_on:
         - pgdb
       command: pgdb:5432
-      networks:
-            - backend
 
     pgdb:
         image: postgres:13.1-alpine
@@ -20,8 +18,6 @@ services:
         restart: always
         volumes:
           - ${MP_MLFLOW_DIR}/data:/var/lib/postgresql/data/
-        networks:
-            - backend
 
     mlflow-server:
         restart: always
@@ -39,14 +35,11 @@ services:
             - MLFLOW_S3_ENDPOINT_URL=http://s3:9000
         ports:
             - ${MLFLOW_PORT}:${MLFLOW_PORT}
-        expose:
-            - 5000
-        networks:
-            - backend
         depends_on:
             - pgdb
             - waitfordb
             - s3
+        entrypoint: ["mlflow", "server", "--backend-store-uri",  $DB_URI, "--default-artifact-root",  $ARTIFACT_STORE, "--host",  $HOST, "--port",  $MLFLOW_PORT]
 
     s3:
         image: minio/minio:latest
@@ -56,15 +49,6 @@ services:
         environment:
           - MINIO_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
           - MINIO_SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
-        command: server /date
-        networks:
-          - backend
+        command: server /data
         volumes:
-          - ${MP_MLFLOW_DIR}/s3:/date
-
-networks:
-    backend:
-        driver: bridge
-
-volumes:
-    postgresql:
+          - ${MP_MLFLOW_DIR}/s3:/data
