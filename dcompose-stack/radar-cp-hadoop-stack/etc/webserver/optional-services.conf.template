@@ -13,3 +13,8 @@ location /rest-sources/backend/ {
   proxy_pass         http://radar-rest-sources-backend:8080/;
   proxy_set_header   Host $host;
 }
+
+location /grafana/ {
+  proxy_pass         http://grafana:3000/;
+  proxy_set_header   Host $host;
+}

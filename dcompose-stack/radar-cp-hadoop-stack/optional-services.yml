@@ -150,29 +150,25 @@ services:
     image: timescale/timescaledb:latest-pg11
     environment:
       TIMESCALEDB_TELEMETRY: "off"
-      POSTGRES_USER: grafana
+      POSTGRES_USER: ${TIMESCALEDB_USER}
       POSTGRES_PASSWORD: ${TIMESCALEDB_PASSWORD}
       POSTGRES_DB: ${TIMESCALEDB_DB}
-    ports:
-      - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - "${TIMESCALEDB_DIR}/data/:/var/lib/postgresql/data/"
 
   grafana:
     image: radarbase/radar-grafana:dev
-    build: .
     depends_on:
       - timescaledb
       - radar-jdbc-connector
     user: "1000"
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
-      GF_SERVER_ROOT_URL: ${GRAFANA_URL}
+      GF_SERVER_ROOT_URL: ${SERVER_NAME}/grafana
+      GF_SERVER_SERVE_FROM_SUB_PATH: true
       POSTGRES_DB: ${TIMESCALEDB_DB}
       POSTGRES_PASSWORD: ${TIMESCALEDB_PASSWORD}
       POSTGRES_HOST: timescaledb:5432
-    ports:
-      - "3001:3000"
     volumes:
       - grafana-lib:/var/lib/grafana
       - grafana-log:/var/log/grafana
