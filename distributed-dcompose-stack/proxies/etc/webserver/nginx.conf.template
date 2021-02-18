@@ -161,10 +161,6 @@ http {
     }
 
     location /rest-sources/authorizer/ {
-      include ip-access-control.conf;
-      auth_basic         "Rest Source Authorizer";
-      auth_basic_user_file rest-source-authorizer.htpasswd;
-
       proxy_pass         ${RADAR_REST_SOURCES_URL};
       proxy_set_header   Host $host;
     }
@@ -173,6 +169,7 @@ http {
       proxy_pass         ${RADAR_REST_SOURCES_BACKEND_URL};
       proxy_set_header   Host $host;
     }
+    
     location /netdata/ {
       proxy_pass         http://${NETDATA_MASTER_HOST}/;
       proxy_set_header   Host $host;
