@@ -91,33 +91,36 @@ services:
       retries: 3
 
   radar-rest-sources-backend:
-    image: radarbase/radar-rest-source-auth-backend:1.1.0
+    image: radarbase/radar-rest-source-auth-backend:2.0
     depends_on:
       - radarbase-postgresql
     networks:
       - default
       - management
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://radarbase-postgresql:5432/restsourceauthorizer
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - REST_SOURCE_AUTHORIZER_SOURCE_CLIENTS_FILE_PATH=app-includes/rest_source_clients_configs.yml
-      - APP_SLEEP=10 # gives time for the database to boot before the application
     volumes:
-      - ./etc/rest-source-authorizer/:/app-includes/
+      - ./etc/rest-source-authorizer/authorizer.yml:/etc/authorizer-app-backend/authorizer.yml
     ports:
       - 8090:8080
     healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:8080/users"]
+      test: ["CMD", "wget", "--spider", "http://localhost:8080/health"]
       interval: 1m30s
       timeout: 5s
       retries: 3
 
   radar-rest-sources-authorizer:
-      image: radarbase/radar-rest-source-authorizer:1.1.0
+      image: radarbase/radar-rest-source-authorizer:2.0
       depends_on:
         - radar-rest-sources-backend
         - radarbase-postgresql
+      environment:
+        BASE_HREF: "/rest-sources/authorizer/"
+        BACKEND_BASE_URL: "https://${SERVER_NAME}/rest-sources/backend"
+        VALIDATE: "true"
+        AUTH_GRANT_TYPE: "authorization_code"
+        AUTH_CLIENT_ID: "${REST_SOURCES_AUTH_MP_CLIENT_ID}"
+        AUTH_CLIENT_SECRET: "${REST_SOURCES_AUTH_MP_CLIENT_SECRET}"
+        AUTH_CALLBACK_URL: "https://${SERVER_NAME}/rest-sources/authorizer/login"
+        AUTH_URI: "https://${SERVER_NAME}/managementportal/oauth"
       ports:
         - 9000:80
       healthcheck:
