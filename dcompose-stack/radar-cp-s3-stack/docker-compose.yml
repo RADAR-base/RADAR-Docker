@@ -424,7 +424,6 @@ services:
       CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
       CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: "default"
-      CONNECT_PLUGIN_PATH: "/usr/share/kafka-connect/plugins"
       CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
       CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
       CONNECT_STATUS_STORAGE_TOPIC: "default.status"
@@ -438,6 +437,7 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-s3-connector"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-s3"
+      CONNECT_VALUE_CONVERTER_CONNECT_META_DATA: "false"
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
       KAFKA_BROKERS: 3
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
