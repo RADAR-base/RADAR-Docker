@@ -398,7 +398,7 @@ services:
   # RADAR S3 connector                                                     #
   #---------------------------------------------------------------------------#
   radar-s3-connector:
-    image: radarbase/radar-s3-connector:latest
+    image: radarbase/radar-s3-connector:1.0.0
     restart: on-failure
     networks:
       - zookeeper
@@ -436,6 +436,7 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
       CONNECT_REST_ADVERTISED_HOST_NAME: "radar-s3-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
       CONNECTOR_PROPERTY_FILE_PREFIX: "sink-s3"
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
       KAFKA_BROKERS: 3
