@@ -51,7 +51,7 @@ services:
   # Zookeeper Cluster                                                         #
   #---------------------------------------------------------------------------#
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:5.4.1
+    image: confluentinc/cp-zookeeper:5.5.1
     networks:
       - zookeeper
     volumes:
@@ -72,7 +72,7 @@ services:
       retries: 3
 
   zookeeper-2:
-    image: confluentinc/cp-zookeeper:5.4.1
+    image: confluentinc/cp-zookeeper:5.5.1
     networks:
       - zookeeper
     volumes:
@@ -93,7 +93,7 @@ services:
       retries: 3
 
   zookeeper-3:
-    image: confluentinc/cp-zookeeper:5.4.1
+    image: confluentinc/cp-zookeeper:5.5.1
     networks:
       - zookeeper
     volumes:
@@ -117,7 +117,7 @@ services:
   # Kafka Cluster                                                             #
   #---------------------------------------------------------------------------#
   kafka-1:
-    image: confluentinc/cp-kafka:5.4.1
+    image: confluentinc/cp-kafka:5.5.1
     networks:
       - kafka
       - zookeeper
@@ -137,8 +137,8 @@ services:
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
       KAFKA_COMPRESSION_TYPE: lz4
-      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "2.4"
-      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "2.4"
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "2.5"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "2.5"
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     healthcheck:
@@ -148,7 +148,7 @@ services:
       retries: 3
 
   kafka-2:
-    image: confluentinc/cp-kafka:5.4.1
+    image: confluentinc/cp-kafka:5.5.1
     networks:
       - kafka
       - zookeeper
@@ -168,8 +168,8 @@ services:
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
       KAFKA_COMPRESSION_TYPE: lz4
-      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "1.1"
-      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "2.5"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "2.5"
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     healthcheck:
@@ -179,7 +179,7 @@ services:
       retries: 3
 
   kafka-3:
-    image: confluentinc/cp-kafka:5.4.1
+    image: confluentinc/cp-kafka:5.5.1
     networks:
       - kafka
       - zookeeper
@@ -199,8 +199,8 @@ services:
       KAFKA_MESSAGE_MAX_BYTES: 4000048
       KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
       KAFKA_COMPRESSION_TYPE: lz4
-      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "1.1"
-      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "2.5"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "2.5"
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
     healthcheck:
@@ -464,7 +464,7 @@ services:
   # Webserver                                                                 #
   #---------------------------------------------------------------------------#
   webserver:
-    image: nginx:1.17.10-alpine
+    image: nginx:1.19.7-alpine
     restart: always
     networks:
       - api
@@ -496,7 +496,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.5.8
+    image: radarbase/management-portal:0.6.4
     networks:
       - default
       - api
@@ -582,7 +582,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.3.9
+    image: radarbase/radar-gateway:0.5.3
     networks:
       - api
       - kafka
@@ -621,7 +621,7 @@ services:
         retries: 3
 
   radar-output:
-    image: radarbase/radar-output-restructure:1.0.0
+    image: radarbase/radar-output-restructure:1.1.6.1
     restart: always
     stop_signal: SIGINT
     networks:

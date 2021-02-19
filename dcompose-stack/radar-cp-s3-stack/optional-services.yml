@@ -29,7 +29,7 @@ services:
   # RADAR Fitbit connector                                                     #
   #---------------------------------------------------------------------------#
   radar-fitbit-connector:
-    image: radarbase/kafka-connect-rest-fitbit-source:0.2.1
+    image: radarbase/kafka-connect-rest-fitbit-source:0.3.2
     restart: on-failure
     volumes:
       - ./etc/fitbit/docker/source-fitbit.properties:/etc/kafka-connect/source-fitbit.properties
@@ -74,7 +74,7 @@ services:
       retries: 3
 
   radar-rest-sources-backend:
-    image: radarbase/radar-rest-source-auth-backend:1.0.0
+    image: radarbase/radar-rest-source-auth-backend:2.0
     depends_on:
       - radarbase-postgresql
     networks:
@@ -96,7 +96,7 @@ services:
       retries: 3
 
   radar-rest-sources-authorizer:
-    image: radarbase/radar-rest-source-authorizer:1.0.0
+    image: radarbase/radar-rest-source-authorizer:2.0
     networks:
       - api
     depends_on:
