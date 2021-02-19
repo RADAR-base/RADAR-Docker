@@ -1,33 +1,80 @@
 service:
   # Whether to run the application as a polling service.
-  enable: true
+  enable: false
   # Polling interval in seconds.
-  interval: 300
+  interval: 30
 
+# Source data resource
+# @since: 0.7.0
 source:
-  type: s3
-  # Minio S3 settings
+  type: s3  # hdfs, azure or s3
   s3:
-    endpoint: http://minio1:9000
-    bucket: radarbase-cold-storage
+    endpoint: http://minio1:9000  # using AWS S3 endpoint is also possible.
+    bucket: radarbase-intermediate-storage
     accessToken:
     secretKey:
+    # If true, try to read the metadata property "endOffset" to determine the
+    # final offset of an input object.
+    #endOffsetFromTags: false
+  azure:
+    endpoint: https://MyBlobStorageAccount.blob.core.windows.net
+    # when using personal login
+    #username: User
+    #password: Password
+    # when using shared access tokens
+    #accountName: MyBlobStorageAccount
+    #accountKey: MyLongToken
+    # when using a specially made SAS token
+    #sasToken: MyLongToken
+    # if no credentials are supplied, this only works with a publicly writable blob storage
+    container: MySourceContainer
+    # If true, try to read the metadata property "endOffset" to determine the
+    # final offset of an input object.
+    #endOffsetFromMetadata: false
+  # only actually needed if source type is hdfs
+  # hdfs:
+  #   nameNodes: [hdfs-namenode-1, hdfs-namenode-2]
 
+# Target data resource
+# @since: 0.7.0
 target:
-  type: local
+  type: s3  # s3, azure or local
+  s3:
+    endpoint: http://minio1:9000
+    bucket: radarbase-output-storage
+    accessToken:
+    secretKey:
+  azure:
+    endpoint: https://MyBlobStorageAccount.blob.core.windows.net
+    # when using personal login
+    #username: User
+    #password: Password
+    # when using shared access tokens
+    #accountName: MyBlobStorageAccount
+    #accountKey: MyLongToken
+    # when using a specially made SAS token
+    #sasToken: MyLongToken
+    # if no credentials are supplied, this only works with a publicly writable blob storage
+    container: MyTargetContainer
+  # only actually needed if target type is local
   local:
-    userId: 0
-    groupId: 0
+    userId: 1000  # write as user ID 1000, use -1 to use current user (default).
+    groupId: 100  # write as group ID 100, use -1 to use current user (default).
 
+# Redis configuration
+# @since: 0.7.0
 redis:
-  uri: redis://output-redis:6379
+  # Redis URI
+  uri: redis://localhost:6379
+  # Key prefix for locks
+  lockPrefix: radar-output/lock/
 
 # Compression characteristics
 compression:
   # Compression type: none, zip or gzip
   type: gzip
   # Compression Factory class
-  # factory: org.radarbase.hdfs.data.CompressionFactory
+  # factory: org.radarbase.hdfs.compression.CompressionFactory
   # Additional compression properties
   # properties: {}
 
@@ -38,52 +85,77 @@ format:
   # Whether to deduplicate the files in each topic by default
   deduplication:
     enable: true
-    # Deduplicate considering only distinct fields sourceId and time.
-    # This may incur data loss if multiple measurements are recorded
-    # at exactly the same time. By default, all values are considered
-    # when looking at distinct lines.
-    # distinctFields: [key.sourceId, value.time]
+    # Use specific fields to consider records distinct. Disregarded if empty.
+    # distinctFields: []
+    # Ignore specific fields to consider records distinct. Disregarded if empty.
+    # ignoreFields: []
   # Format factory class
-  # factory: org.radarbase.hdfs.data.FormatFactory
+  # factory: org.radarbase.hdfs.format.FormatFactory
   # Additional format properties
   # properties: {}
 
-# Worker settings
+# Worker settings. Each worker thread has its own cache and topic, so the
+# settings only apply to a single thread.
 worker:
-  # Maximum number of files and converters to keep open while processing
+  # Enable processing files for extraction
+  enable: true
+  # Maximum number of files and converters to keep open while processing. Increasing this will
+  # decrease memory pressure but slow down processing.
   cacheSize: 300
-  # Number of threads to do processing with
+  # Maximum number of offsets in cache. Increasing this will decrease memory
+  # pressure but slow down processing.
+  cacheOffsetsSize: 500000
+  # Number of threads to do processing on
   numThreads: 2
   # Maximum number of files to process in any given topic.
-  # maxFilesPerTopic: null
+  maxFilesPerTopic: null
+  # Minimum time in seconds since a source file was last modified before it is
+  # considered for processing. This avoids synchronization issues when a file has just been
+  # written.
+  minimumFileAge: 60
+
+cleaner:
+  # Enable cleaning up old source files
+  enable: true
+  # Interval in seconds to clean data
+  interval: 1260  # 21 minutes
+  # Number of days after which a source file is considered old
+  age: 7
 
 # Path settings
 paths:
-  # Input directories in HDFS
+  # Input directories in source
   inputs:
-    - /topicAndroidNew
+    - /testIn
   # Root temporary directory for local file processing.
-  temp: /output/+tmp
-  # Output directory
+  temp: ./output/+tmp
+  # Output directory in target
   output: /output
   # Output path construction factory
-  #factory: org.radarbase.hdfs.MonthlyObservationKeyPathFactory
+  #factory: org.radarbase.output.path.MonthlyObservationKeyPathFactory
   # Additional properties
   # properties: {}
 
 # Individual topic configuration
-topics: {}
-#  # topic name
-#  connect_fitbit_source:
-#    # deduplicate this topic, regardless of the format settings
-#    deduplication:
-#      # deduplicate this topic only using given fields.
-#      distinctFields: [value.time]
-#  connect_fitbit_bad:
-#    # Do not process this topic
-#    exclude: true
-#  biovotion_acceleration:
-#    # Disable deduplication
-#    deduplication:
-#      enable: false
-
+topics:
+  # topic name
+  connect_fitbit_source:
+    # deduplicate this topic, regardless of the format settings
+    deduplication:
+      enable: true
+      # deduplicate this topic only using given fields.
+      distinctFields: [key.sourceId, value.time]
+  # topic name
+  connect_fitbit_source2:
+    # deduplicate this topic, regardless of the format settings
+    deduplication:
+      enable: true
+      # deduplicate this topic without regard of given fields.
+      ignoreFields: [value.timeReceived]
+  connect_fitbit_bad:
+    # Do not process this topic
+    exclude: true
+  biovotion_acceleration:
+    # Disable deduplication
+    deduplication:
+      enable: false

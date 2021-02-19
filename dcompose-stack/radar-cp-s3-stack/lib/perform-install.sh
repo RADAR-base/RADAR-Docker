@@ -63,7 +63,7 @@ ensure_env_default KAFKA_MANAGER_USERNAME kafkamanager-user
 ensure_env_password KAFKA_MANAGER_PASSWORD "Kafka Manager password not set in .env."
 
 ensure_env_default MINIO_ACCESS_KEY radarbase-minio
-ensure_env_default MINIO_INTERMEDIATE_BUCKET_NAME hotstorage
+ensure_env_default MINIO_INTERMEDIATE_BUCKET_NAME radarbase-intermediate-storage
 ensure_env_password MINIO_SECRET_KEY
 
 if [ -z ${PORTAINER_PASSWORD_HASH} ]; then
@@ -124,7 +124,7 @@ ensure_variable 'aws.secret.access.key=' "${MINIO_SECRET_KEY}" etc/s3-connector/
 echo "==> Configuring output restructure..."
 ensure_variable 'accessToken:' " ${MINIO_ACCESS_KEY}" etc/output-restructure/restructure.yml
 ensure_variable 'secretKey:' " ${MINIO_SECRET_KEY}" etc/output-restructure/restructure.yml
-ensure_variable 'bucket:' " ${MINIO_INTERMEDIATE_BUCKET_NAME}" etc/output-restructure/restructure.yml
+#ensure_variable 'bucket:' " ${MINIO_INTERMEDIATE_BUCKET_NAME}" etc/output-restructure/restructure.yml
 
 
 echo "==> Configuring Management Portal"
