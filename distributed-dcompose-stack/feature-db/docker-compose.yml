@@ -15,7 +15,7 @@ services:
     ports:
       - 8083:8083
     environment:
-      CONNECT_BOOTSTRAP_SERVERS: ${KAFKA_1_HOST},${KAFKA_2_HOST},${KAFKA_1_HOST}
+      CONNECT_BOOTSTRAP_SERVERS: ${KAFKA_1_HOST},${KAFKA_2_HOST},${KAFKA_3_HOST}
       CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: 'default'
       CONNECT_CONFIG_STORAGE_TOPIC: 'default.config'
