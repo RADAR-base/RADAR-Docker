@@ -9,7 +9,7 @@ services:
     image: radarbase/radar-jdbc-connector:dev
     restart: on-failure
     volumes:
-      - ./docker/sink-jdbc.properties:/etc/kafka-connect/sink-jdbc.properties
+      - ./etc/jdbc-connect/sink-jdbc.properties:/etc/kafka-connect/sink-jdbc.properties
     depends_on:
       - feature-db
     ports:
