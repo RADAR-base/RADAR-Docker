@@ -635,7 +635,6 @@ services:
       - minio3
       - minio4
     volumes:
-      - ${RESTRUCTURE_OUTPUT_DIR}:/output
       - ./etc/output-restructure/restructure.yml:/etc/restructure.yml
     environment:
       RADAR_HDFS_RESTRUCTURE_OPTS: -Xms250m -Xmx2g
