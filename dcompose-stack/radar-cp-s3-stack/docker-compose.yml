@@ -471,6 +471,7 @@ services:
       - api
       - monitor
       - default
+      - minio
     depends_on:
       - portainer
       - schema-registry-1
