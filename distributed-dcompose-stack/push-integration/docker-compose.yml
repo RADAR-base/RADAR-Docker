@@ -10,7 +10,7 @@ services:
     ports:
         - "127.0.0.1:8090:8090"
     volumes:
-        - ./etc/gateway.yml:/etc/radar-gateway/gateway.yml
+        - ./etc/push-endpoint/gateway.yml:/etc/radar-gateway/gateway.yml
 
   redis:
     image: bitnami/redis
