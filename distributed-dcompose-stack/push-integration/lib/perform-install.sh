@@ -10,6 +10,8 @@ check_command_exists docker-compose
 
 check_config_present etc/push-endpoint/gateway.yml etc/push-endpoint/gateway.yml.template
 
+. ./.env
+
 echo "==> Configuring Netdata Host monitoring"
 if [[ -n "${NETDATA_MASTER_HOST}" ]]; then
   cp "../commons/etc/netdata/slave/stream.conf.template" "etc/netdata/slave/stream.conf"
