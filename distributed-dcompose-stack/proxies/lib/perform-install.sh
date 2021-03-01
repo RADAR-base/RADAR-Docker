@@ -71,6 +71,8 @@ sed_i 's|\${REDCAP_INTEGRATION_APP_URL}|'"${REDCAP_INTEGRATION_APP_URL}"'|' etc/
 sed_i 's|\${NETDATA_MASTER_HOST}|'"${NETDATA_MASTER_HOST}"'|' etc/webserver/nginx.conf
 sed_i 's|\${HDFS_NAMENODE_UI_URL}|'"${HDFS_NAMENODE_UI_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${APPSERVER_ALPHA_URL}|'"${APPSERVER_ALPHA_URL}"'|' etc/webserver/nginx.conf
+sed_i 's|\${PUSH_ENDPOINT_URL}|'"${PUSH_ENDPOINT_URL}"'|' etc/webserver/nginx.conf
+
 
 # Split into IP and port if exists
 NETDATA_MASTER_HOST_SPLIT=($(echo ${NETDATA_MASTER_HOST} | tr ":" "\n"))

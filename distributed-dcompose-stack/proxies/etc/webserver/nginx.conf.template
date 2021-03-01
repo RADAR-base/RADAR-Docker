@@ -187,6 +187,11 @@ http {
       proxy_pass         http://${APPSERVER_ALPHA_URL}/;
       proxy_set_header   Host $host;
     }
+    
+    location /push-endpoint/ {
+      proxy_pass         http://${PUSH_ENDPOINT_URL}/;
+      proxy_set_header   Host $host;
+    }
 
     location /hdfsnamenode/ {
       proxy_pass         ${HDFS_NAMENODE_UI_URL};
