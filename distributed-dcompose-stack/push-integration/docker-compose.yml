@@ -6,7 +6,7 @@ services:
   # Push API Gateway                                                        #
   #---------------------------------------------------------------------------#
   radar-push-endpoint:
-    image: radarbase/radar-push-endpoint:0.1.0
+    image: radarbase/radar-push-endpoint:0.1.1
     ports:
         - "127.0.0.1:8090:8090"
     volumes:
