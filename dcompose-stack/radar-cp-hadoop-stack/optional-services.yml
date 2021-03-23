@@ -4,6 +4,8 @@ version: '2.2'
 
 volumes:
   fitbit-logs: {}
+  grafana-lib: {}
+  grafana-log: {}
 
 services:
   #---------------------------------------------------------------------------#
