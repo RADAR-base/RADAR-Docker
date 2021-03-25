@@ -118,6 +118,10 @@ services:
     restart: on-failure
     volumes:
       - ./etc/jdbc-connector/sink-timescale.properties:/etc/kafka-connect/sink-timescale.properties
+    networks:
+      - zookeeper
+      - kafka
+      - default
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -147,12 +151,17 @@ services:
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
       KAFKA_BROKERS: 3
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
+    healthcheck:
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/kafka-connect-jdbc/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
   timescaledb:
     image: timescale/timescaledb:latest-pg11
     environment:
       TIMESCALEDB_TELEMETRY: "off"
-      POSTGRES_USER: ${TIMESCALEDB_USER}
+      POSTGRES_USER: grafana
       POSTGRES_PASSWORD: ${TIMESCALEDB_PASSWORD}
       POSTGRES_DB: ${TIMESCALEDB_DB}
     volumes:
