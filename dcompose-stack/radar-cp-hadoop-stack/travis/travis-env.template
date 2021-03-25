@@ -36,7 +36,6 @@ ENABLE_OPTIONAL_SERVICES=true
 FITBIT_API_CLIENT_ID=fitbit-client
 FITBIT_API_CLIENT_SECRET=fitbit-secret
 RADAR_SCHEMAS_VERSION=0.4.2
-TIMESCALEDB_USER=timescaledb-user
 TIMESCALEDB_PASSWORD=password
 TIMESCALEDB_DB=radar-data
 TIMESCALEDB_DIR=/usr/local/var/lib/docker/timescaledb
