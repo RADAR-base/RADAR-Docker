@@ -13,6 +13,7 @@ services:
       - "8088:8088"
     volumes:
       - ./etc/ksql/queries.sql:/ksql/queries.sql
+      - ./etc/ksql/udfs:/opt/ksqldb-udfs
     environment:
       KSQL_LISTENERS: http://0.0.0.0:8088
       KSQL_ADVERTISED_LISTENER: http://${HOSTNAME}:8088
