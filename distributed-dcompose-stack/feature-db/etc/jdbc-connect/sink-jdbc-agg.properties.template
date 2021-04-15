@@ -1,4 +1,4 @@
-name=radar-jdbc-sink
+name=radar-jdbc-sink-agg
 connector.class=io.confluent.connect.jdbc.JdbcSinkConnector
 tasks.max=4
 transforms=mergeKey,timestamp

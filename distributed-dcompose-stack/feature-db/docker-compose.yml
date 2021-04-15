@@ -31,7 +31,7 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: 'radar-jdbc-connector'
       CONNECT_ZOOKEEPER_CONNECT: ${ZOOKEEPER_1_HOST},${ZOOKEEPER_2_HOST},${ZOOKEEPER_3_HOST}
       CONNECTOR_PROPERTY_FILE_PREFIX: 'sink-jdbc'
-      KAFKA_HEAP_OPTS: '-Xms256m -Xmx4g'
+      KAFKA_HEAP_OPTS: '-Xms256m -Xmx2g'
       KAFKA_BROKERS: 3
       CONNECT_LOG4J_LOGGERS: 'org.reflections=ERROR'
 
@@ -64,7 +64,7 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: 'radar-jdbc-connector-agg'
       CONNECT_ZOOKEEPER_CONNECT: ${ZOOKEEPER_1_HOST},${ZOOKEEPER_2_HOST},${ZOOKEEPER_3_HOST}
       CONNECTOR_PROPERTY_FILE_PREFIX: 'sink-jdbc'
-      KAFKA_HEAP_OPTS: '-Xms256m -Xmx4g'
+      KAFKA_HEAP_OPTS: '-Xms256m -Xmx2g'
       KAFKA_BROKERS: 3
       CONNECT_LOG4J_LOGGERS: 'org.reflections=ERROR'
 
