@@ -4,7 +4,7 @@ If you are setting up a new environment of RADAR-Base using RADAR-Docker, we hig
 If you are using this version of RADAR-Docker, then these versions are packaged and should work with current configurations.
 
 ## Background
-`radarbase/management-portal::0.6.5` or higher has important security dependency upgrades. During this upgrades we have also improved how we verify JWT tokens.
+`radarbase/management-portal::0.5.4` or higher has important security dependency upgrades. During this upgrades we have also improved how we verify JWT tokens.
 Current method complies to the standards of OpenID connect to share valid public-keys of tokens using `/oauth/token_key` endpoint. 
 
 Verifying components can use the latest `'org.radarcns:radar-auth:0.5.7'` library to use these features to verify tokens.

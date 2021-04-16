@@ -41,7 +41,7 @@ This is a set of optional configuration which is not required but could be usefu
 2. Note: To have different flush.size for different topics, you can create multipe property configurations for a single connector. To do that,
 
 	2.1 Create multiple property files that have different `flush.size` for given topics.
-	Examples [sink-hdfs-high.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-low.properties)
+	Examples [sink-hdfs-high.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/hdfs-connector/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/hdfs-connector/sink-hdfs-low.properties)
 
 	2.2 Add `CONNECTOR_PROPERTY_FILE_PREFIX: <prefix-value>` environment variable to `radar-hdfs-connector` service in `docker-compose` file.
 
