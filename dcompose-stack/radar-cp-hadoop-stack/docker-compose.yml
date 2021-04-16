@@ -686,7 +686,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.5.6
+    image: radarbase/management-portal:0.5.5
     networks:
       - default
       - api
