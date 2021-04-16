@@ -1,6 +1,6 @@
 # Migrating from ManagementPortal:0.5.3 to higher versions
 
-If you are setting up a new environment of RADAR-Base using RADAR-Docker, we highly recommend to use `radarbase/management-portal:0.6.5` or higher with `radarbase/radar-gateway:0.3.8` or higher.
+If you are setting up a new environment of RADAR-Base using RADAR-Docker, we highly recommend to use `radarbase/management-portal:0.5.5` or higher with `radarbase/radar-gateway:0.3.8` or higher.
 If you are using this version of RADAR-Docker, then these versions are packaged and should work with current configurations.
 
 ## Background
@@ -43,7 +43,7 @@ If you already have an environment where you are using ManagementPortal:0.5.3 or
           # Management Portal                                                         #
           #---------------------------------------------------------------------------#
           managementportal-app:
-            image: radarbase/management-portal:0.6.5
+            image: radarbase/management-portal:0.5.6
             networks:
               - default
               - api

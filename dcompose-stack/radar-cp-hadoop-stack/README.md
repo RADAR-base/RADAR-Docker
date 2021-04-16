@@ -59,7 +59,7 @@ This is a set of optional configuration which is not required but could be usefu
 		CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
 	```
 
-3. To enable optional services, please set the `ENABLE_OPTIONAL_SERVICES` parameter in `.env` file to `true`. By default optional services are disabled. You can check which service are optional in the file `optional-services.yml`
+3. To enable optional services, please set the `ENABLE_OPTIONAL_SERVICES` parameter in `.env` file to `true`. By default optional services are disabled (`ENABLE_OPTIONAL_SERVICES=false`) and corresponding locations in `etc/webserver/optional-services.conf.template` are all commented out. You can check which service are optional in the file `optional-services.yml`
 
       3.1 Copy `etc/redcap-integration/radar.yml.template` to `etc/redcap-integration/radar.yml` and modify it to configure the properties of Redcap instance and the management portal. For reference on configuration of this file look at [the README](https://github.com/RADAR-base/RADAR-RedcapIntegration#configuration). In the REDcap portal under Project Setup, define the Data Trigger as `https://<YOUR_HOST_URL>/redcapint/trigger`. Also need to configure the webserver config, just uncomment the location block at `etc/webserver/optional-services.conf.template` and copy it to `etc/webserver/optional-services.conf`.
 
