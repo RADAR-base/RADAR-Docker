@@ -20,3 +20,4 @@ radar-is.yml
 /rest-source-authorizer/rest_source_clients_configs.yml
 keystore.p12
 /hdfs-restructure/restructure.yml
+/jdbc-connector/sink-timescale.properties

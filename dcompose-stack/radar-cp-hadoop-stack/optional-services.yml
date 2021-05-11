@@ -152,7 +152,7 @@ services:
       KAFKA_BROKERS: 3
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
     healthcheck:
-      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/kafka-connect-jdbc/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-timescale-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
       interval: 1m
       timeout: 5s
       retries: 3
