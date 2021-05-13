@@ -21,6 +21,7 @@ copy_template_if_absent etc/webserver/optional-services.conf
 copy_template_if_absent etc/fitbit/docker/source-fitbit.properties
 copy_template_if_absent etc/rest-source-authorizer/rest_source_clients_configs.yml
 copy_template_if_absent etc/hdfs-restructure/restructure.yml
+copy_template_if_absent etc/jdbc-connector/sink-timescale.properties
 
 # Set permissions
 sudo-linux chmod og-rw ./.env
@@ -177,6 +178,12 @@ if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
   inline_variable 'client_secret:[[:space:]]' "$FITBIT_API_CLIENT_SECRET" etc/rest-source-authorizer/rest_source_clients_configs.yml
 
   check_config_present etc/redcap-integration/radar.yml
+
+  echo "==> Configuring JDBC Connector"
+  ensure_variable 'connection.url=' "jdbc:postgresql://timescaledb:5432/$TIMESCALEDB_DB" etc/jdbc-connector/sink-timescale.properties
+  ensure_variable 'connection.password=' $TIMESCALEDB_PASSWORD etc/jdbc-connector/sink-timescale.properties
+  ensure_variable 'topics=' $DASHBOARD_TOPIC_LIST etc/jdbc-connector/sink-timescale.properties
+
 fi
 
 echo "==> Starting RADAR-base Platform"
