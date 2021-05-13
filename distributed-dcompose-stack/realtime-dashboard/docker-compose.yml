@@ -1,0 +1,69 @@
+---
+version: '2.2'
+
+volumes:
+  grafana-lib: {}
+  grafana-log: {}
+
+services:
+  #---------------------------------------------------------------------------#
+  # RADAR Grafana Dashboard                                                   #
+  #---------------------------------------------------------------------------#
+  radar-jdbc-connector:
+    image: radarbase/radar-jdbc-connector:latest
+    restart: on-failure
+    volumes:
+      - ./etc/jdbc-connector/sink-timescale.properties:/etc/kafka-connect/sink-timescale.properties
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: 'default'
+      CONNECT_CONFIG_STORAGE_TOPIC: 'default.config'
+      CONNECT_OFFSET_STORAGE_TOPIC: 'default.offsets'
+      CONNECT_STATUS_STORAGE_TOPIC: 'default.status'
+      CONNECT_KEY_CONVERTER: 'io.confluent.connect.avro.AvroConverter'
+      CONNECT_VALUE_CONVERTER: 'io.confluent.connect.avro.AvroConverter'
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry-1:8081'
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry-1:8081'
+      CONNECT_INTERNAL_KEY_CONVERTER: 'org.apache.kafka.connect.json.JsonConverter'
+      CONNECT_INTERNAL_VALUE_CONVERTER: 'org.apache.kafka.connect.json.JsonConverter'
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: '/var/lib/kafka-connect-jdbc/logs/connect.offsets'
+      CONNECT_REST_ADVERTISED_HOST_NAME: 'radar-jdbc-connector'
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      CONNECTOR_PROPERTY_FILE_PREFIX: 'sink-timescale'
+      KAFKA_HEAP_OPTS: '-Xms256m -Xmx768m'
+      KAFKA_BROKERS: 3
+      CONNECT_LOG4J_LOGGERS: 'org.reflections=ERROR'
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "curl  -sf localhost:8083/connectors/radar-timescale-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1",
+        ]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg11
+    environment:
+      TIMESCALEDB_TELEMETRY: 'off'
+      POSTGRES_USER: grafana
+      POSTGRES_PASSWORD: ${TIMESCALEDB_PASSWORD}
+      POSTGRES_DB: ${TIMESCALEDB_DB}
+    volumes:
+      - '${TIMESCALEDB_DIR}/data/:/var/lib/postgresql/data/'
+
+  grafana:
+    image: radarbase/radar-grafana:dev
+    user: '1000'
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_SERVER_ROOT_URL: https://${SERVER_NAME}/grafana
+      GF_SERVER_SERVE_FROM_SUB_PATH: 'true'
+      POSTGRES_DB: ${TIMESCALEDB_DB}
+      POSTGRES_PASSWORD: ${TIMESCALEDB_PASSWORD}
+      POSTGRES_HOST: timescaledb:5432
+    volumes:
+      - grafana-lib:/var/lib/grafana
+      - grafana-log:/var/log/grafana
