@@ -25,9 +25,11 @@ This is the set of minimal configuration required to run the stack.
 
    1.4. Leave the `PORTAINER_PASSWORD_HASH` variable in .env file empty and run the install script (`bin/radar-docker install`). This should query for a new password and set its hash in this variable. To update the password, just empty the variable again and run the install script.
 
-2. Copy `etc/smtp.env.template` to `etc/smtp.env` and configure your email settings. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
+2. If HTTPS was disabled via `ENABLE_HTTPS=no` earlier, copy `etc/webserver/nginx.nossl.conf.template` to `etc/webserver/nginx.conf`. Otherwise, go to next step.
 
-4. Copy `etc/managementportal/config/oauth_client_details.csv.template` to `etc/managementportal/config/oauth_client_details.csv` and change OAuth client credentials for production MP. The OAuth client for the frontend will be loaded automatically and does not need to be listed in this file. This file will be read at each startup. The current implementation overwrites existing clients with the same client ID, so be aware of this if you have made changes to a client listed in this file using the Management Portal frontend. This behaviour might change in the future.
+3. Copy `etc/smtp.env.template` to `etc/smtp.env` and configure your email settings. Configure alternative mail providers like Amazon SES or Gmail by using the parameters of the [`namshi/smtp` Docker image](https://hub.docker.com/r/namshi/smtp/).
+
+4. Copy `etc/managementportal/config/oauth_client_details.csv.template` to `etc/managementportal/config/oauth_client_details.csv` and change OAuth client credentials for production MP. The OAuth client for the frontend will be loaded automatically and does not need to be listed in this file. This file will be read at each startup. The current implementation overwrites existing clients with the same client ID, so be aware of this if you have made changes to a client listed in this file using the Management Portal frontend. Ensure that the pRMT secret is set to saturday$SHARE$scale or communicate your custom secret to The Hyve. This behaviour might change in the future.
 
 5. Finally, copy `etc/radar-backend/radar.yml.template` to `etc/radar-backend/radar.yml` and edit it, especially concerning the monitor email address configuration.
 
@@ -39,7 +41,7 @@ This is a set of optional configuration which is not required but could be usefu
 2. Note: To have different flush.size for different topics, you can create multipe property configurations for a single connector. To do that,
 
 	2.1 Create multiple property files that have different `flush.size` for given topics.
-	Examples [sink-hdfs-high.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/sink-hdfs-low.properties)
+	Examples [sink-hdfs-high.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/hdfs-connector/sink-hdfs-high.properties) , [sink-hdfs-low.properties](https://github.com/RADAR-base/RADAR-Docker/blob/dev/dcompose-stack/radar-cp-hadoop-stack/etc/hdfs-connector/sink-hdfs-low.properties)
 
 	2.2 Add `CONNECTOR_PROPERTY_FILE_PREFIX: <prefix-value>` environment variable to `radar-hdfs-connector` service in `docker-compose` file.
 
@@ -57,7 +59,7 @@ This is a set of optional configuration which is not required but could be usefu
 		CONNECTOR_PROPERTY_FILE_PREFIX: "sink-hdfs"
 	```
 
-3. To enable optional services, please set the `ENABLE_OPTIONAL_SERVICES` parameter in `.env` file to `true`. By default optional services are disabled. You can check which service are optional in the file `optional-services.yml`
+3. To enable optional services, please set the `ENABLE_OPTIONAL_SERVICES` parameter in `.env` file to `true`. By default optional services are disabled (`ENABLE_OPTIONAL_SERVICES=false`) and corresponding locations in `etc/webserver/optional-services.conf.template` are all commented out. You can check which service are optional in the file `optional-services.yml`
 
       3.1 Copy `etc/redcap-integration/radar.yml.template` to `etc/redcap-integration/radar.yml` and modify it to configure the properties of Redcap instance and the management portal. For reference on configuration of this file look at [the README](https://github.com/RADAR-base/RADAR-RedcapIntegration#configuration). In the REDcap portal under Project Setup, define the Data Trigger as `https://<YOUR_HOST_URL>/redcapint/trigger`. Also need to configure the webserver config, just uncomment the location block at `etc/webserver/optional-services.conf.template` and copy it to `etc/webserver/optional-services.conf`.
 
