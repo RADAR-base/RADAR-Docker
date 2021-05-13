@@ -288,4 +288,6 @@ For example, `*/2 * * * * /absolute/path/to/script-name.sh` will execute `script
 
 ### Real-Time Dashboard
 
-The dashboard is accessible at `http://<your-host>/grafana/`. The default admin login is `admin` and  `password`. There are default dashboards present: active dashboards and passive dashboards (pRMT battery and location record counts and Fitbit wear time based on heart rate).
+If the Real-time dashboard is enabled through Optional Services, then, the dashboard will be accessible at `http://<your-host>/grafana/`. The default admin login is `admin` and  `password`. There are default dashboards present: active dashboards and passive dashboards (pRMT battery and location record counts and Fitbit wear time based on heart rate). 
+
+Please also make sure the nginx configurations (in `optional-services.conf`) are correct for the optional services you have enabled.
