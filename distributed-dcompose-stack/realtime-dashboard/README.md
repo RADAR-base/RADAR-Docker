@@ -6,9 +6,9 @@ This component comprises of all the components needed to run the real time Grafa
 
 Services included are-
 
-1. [radar-jdbc-connector](https://github.com/RADAR-base/RADAR-JDBC-Connector) -
-2. [radar-grafana](https://github.com/RADAR-base/RADAR-Grafana) -
-3. [timescaledb](https://docs.timescale.com/) -
+1. [radar-jdbc-connector](https://github.com/RADAR-base/RADAR-JDBC-Connector) - This connector is based on Confluent's Kafka JDBC connector with additional functionalities to support TimescaleDB databases.
+2. [radar-grafana](https://github.com/RADAR-base/RADAR-Grafana) - Grafana dashboard based on the original Grafana docker image with pre-defined dashboards and datasources (timescaledb).
+3. [timescaledb](https://docs.timescale.com/) - TimescaleDB is an open-source relational database for time-series data.
 
 ## Configuration
 
