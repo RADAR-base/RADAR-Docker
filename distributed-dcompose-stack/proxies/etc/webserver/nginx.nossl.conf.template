@@ -166,6 +166,22 @@ http {
       auth_basic         "Netdata";
       auth_basic_user_file netdata.htpasswd;
     }
+
+
+    location /mlflow/ {
+      proxy_pass         http://${MLFLOW_URL}/;
+      proxy_set_header   Host $host;
+
+      auth_basic         "ML Flow";
+      auth_basic_user_file mlflow.htpasswd;
+    }
+
+    location /grafana/ {
+      proxy_pass         http://${GRAFANA_DASHBOARD_URL}/;
+      proxy_set_header   Host $host;
+    }
+
+
     location /hdfsnamenode/ {
       proxy_pass         ${HDFS_NAMENODE_UI_URL};
       proxy_set_header   Host $host;

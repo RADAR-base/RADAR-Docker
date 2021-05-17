@@ -72,6 +72,8 @@ sed_i 's|\${NETDATA_MASTER_HOST}|'"${NETDATA_MASTER_HOST}"'|' etc/webserver/ngin
 sed_i 's|\${HDFS_NAMENODE_UI_URL}|'"${HDFS_NAMENODE_UI_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${APPSERVER_ALPHA_URL}|'"${APPSERVER_ALPHA_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${PUSH_ENDPOINT_URL}|'"${PUSH_ENDPOINT_URL}"'|' etc/webserver/nginx.conf
+sed_i 's|\${MLFLOW_URL}|'"${MLFLOW_URL}"'|' etc/webserver/nginx.conf
+sed_i 's|\${GRAFANA_DASHBOARD_URL}|'"${GRAFANA_DASHBOARD_URL}"'|' etc/webserver/nginx.conf
 
 
 # Split into IP and port if exists
@@ -111,6 +113,11 @@ echo "==> Configuring Netdata Master password"
 ensure_env_default NETDATA_USERNAME netdata-user
 ensure_env_password NETDATA_PASSWORD "Netdata password not set in .env."
 sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${NETDATA_USERNAME}" "${NETDATA_PASSWORD}" > etc/webserver/netdata.htpasswd
+
+echo "==> Configuring ML Flow password"
+ensure_env_default MLFLOW_USERNAME mlflow-user
+ensure_env_password MLFLOW_PASSWORD "ML FLOW password not set in .env."
+sudo-linux docker run --rm httpd:2.4-alpine htpasswd -nbB "${MLFLOW_USERNAME}" "${MLFLOW_PASSWORD}" > etc/webserver/mlflow.htpasswd
 
 echo "==> Configuring HDFS namnode UI"
 ensure_env_default HDFS_NAMENODE_UI_USER hdfsnamenode-user
