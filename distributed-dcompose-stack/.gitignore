@@ -9,3 +9,5 @@
 **keystore.p12
 
 **.log
+
+**/*.properties
