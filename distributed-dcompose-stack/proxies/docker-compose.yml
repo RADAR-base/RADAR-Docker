@@ -135,6 +135,7 @@ services:
       - "./etc/webserver/kafka-manager.htpasswd:/etc/nginx/kafka-manager.htpasswd:ro"
       - "./etc/webserver/netdata.htpasswd:/etc/nginx/netdata.htpasswd:ro"
       - "./etc/webserver/hdfs-namenode.htpasswd:/etc/nginx/hdfs-namenode.htpasswd:ro"
+      - "./etc/webserver/mlflow.htpasswd:/etc/nginx/mlflow.htpasswd:ro"
     # healthcheck hard to do, however, it is possible to monitor this externally
     # with
     # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
