@@ -121,11 +121,6 @@ http {
       proxy_set_header   Connection "upgrade";
       proxy_http_version 1.1;
     }
-    location /api/ {
-      include cors.conf;
-      proxy_pass         ${REST_API_URL}api/;
-      proxy_set_header   Host $host;
-    }
     location /managementportal/ {
       include cors.conf;
       proxy_pass         ${MANAGEMENT_PORTAL_URL}managementportal/;

@@ -62,7 +62,6 @@ fi
 # Set proper urls
 sed_i 's|\${MANAGEMENT_PORTAL_URL}|'"${MANAGEMENT_PORTAL_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${PORTAINER_URL}|'"${PORTAINER_URL}"'|' etc/webserver/nginx.conf
-sed_i 's|\${REST_API_URL}|'"${REST_API_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${KAFKA_MANAGER_URL}|'"${KAFKA_MANAGER_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${RADAR_REST_SOURCES_URL}|'"${RADAR_REST_SOURCES_URL}"'|' etc/webserver/nginx.conf
 sed_i 's|\${RADAR_REST_SOURCES_BACKEND_URL}|'"${RADAR_REST_SOURCES_BACKEND_URL}"'|' etc/webserver/nginx.conf
