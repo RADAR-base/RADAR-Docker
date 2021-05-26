@@ -146,25 +146,8 @@ If a major Postgres version upgrade is planned, existing data need to be migrate
 
 ### Data extraction
 
-If systemd integration is enabled, HDFS data will be extracted to the `./output` directory every hour. It can then be run directly by running
-```
-sudo systemctl start radar-output.service
-```
-Otherwise, the following manual commands can be invoked.
-
-Raw data can be extracted from this setup by running:
-
-```shell
-bin/hdfs-extract <hdfs file> <destination directory>
-```
-This command will not overwrite data in the destination directory.
-
-CSV-structured data can be gotten from HDFS by running
-
-```shell
-bin/hdfs-restructure /topicAndroidNew <destination directory>
-```
-This will put all CSV files in the destination directory, with subdirectory structure `ProjectId/SubjectId/SensorType/Date_Hour.csv`.
+The data will be extracted at the path on the filesystem configured by `RESTRUCTURE_OUTPUT_DIR` in `.env` file. By default it will be in `RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack/output/`
+This will contain all CSV files with subdirectory structure `ProjectId/SubjectId/SensorType/Date_Hour.csv`.
 
 ### Certificate
 
