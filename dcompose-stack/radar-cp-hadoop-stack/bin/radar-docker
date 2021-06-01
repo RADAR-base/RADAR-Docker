@@ -9,6 +9,7 @@ else
   stack=${DOCKER_COMPOSE:-docker-compose}
 fi
 
+exec $stack -v
 
 function print_usage() {
   echo 'Control the RADAR-base platform directly'
