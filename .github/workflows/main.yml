@@ -57,7 +57,7 @@ jobs:
           sudo ${{ env.DOCKER_COMPOSE }} down
 
   # WIP: deploy to stage on merging into dev
-  continuous-deployment:
+  deployment-to-stage:
     if: ${{ false }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
