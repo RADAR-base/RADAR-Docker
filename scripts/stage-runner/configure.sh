@@ -20,9 +20,17 @@ sed -i "s|ENABLE_OPTIONAL_SERVICES=false|ENABLE_OPTIONAL_SERVICES=true|" ./.env
 # Why RADAR_SCHEMAS_VERSION has been hard coded in etc/env.template?
 sed -i "s|RADAR_SCHEMAS_VERSION=0.5.1|RADAR_SCHEMAS_VERSION=0.5.5|" ./.env
 
+hotstorage_username=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendHotstorageUsername --with-decryption --query Parameters[0].Value)
+hotstorage_username=$(echo $hotstorage_username | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|HOTSTORAGE_USERNAME=|HOTSTORAGE_USERNAME=$hotstorage_username|" ./.env
+
 hotstorage_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendHotstoragePassword --with-decryption --query Parameters[0].Value)
 hotstorage_password=$(echo $hotstorage_password | sed -e 's/^"//' -e 's/"$//')
 sed -i "s|HOTSTORAGE_PASSWORD=|HOTSTORAGE_PASSWORD=$hotstorage_password|" ./.env
+
+hotstorage_name=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendHotstorageName --with-decryption --query Parameters[0].Value)
+hotstorage_name=$(echo $hotstorage_name | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|HOTSTORAGE_NAME=|HOTSTORAGE_NAME=$hotstorage_name|" ./.env
 
 postgres_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendPostgresPassword --with-decryption --query Parameters[0].Value)
 postgres_password=$(echo $postgres_password | sed -e 's/^"//' -e 's/"$//')
