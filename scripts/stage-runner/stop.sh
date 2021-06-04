@@ -2,4 +2,7 @@
 
 set -eu
 
-dcompose-stack/radar-cp-hadoop-stack/bin/radar-docker down
+pushd .
+cd ../../dcompose-stack/radar-cp-hadoop-stack/
+./bin/radar-docker down
+popd
