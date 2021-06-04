@@ -20,6 +20,18 @@ sed -i "s|ENABLE_OPTIONAL_SERVICES=false|ENABLE_OPTIONAL_SERVICES=true|" ./.env
 # Why RADAR_SCHEMAS_VERSION has been hard coded in etc/env.template?
 sed -i "s|RADAR_SCHEMAS_VERSION=0.5.1|RADAR_SCHEMAS_VERSION=0.5.5|" ./.env
 
+hotstorage_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendHotstoragePassword --with-decryption --query Parameters[0].Value)
+hotstorage_password=$(echo $hotstorage_password | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|HOTSTORAGE_PASSWORD=|HOTSTORAGE_PASSWORD=$hotstorage_password|" ./.env
+
+postgres_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendPostgresPassword --with-decryption --query Parameters[0].Value)
+postgres_password=$(echo $postgres_password | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|POSTGRES_PASSWORD=|POSTGRES_PASSWORD=$postgres_password|" ./.env
+
+kafka_manager_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendKafkaManagerPassword --with-decryption --query Parameters[0].Value)
+kafka_manager_password=$(echo $kafka_manager_password | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|KAFKA_MANAGER_PASSWORD=|KAFKA_MANAGER_PASSWORD=$kafka_manager_password|" ./.env
+
 portainer_password_hash=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendPortainerPasswordHash --with-decryption --query Parameters[0].Value)
 portainer_password_hash=$(echo $portainer_password_hash | sed -e 's/^"//' -e 's/"$//')
 sed -i "s|PORTAINER_PASSWORD_HASH=|PORTAINER_PASSWORD_HASH=$portainer_password_hash|" ./.env
