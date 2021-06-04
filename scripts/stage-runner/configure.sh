@@ -32,6 +32,10 @@ hotstorage_name=$(aws ssm get-parameters --region eu-west-1 --names RadarBackend
 hotstorage_name=$(echo $hotstorage_name | sed -e 's/^"//' -e 's/"$//')
 sed -i "s|HOTSTORAGE_NAME=|HOTSTORAGE_NAME=$hotstorage_name|" ./.env
 
+postgres_user=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendPostgresUser --with-decryption --query Parameters[0].Value)
+postgres_user=$(echo $postgres_user | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|POSTGRES_USER=postgresdb-user|POSTGRES_USER=$postgres_user|" ./.env
+
 postgres_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendPostgresPassword --with-decryption --query Parameters[0].Value)
 postgres_password=$(echo $postgres_password | sed -e 's/^"//' -e 's/"$//')
 sed -i "s|POSTGRES_PASSWORD=|POSTGRES_PASSWORD=$postgres_password|" ./.env
