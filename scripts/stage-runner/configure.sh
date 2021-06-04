@@ -3,7 +3,7 @@
 set -eu
 
 pushd .
-cd dcompose-stack/radar-cp-hadoop-stack
+cd /home/ec2-user/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack
 
 cp ./etc/env.template ./.env
 cp ./etc/managementportal/config/oauth_client_details.csv.template ./etc/managementportal/config/oauth_client_details.csv
