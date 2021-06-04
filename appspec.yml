@@ -5,11 +5,11 @@ files:
     destination: /home/ec2-user/RADAR-Docker
 hooks:    
   AfterInstall:
-    - location: scripts/stage-runner/stop.sh
-      timeout: 300
-      runas: root
     - location: scripts/stage-runner/configure.sh
       timeout: 120
+      runas: root
+    - location: scripts/stage-runner/stop.sh
+      timeout: 300
       runas: root
   ApplicationStart:
     - location: scripts/stage-runner/start.sh
