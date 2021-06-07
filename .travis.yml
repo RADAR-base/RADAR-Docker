@@ -20,7 +20,7 @@ script:
   - sudo $DOCKER_COMPOSE down
 
   # With email and HDFS support
-  - cd ../radar-cp-hadoop-stack/ci
+  - cd ../radar-cp-hadoop-stack/travis
   - ./setup-env.sh
   - cd ../
   - bin/radar-docker install && sleep 120 && bin/radar-docker ps && [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]

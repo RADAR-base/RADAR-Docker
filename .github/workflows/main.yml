@@ -41,7 +41,7 @@ jobs:
       
       - name: With email and HDFS support
         run: |
-          cd dcompose-stack/radar-cp-hadoop-stack/ci
+          cd dcompose-stack/radar-cp-hadoop-stack/travis
           ./setup-env.sh
           cd ../
           DOCKER_COMPOSE=${{ env.DOCKER_COMPOSE }} bin/radar-docker install

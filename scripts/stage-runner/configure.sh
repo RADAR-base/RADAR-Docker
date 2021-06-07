@@ -71,22 +71,22 @@ EOF
 cat > ./etc/webserver/optional-services.conf << EOF
 location /redcapint/ {
  proxy_pass         http://radar-integration:8080/redcap/;
- proxy_set_header   Host $host;
+ proxy_set_header   Host \$host;
 }
 
 location /rest-sources/authorizer/ {
  proxy_pass         http://radar-rest-sources-authorizer:80/;
- proxy_set_header   Host $host;
+ proxy_set_header   Host \$host;
 }
 
 location /rest-sources/backend/ {
  proxy_pass         http://radar-rest-sources-backend:8080/;
- proxy_set_header   Host $host;
+ proxy_set_header   Host \$host;
 }
 
 location /grafana/ {
  proxy_pass         http://grafana:3000/;
- proxy_set_header   Host $host;
+ proxy_set_header   Host \$host;
 }
 EOF
 
