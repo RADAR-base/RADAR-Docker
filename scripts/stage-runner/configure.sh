@@ -68,7 +68,7 @@ GMAIL_PASSWORD=$gmail_password
 RELAY_NETWORKS=:172.0.0.0/8:192.168.0.0/16
 EOF
 
-cat > ./etc/webserver/optional-services.conf <<EOF
+cat > ./etc/webserver/optional-services.conf << EOF
 location /redcapint/ {
  proxy_pass         http://radar-integration:8080/redcap/;
  proxy_set_header   Host $host;
