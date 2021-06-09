@@ -31,7 +31,7 @@ jobs:
           export PATH="$HOME/bin:$PATH";
           curl -L https://github.com/docker/compose/releases/download/${{ env.DOCKER_COMPOSE_VERSION }}/docker-compose-`uname -s`-`uname -m` > ${{ env.DOCKER_COMPOSE }};
           chmod +x "${{ env.DOCKER_COMPOSE }}";
-          ln -s $PWD/${{ env.DOCKER_COMPOSE }} /usr/bin/docker-compose
+          sudo ln -s $PWD/${{ env.DOCKER_COMPOSE }} /usr/bin/docker-compose
           sudo ${{ env.DOCKER_COMPOSE }} --version
       
       - name: Standard stack
