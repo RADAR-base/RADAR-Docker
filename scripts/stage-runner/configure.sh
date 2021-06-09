@@ -63,13 +63,13 @@ managementportal_common_admin_password=$(aws ssm get-parameters --region eu-west
 managementportal_common_admin_password=$(echo $managementportal_common_admin_password | sed -e 's/^"//' -e 's/"$//')
 sed -i "s|MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD=|MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD=$managementportal_common_admin_password|" ./.env
 
-# timescaledb_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendTimescaledbPassword --with-decryption --query Parameters[0].Value)
-# timescaledb_password=$(echo $timescaledb_password | sed -e 's/^"//' -e 's/"$//')
-# sed -i "s|TIMESCALEDB_PASSWORD=password|TIMESCALEDB_PASSWORD=$timescaledb_password|" ./.env
+timescaledb_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendTimescaledbPassword --with-decryption --query Parameters[0].Value)
+timescaledb_password=$(echo $timescaledb_password | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|TIMESCALEDB_PASSWORD=password|TIMESCALEDB_PASSWORD=$timescaledb_password|" ./.env
 
-# grafana_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendGrafanaPassword --with-decryption --query Parameters[0].Value)
-# grafana_password=$(echo $grafana_password | sed -e 's/^"//' -e 's/"$//')
-# sed -i "s|GRAFANA_PASSWORD=password|GRAFANA_PASSWORD=$grafana_password|" ./.env
+grafana_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendGrafanaPassword --with-decryption --query Parameters[0].Value)
+grafana_password=$(echo $grafana_password | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|GRAFANA_PASSWORD=password|GRAFANA_PASSWORD=$grafana_password|" ./.env
 
 gmail_user=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendGmailUser --with-decryption --query Parameters[0].Value)
 gmail_user=$(echo $gmail_user | sed -e 's/^"//' -e 's/"$//')
