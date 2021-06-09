@@ -6,8 +6,8 @@ networks:
     driver: bridge
   kafka:
     driver: bridge
-  api:
-    driver: bridge
+  # api:
+  #   driver: bridge
 
 services:
 

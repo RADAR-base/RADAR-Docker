@@ -26,6 +26,7 @@ sed -i "s|ENABLE_OPTIONAL_SERVICES=false|ENABLE_OPTIONAL_SERVICES=true|" ./.env
 # Why RADAR_SCHEMAS_VERSION has been hard coded in etc/env.template?
 sed -i "s|RADAR_SCHEMAS_VERSION=0.5.1|RADAR_SCHEMAS_VERSION=0.5.5|" ./.env
 
+# TODO: refactor the password retrieval
 hotstorage_username=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendHotstorageUsername --with-decryption --query Parameters[0].Value)
 hotstorage_username=$(echo $hotstorage_username | sed -e 's/^"//' -e 's/"$//')
 sed -i "s|HOTSTORAGE_USERNAME=mongodb-user|HOTSTORAGE_USERNAME=$hotstorage_username|" ./.env
@@ -58,6 +59,18 @@ managementportal_common_admin_password=$(aws ssm get-parameters --region eu-west
 managementportal_common_admin_password=$(echo $managementportal_common_admin_password | sed -e 's/^"//' -e 's/"$//')
 sed -i "s|MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD=|MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD=$managementportal_common_admin_password|" ./.env
 
+managementportal_common_admin_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendManagementportalCommonAdminPassword --with-decryption --query Parameters[0].Value)
+managementportal_common_admin_password=$(echo $managementportal_common_admin_password | sed -e 's/^"//' -e 's/"$//')
+sed -i "s|MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD=|MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD=$managementportal_common_admin_password|" ./.env
+
+# timescaledb_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendTimescaledbPassword --with-decryption --query Parameters[0].Value)
+# timescaledb_password=$(echo $timescaledb_password | sed -e 's/^"//' -e 's/"$//')
+# sed -i "s|TIMESCALEDB_PASSWORD=password|TIMESCALEDB_PASSWORD=$timescaledb_password|" ./.env
+
+# grafana_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendGrafanaPassword --with-decryption --query Parameters[0].Value)
+# grafana_password=$(echo $grafana_password | sed -e 's/^"//' -e 's/"$//')
+# sed -i "s|GRAFANA_PASSWORD=password|GRAFANA_PASSWORD=$grafana_password|" ./.env
+
 gmail_user=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendGmailUser --with-decryption --query Parameters[0].Value)
 gmail_user=$(echo $gmail_user | sed -e 's/^"//' -e 's/"$//')
 gmail_password=$(aws ssm get-parameters --region eu-west-1 --names RadarBackendGmailPassword --with-decryption --query Parameters[0].Value)
@@ -88,6 +101,12 @@ location /grafana/ {
  proxy_pass         http://grafana:3000/;
  proxy_set_header   Host \$host;
 }
+EOF
+
+cat > ./etc/managementportal/config/radar-is.yml << EOF
+resourceName: res_ManagementPortal
+publicKeyEndpoints:
+ - http://managementportal-app:8080/oauth/token_key
 EOF
 
 popd
