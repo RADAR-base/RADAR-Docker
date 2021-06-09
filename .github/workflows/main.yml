@@ -9,7 +9,7 @@ on:
 
 env:
   DOCKER_COMPOSE_VERSION: 1.21.1
-  DOCKER_COMPOSE: $HOME/bin/docker-compose
+  DOCKER_COMPOSE: docker-compose
 
 jobs:
   continuous-integration:
