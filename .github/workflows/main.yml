@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [continuous-integration]
 
-    if: github.event_name == "push" && github.ref == "refs/heads/cicd"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/cicd'
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
