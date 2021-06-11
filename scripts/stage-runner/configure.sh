@@ -39,7 +39,7 @@ do
     elif [[ "$key" == "MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET" ]]; then
         echo "$key=travel.COUNTRY.flowers" >> ./.env
     elif [[ "$key" == "SELF_SIGNED_CERT" ]]; then
-        echo "$key==no" >> ./.env
+        echo "$key=no" >> ./.env
     elif [[ "$key" == "MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT" ]]; then
         echo "$key=true" >> ./.env
     elif [[ "$key" == "ENABLE_OPTIONAL_SERVICES" ]]; then
@@ -83,9 +83,7 @@ do
     else
         echo "$key=$val" >> ./.env
     fi
-done < ./etc/env.template
-
-# sed '$d' ./.env
+done < <(grep . ./etc/env.template)
 
 gmail_user=$(get_decrypted_param "RadarBackendGmailUser")
 gmail_password=$(get_decrypted_param "RadarBackendGmailPassword")
