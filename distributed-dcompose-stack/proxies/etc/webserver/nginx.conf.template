@@ -179,6 +179,11 @@ http {
       proxy_pass         http://${APPSERVER_ALPHA_URL}/;
       proxy_set_header   Host $host;
     }
+
+    location /appserver/ {
+      proxy_pass         http://${APPSERVER_URL}/;
+      proxy_set_header   Host $host;
+    }
     
     location /push-endpoint/ {
       # set client body size to 20M #
