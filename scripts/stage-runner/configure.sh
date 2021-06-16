@@ -16,6 +16,7 @@ cp ./etc/redcap-integration/radar.yml.template ./etc/redcap-integration/radar.ym
 cp ./etc/fitbit/docker/users/fitbit-user.yml.template ./etc/fitbit/docker/users/fitbit-user.yml
 cp ./etc/webserver/ip-access-control.conf.template ./etc/webserver/ip-access-control.conf
 cp ./etc/webserver/nginx.conf.template ./etc/webserver/nginx.conf
+cp ./etc/webserver/optional-services.conf.template ./etc/webserver/optional-services.conf
 
 function get_param () {
     local param_value=$(aws ssm get-parameters --region eu-west-1 --names $1 --query Parameters[0].Value)
@@ -93,27 +94,7 @@ GMAIL_PASSWORD=$gmail_password
 RELAY_NETWORKS=:172.0.0.0/8:192.168.0.0/16
 EOF
 
-cat > ./etc/webserver/optional-services.conf << EOF
-location /redcapint/ {
- proxy_pass         http://radar-integration:8080/redcap/;
- proxy_set_header   Host \$host;
-}
-
-location /rest-sources/authorizer/ {
- proxy_pass         http://radar-rest-sources-authorizer:80/;
- proxy_set_header   Host \$host;
-}
-
-location /rest-sources/backend/ {
- proxy_pass         http://radar-rest-sources-backend:8080/;
- proxy_set_header   Host \$host;
-}
-
-location /grafana/ {
- proxy_pass         http://grafana:3000/;
- proxy_set_header   Host \$host;
-}
-EOF
+sed -i -e '2,$s/^#//' ./etc/webserver/optional-services.conf
 
 cat > ./etc/managementportal/config/radar-is.yml << EOF
 resourceName: res_ManagementPortal
