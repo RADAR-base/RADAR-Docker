@@ -16,3 +16,7 @@ hooks:
     - location: scripts/stage-runner/start.sh
       timeout: 300
       runas: root
+  ValidateService:
+    - location: scripts/stage-runner/healthcheck.sh
+      timeout: 900
+      runas: root
