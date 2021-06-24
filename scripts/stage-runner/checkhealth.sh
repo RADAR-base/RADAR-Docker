@@ -14,4 +14,4 @@ popd
 rm -rf /tmp/postgres_dump
 aws s3 cp s3://radar-codedeploy/radar_backend_postgres_dump /tmp/postgres_dump
 docker cp /tmp/postgres_dump $DB_CONTAINER:/tmp/postgres_dump
-docker exec -it $DB_CONTAINER psql -U postgres -f /tmp/postgres_dump postgres
+docker exec $DB_CONTAINER psql -U postgres -f /tmp/postgres_dump postgres
