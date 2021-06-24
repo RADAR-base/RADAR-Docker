@@ -5,7 +5,10 @@ set -eu
 
 DB_CONTAINER=radar-cp-hadoop-stack_radarbase-postgresql_1
 
-$PWD/wait-for-it.sh -t 150 localhost:80 --strict -- echo "Postgres database is ready!"
+pushd .
+cd /home/ec2-user/RADAR-Docker/scripts/stage-runner
+./wait-for-it.sh -t 150 localhost:80 --strict -- echo "Postgres database is ready!"
+popd
 
 # Restore the prostgres database
 rm -rf /tmp/postgres_dump
