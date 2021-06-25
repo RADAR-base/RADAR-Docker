@@ -17,6 +17,7 @@ cp ./etc/fitbit/docker/users/fitbit-user.yml.template ./etc/fitbit/docker/users/
 cp ./etc/webserver/ip-access-control.conf.template ./etc/webserver/ip-access-control.conf
 cp ./etc/webserver/nginx.conf.template ./etc/webserver/nginx.conf
 cp ./etc/webserver/optional-services.conf.template ./etc/webserver/optional-services.conf
+cp ./etc/smtp.env.template ./etc/smtp.env
 
 function get_param () {
     local param_value=$(aws ssm get-parameters --region eu-west-1 --names $1 --query Parameters[0].Value)
@@ -95,11 +96,5 @@ RELAY_NETWORKS=:172.0.0.0/8:192.168.0.0/16
 EOF
 
 sed -i -e '2,$s/^#//' ./etc/webserver/optional-services.conf
-
-cat > ./etc/managementportal/config/radar-is.yml << EOF
-resourceName: res_ManagementPortal
-publicKeyEndpoints:
- - http://managementportal-app:8080/oauth/token_key
-EOF
 
 popd
