@@ -126,7 +126,7 @@ cleaner:
 paths:
   # Input directories in source
   inputs:
-    - /testIn
+    - /topics
   # Root temporary directory for local file processing.
   temp: ./output/+tmp
   # Output directory in target
