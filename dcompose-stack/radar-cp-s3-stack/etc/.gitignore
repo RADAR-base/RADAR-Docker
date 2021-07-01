@@ -4,6 +4,7 @@
 /webserver/kafka-manager.htpasswd
 /webserver/ip-access-control.conf
 /webserver/optional-services.conf
+/webserver/dashboard-pipeline.conf
 /radar-backend/radar.yml
 /smtp.env
 /rest-api/device-catalog.yml
@@ -20,4 +21,3 @@ radar-is.yml
 /rest-source-authorizer/rest_source_clients_configs.yml
 keystore.p12
 /hdfs-restructure/restructure.yml
-/jdbc-connector/sink-timescale.properties

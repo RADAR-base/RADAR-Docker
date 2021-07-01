@@ -1,0 +1,97 @@
+#!/bin/bash
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+. .env
+
+stack_array=()
+stack_array+=("-f docker-compose.yml ")
+
+if [[ "${ENABLE_OPTIONAL_SERVICES}" = "true" ]]; then
+  stack_array+=("-f optional-services.yml ")
+fi
+
+if [[ "${ENABLE_DASHBOARD_PIPELINE}" = "true" ]]; then
+  stack_array+=("-f dashboard-pipeline.yml ")
+fi
+
+if [[ "${ENABLE_KAFKA_STREAMS}" = "true" ]]; then
+  stack_array+=("-f radarbase-kafka-streams.yml ")
+fi
+
+function print_usage() {
+  echo 'Control the RADAR-base platform directly'
+  echo "Usage: $0 [COMMAND|-h|--help] ..."
+  echo
+  echo 'Commands:'
+  echo '  cert-renew                            Request or renew SSL certificate'
+  echo '  foreground [SERVICE...]               Install the RADAR-base platform and start it in the foreground.'
+  echo '                                        if services are provided in the arguments, only those services'
+  echo '                                        are actually started.'
+  echo '  install [SERVICE...]                  Install the RADAR-base platform, starting it in the background.'
+  echo '                                        if services are provided in the arguments, only those services'
+  echo '                                        are actually started.'
+  echo '  install-systemd                       Install systemd wrappers to manage the RADAR platform'
+  echo '  minio                                 Start the minio cluster.'
+  echo '  health                                Check the health of the cluster and restart failing services.'
+  echo '  quit SERVICE...                       Stop and remove given services.'
+  echo '  rebuild SERVICE...                    Rebuild and restart given services.'
+  echo
+  echo 'Options:'
+  echo '  -h, --help                Print this usage information.'
+  echo
+  echo 'docker-compose commands and options are also accepted:'
+  echo '======================================================'
+  echo
+}
+
+if [ $# = 0 ]; then
+  print_usage
+  stack="${DOCKER_COMPOSE:-docker-compose} ${stack_array[@]}"
+  exec $stack
+fi
+
+
+CMD=$1
+stack="${DOCKER_COMPOSE:-docker-compose} ${stack_array[@]}"
+shift
+
+# advanced pattern matching
+shopt -s extglob
+
+case "${CMD}" in
+cert-renew)
+  . ./lib/util.sh
+  request_certificate "${SERVER_NAME}" "${SELF_SIGNED_CERT:-yes}" force
+  ;;
+install)
+  . lib/perform-install.sh
+  ;;
+install-systemd)
+  . lib/install-systemd-wrappers.sh
+  ;;
+rebuild)
+  exec $stack up -d --force-recreate --build --no-deps -V "$@"
+  ;;
+quit)
+  $stack stop "$@" && \
+      $stack rm -vf "$@" && \
+      exit 0 || exit 1
+  ;;
+health)
+  . lib/check-health.sh
+  ;;
+minio)
+  exec $stack up -d --remove-orphans minio1 minio2 minio3 minio4
+  ;;
+foreground)
+  . lib/perform-install.sh
+  exec $stack up "$@"
+  ;;
+@(--help|-h))
+  print_usage
+  exec $stack "$CMD" "$@"
+  ;;
+*)
+  exec $stack "$CMD" "$@"
+  ;;
+esac

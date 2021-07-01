@@ -1,0 +1,54 @@
+# Resource config class
+#resourceConfig: org.radarbase.gateway.inject.ManagementPortalEnhancerFactory
+
+server:
+  # URI to serve data to
+  baseUri: http://0.0.0.0:8090/radar-gateway/
+  # Maximum number of simultaneous requests to Kafka.
+  #maxRequests: 200
+  # Maximum request content length, also when decompressed.
+  # This protects against memory overflows.
+  #maxRequestSize: 25165824
+  # Whether JMX should be enabled. Disable if not needed, for higher performance.
+  #isJmxEnabled: true
+
+kafka:
+  # Number of Kafka brokers to keep in a pool for reuse in multiple requests.
+  # poolSize: 20
+  # Kafka producer settings. Read from https://kafka.apache.org/documentation/#producerconfigs.
+  producer:
+    bootstrap.servers: kafka-1:9092,kafka-2:9092,kafka-3:9092
+    # Kafka Admin Client settings. Read from https://kafka.apache.org/documentation/#adminclientconfigs.
+    #admin:
+    # bootstrap server property is copied from the producer settings if none is provided.
+    #bootstrap.servers: kafka-1:9092
+  # Kafka serialization settings, used in KafkaAvroSerializer. Read from [io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig].
+  serialization:
+    schema.registry.url: http://schema-registry-1:8081
+
+# Authorization settings
+auth:
+  # ManagementPortal URL. If available, this is used to read the public key from
+  # ManagementPortal directly. This is the recommended method of getting public key.
+  managementPortalUrl: http://managementportal-app:8080/managementportal
+    # Whether to check that the user that submits data has the reported source ID registered
+    # in the ManagementPortal.
+    #checkSourceId: true
+    # OAuth 2.0 resource name.
+    #resourceName: res_gateway
+    # OAuth 2.0 token issuer. If null, this is not checked.
+    #issuer: null
+    # Key store for checking the digital signature of OAuth 2.0 JWTs.
+    #keyStore:
+    # Path to the p12 key store.
+    #path: null
+    # Alias in the key store to use
+    #alias: null
+    # Password of the key store
+    #password: null
+    # Plain-text PEM public keys
+    #publicKeys:
+    # ECDSA public keys
+    #ecdsa: []
+    # RSA public keys
+  #rsa: []
