@@ -1,0 +1,127 @@
+---
+version: '3.5'
+
+networks:
+  hotstorage:
+    driver: bridge
+    internal: true
+  api:
+    driver: bridge
+    internal: true
+
+
+services:
+
+  #---------------------------------------------------------------------------#
+  # RADAR Hot Storage                                                         #
+  #---------------------------------------------------------------------------#
+  hotstorage:
+    image: radarbase/radar-hotstorage:0.1
+    networks:
+      - hotstorage
+    volumes:
+      - "${MONGODB_DIR}/db:/data/db"
+      - "${MONGODB_DIR}/configdb:/data/configdb"
+    restart: always
+    environment:
+      RADAR_USER: ${HOTSTORAGE_USERNAME}
+      RADAR_PWD: ${HOTSTORAGE_PASSWORD}
+      RADAR_DB: ${HOTSTORAGE_NAME}
+    healthcheck:
+      test: ["CMD", "mongo", "-u", "${HOTSTORAGE_USERNAME}", "-p", "${HOTSTORAGE_PASSWORD}", "${HOTSTORAGE_NAME}", "--eval", "db"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR REST API                                                            #
+  #---------------------------------------------------------------------------#
+  rest-api:
+    image: radarbase/radar-restapi:0.3
+    networks:
+      - hotstorage
+      - api
+      - management
+    depends_on:
+      - hotstorage
+      - managementportal-app
+    restart: always
+    volumes:
+      - "./etc/rest-api:/usr/local/conf/radar/rest-api"
+    environment:
+      RADAR_IS_CONFIG_LOCATION: usr/local/conf/radar/rest-api/radar-is.yml
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8080/api/openapi.json"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR Dashboard                                                           #
+  #---------------------------------------------------------------------------#
+  dashboard:
+    image: radarcns/radar-dashboard:2.1.0
+    networks:
+      - api
+    depends_on:
+      - rest-api
+    restart: always
+    environment:
+      API_URI: https://${SERVER_NAME}/api
+      BASE_HREF: /dashboard/
+    healthcheck:
+      test: ["CMD", "wget", "-s", "http://localhost:80/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR mongo connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-mongodb-connector:
+    image: radarbase/kafka-connect-mongodb-sink:0.2.2
+    restart: on-failure
+    volumes:
+      - ./etc/mongodb-connector/sink-mongo.properties:/etc/kafka-connect/sink.properties
+    networks:
+      - zookeeper
+      - kafka
+      - hotstorage
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - rest-proxy-1
+      - kafka-init
+      - hotstorage
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-mongodb-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      CONNECT_CONSUMER_MAX_POLL_RECORDS: 500
+      CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS: 300000
+      CONNECT_CONSUMER_SESSION_TIMEOUT_MS: 10000
+      CONNECT_CONSUMER_HEARTBEAT_INTERVAL_MS: 3000
+      CONNECT_PLUGIN_PATH: /usr/share/java/kafka-connect/plugins
+      KAFKA_BROKERS: 3
+      CONNECT_LOG4J_ROOT_LOGLEVEL: WARN
+      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
+    healthcheck:
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-connector-mongodb-sink/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3

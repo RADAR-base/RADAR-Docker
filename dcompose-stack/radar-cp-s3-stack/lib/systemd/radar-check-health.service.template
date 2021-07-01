@@ -1,0 +1,15 @@
+[Unit]
+Description=RADAR-Docker service
+After=radar-docker.service
+
+[Service]
+
+WorkingDirectory=
+
+ExecStart=
+
+NotifyAccess=all
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=radar-check-health
