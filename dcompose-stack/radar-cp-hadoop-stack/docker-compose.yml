@@ -58,14 +58,14 @@ services:
       - zookeeper
     volumes:
       - zookeeper-1-data:/var/lib/zookeeper/data
-      - zookeeper-1-log:/var/lib/zookeeper/logs
+      - zookeeper-1-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_INIT_LIMIT: 10
+      ZOOKEEPER_SYNC_LIMIT: 5
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
     healthcheck:
       test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
@@ -79,14 +79,14 @@ services:
       - zookeeper
     volumes:
       - zookeeper-2-data:/var/lib/zookeeper/data
-      - zookeeper-2-log:/var/lib/zookeeper/logs
+      - zookeeper-2-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_INIT_LIMIT: 10
+      ZOOKEEPER_SYNC_LIMIT: 5
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
     healthcheck:
       test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-2 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
@@ -100,14 +100,14 @@ services:
       - zookeeper
     volumes:
       - zookeeper-3-data:/var/lib/zookeeper/data
-      - zookeeper-3-log:/var/lib/zookeeper/logs
+      - zookeeper-3-log:/var/lib/zookeeper/log
     restart: always
     environment:
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_INIT_LIMIT: 10
+      ZOOKEEPER_SYNC_LIMIT: 5
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
     healthcheck:
       test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-3 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
@@ -143,6 +143,8 @@ services:
       KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 18000
+      KAFKA_REPLICA_LAG_TIME_MS: 30000
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/1 || exit 1"]
       interval: 1m30s
@@ -174,6 +176,8 @@ services:
       KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 18000
+      KAFKA_REPLICA_LAG_TIME_MS: 30000
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
       interval: 1m30s
@@ -205,6 +209,8 @@ services:
       KAFKA_LOG_MESSAGE_FORMAT_VERSION: "1.1"
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OFFSETS_RETENTION_MINUTES: 10080
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 18000
+      KAFKA_REPLICA_LAG_TIME_MS: 30000
     healthcheck:
       test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
       interval: 1m30s
@@ -218,7 +224,6 @@ services:
     image: confluentinc/cp-schema-registry:4.1.0
     networks:
       - kafka
-      - zookeeper
       - api
     depends_on:
       - kafka-1
@@ -226,7 +231,7 @@ services:
       - kafka-3
     restart: always
     environment:
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper-1:2181
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
       SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
     healthcheck:

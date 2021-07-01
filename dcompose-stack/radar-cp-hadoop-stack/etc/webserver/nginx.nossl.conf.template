@@ -17,6 +17,9 @@ http {
     '"$http_user_agent" "$http_x_forwarded_for"';
   tcp_nodelay  on;
 
+  # hide nginx version
+  server_tokens off;
+
   # add nosniff header (https://www.owasp.org/index.php/List_of_useful_HTTP_headers)
   add_header X-Content-Type-Options nosniff;
 
@@ -57,6 +60,7 @@ http {
         add_header 'Access-Control-Max-Age' 1728000;
         add_header 'Content-Type' 'text/plain charset=UTF-8';
         add_header 'Content-Length' 0;
+        add_header 'Allow' 'GET,OPTIONS';
         return 204;
       }
 
@@ -74,6 +78,9 @@ http {
       proxy_set_header   Host $host;
       proxy_http_version 1.1;
       proxy_set_header   Connection "";
+    }
+    location = /schema/application.wadl {
+      deny all;
     }
     location /dashboard/ {
       proxy_pass         http://dashboard:80/;

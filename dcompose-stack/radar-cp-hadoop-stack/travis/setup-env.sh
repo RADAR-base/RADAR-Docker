@@ -14,6 +14,7 @@ cp ../etc/mongodb-connector/sink-mongo.properties.template ../etc/mongodb-connec
 cp ../etc/managementportal/config/oauth_client_details.csv.template ../etc/managementportal/config/oauth_client_details.csv
 cp ../etc/redcap-integration/radar.yml.template ../etc/redcap-integration/radar.yml
 cp ../etc/hdfs-restructure/restructure.yml.template ../etc/hdfs-restructure/restructure.yml
+cp ../etc/jdbc-connector/sink-timescale.properties.template ../etc/jdbc-connector/sink-timescale.properties
 
 ../bin/keystore-init
 
