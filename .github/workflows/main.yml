@@ -52,7 +52,7 @@ jobs:
           bin/radar-docker install
           sleep 120
           bin/radar-docker ps
-          [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]
+          [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit ")" ]
           bin/radar-docker down && sleep 90
 
       - name: Firebase messaging stack
