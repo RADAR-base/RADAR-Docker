@@ -1,5 +1,5 @@
 # Continuous integration and conditional deployment to stage
-name: Main 
+name: Main
 
 on:
   push:
@@ -32,13 +32,7 @@ jobs:
           mkdir -p "$HOME/bin";
           export PATH="$HOME/bin:$PATH";
           sudo docker-compose --version
-      
-      - name: Standard stack
-        run: |
-          cd dcompose-stack/radar-cp-stack
-          sudo docker-compose up -d --build && sleep 15 && [ -z "$(sudo docker-compose ps | tail -n +3 | grep " Exit ")" ]
-          sudo docker-compose down
-      
+
       - name: With email and HDFS support
         run: |
           cd dcompose-stack/radar-cp-hadoop-stack/ci
@@ -48,6 +42,18 @@ jobs:
           sleep 120
           bin/radar-docker ps
           [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]
+          bin/radar-docker down && sleep 90
+
+      - name: With S3 Connector
+        run: |
+          cd dcompose-stack/radar-cp-s3-stack/ci
+          ./setup-env.sh
+          cd ../
+          bin/radar-docker install
+          sleep 120
+          bin/radar-docker ps
+          [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]
+          bin/radar-docker down && sleep 90
 
       - name: Firebase messaging stack
         run: |
