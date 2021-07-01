@@ -17,7 +17,7 @@ ExecStart=./lib/systemd/start-radar-stack.sh
 
 ExecReload=/usr/local/bin/docker-compose restart
 
-ExecStop=/usr/local/bin/docker-compose down
+ExecStop=/usr/local/bin/docker-compose down -v
 
 NotifyAccess=all
 
