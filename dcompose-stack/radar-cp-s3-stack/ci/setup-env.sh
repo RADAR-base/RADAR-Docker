@@ -2,11 +2,11 @@
 echo "Starting to configure mock configurations for test"
 
 # create folder for docker volumes
-mkdir -p /home/travis/data
+mkdir -p /home/ci/data
 
 # setup mock configs
-cp ./travis-env.template ../.env
-cp ./travis-smtp.template ../etc/smtp.env
+cp ./ci-env.template ../.env
+cp ./ci-smtp.template ../etc/smtp.env
 cp ../etc/webserver/nginx.conf.template ../etc/webserver/nginx.conf
 cp ../etc/s3-connector/sink-s3.properties.template ../etc/s3-connector/sink-s3.properties
 cp ../etc/mongodb-connector/sink-mongo.properties.template ../etc/mongodb-connector/sink-mongo.properties

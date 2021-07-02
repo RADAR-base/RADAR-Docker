@@ -1,5 +1,6 @@
 # RADAR-Docker 2.2.0
 
+[![Build Status](https://github.com/RADAR-base/RADAR-Docker/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/RADAR-base/RADAR-Docker/actions/workflows/main.yml?query=branch%3Amaster)
 
 The dockerized RADAR stack for deploying the RADAR-base platform. Component repositories can be found at [RADAR-base DockerHub org](https://hub.docker.com/u/radarbase/dashboard/)
 

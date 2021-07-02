@@ -6,7 +6,7 @@ This folder contains useful scripts to manage the server where the RADAR-base Pl
 **It checks if the machine is connected to internet. The script can be parametrised with the following**
 
   - `nic` is the internet gateway
-  - `lockfile` lock usefull to check whether there is a previous instance still running
+  - `lockfile` lock useful to check whether there is a previous instance still running
   - `logfile` is the log file where the script logs each operation
   - `url` is the web site used to check the connectivity
 

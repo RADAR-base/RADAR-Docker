@@ -697,9 +697,12 @@ services:
       - management
       - mail
     depends_on:
-      - radarbase-postgresql
-      - smtp
-      - catalog-server
+      radarbase-postgresql:
+        condition: service_healthy
+      smtp:
+        condition: service_started
+      catalog-server:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod,swagger
       SPRING_DATASOURCE_URL: jdbc:postgresql://radarbase-postgresql:5432/managementportal
