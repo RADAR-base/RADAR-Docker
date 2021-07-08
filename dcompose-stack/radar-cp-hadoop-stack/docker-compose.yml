@@ -790,7 +790,7 @@ services:
     command: ["radar-gateway", "/etc/radar-gateway/gateway.yml"]
     healthcheck:
       # should give an unauthenticated response, rather than a 404
-      test: ["CMD-SHELL", "wget --spider localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]
+      test: ["CMD-SHELL", "curl --fail localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
