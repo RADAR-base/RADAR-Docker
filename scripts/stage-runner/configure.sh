@@ -5,8 +5,10 @@ set -eu
 pushd .
 cd /home/ec2-user/RADAR-Docker/dcompose-stack/radar-cp-hadoop-stack
 
-rm -rf ./.env
-touch ./.env
+ENV_PATH=./.env
+readonly ENV_PATH
+rm -rf "$ENV_PATH"
+touch "$ENV_PATH"
 
 # Configure OAuth client credentials?
 cp ./etc/managementportal/config/oauth_client_details.csv.template ./etc/managementportal/config/oauth_client_details.csv
@@ -20,16 +22,21 @@ cp ./etc/webserver/optional-services.conf.template ./etc/webserver/optional-serv
 cp ./etc/smtp.env.template ./etc/smtp.env
 cp ./etc/hdfs-restructure/restructure.yml.template ./etc/hdfs-restructure/restructure.yml
 
-function get_param () {
+function _get_param () {
     local param_value=$(aws ssm get-parameters --region eu-west-1 --names $1 --query Parameters[0].Value)
     param_value=$(echo "$param_value" | sed -e 's/^"//' -e 's/"$//')
     echo $param_value
 }
 
-function get_decrypted_param () {
+function _get_decrypted_param () {
     local param_value=$(aws ssm get-parameters --region eu-west-1 --names $1 --with-decryption --query Parameters[0].Value)
     param_value=$(echo "$param_value" | sed -e 's/^"//' -e 's/"$//')
     echo $param_value
+}
+
+function _get_secure_file() {
+    local file_content=$(_get_decrypted_param "$1")
+    printf "%b\n" "$file_content" > $2
 }
 
 IFS="="
@@ -48,56 +55,51 @@ do
     elif [[ "$key" == "ENABLE_OPTIONAL_SERVICES" ]]; then
         echo "$key=true" >> ./.env
     elif [[ "$key" == "RADAR_SCHEMAS_VERSION" ]]; then
-        value=$(get_param "RadarBackendRadarSchemasVersion")
+        value=$(_get_param "RadarBackendRadarSchemasVersion")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "HOTSTORAGE_USERNAME" ]]; then
-        value=$(get_decrypted_param "RadarBackendHotstorageUsername")
+        value=$(_get_decrypted_param "RadarBackendHotstorageUsername")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "HOTSTORAGE_PASSWORD" ]]; then
-        value=$(get_decrypted_param "RadarBackendHotstoragePassword")
+        value=$(_get_decrypted_param "RadarBackendHotstoragePassword")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "HOTSTORAGE_NAME" ]]; then
-        value=$(get_decrypted_param "RadarBackendHotstorageName")
+        value=$(_get_decrypted_param "RadarBackendHotstorageName")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "POSTGRES_USER" ]]; then
-        value=$(get_decrypted_param "RadarBackendPostgresUser")
+        value=$(_get_decrypted_param "RadarBackendPostgresUser")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "POSTGRES_PASSWORD" ]]; then
-        value=$(get_decrypted_param "RadarBackendPostgresPassword")
+        value=$(_get_decrypted_param "RadarBackendPostgresPassword")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "KAFKA_MANAGER_PASSWORD" ]]; then
-        value=$(get_decrypted_param "RadarBackendKafkaManagerPassword")
+        value=$(_get_decrypted_param "RadarBackendKafkaManagerPassword")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "PORTAINER_PASSWORD_HASH" ]]; then
-        value=$(get_decrypted_param "RadarBackendPortainerPasswordHash")
+        value=$(_get_decrypted_param "RadarBackendPortainerPasswordHash")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD" ]]; then
-        value=$(get_decrypted_param "RadarBackendManagementportalCommonAdminPassword")
+        value=$(_get_decrypted_param "RadarBackendManagementportalCommonAdminPassword")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "TIMESCALEDB_PASSWORD" ]]; then
-        value=$(get_decrypted_param "RadarBackendTimescaledbPassword")
+        value=$(_get_decrypted_param "RadarBackendTimescaledbPassword")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "GRAFANA_PASSWORD" ]]; then
-        value=$(get_decrypted_param "RadarBackendGrafanaPassword")
+        value=$(_get_decrypted_param "RadarBackendGrafanaPassword")
         echo "$key=$value" >> ./.env
     elif [[ "$key" == "MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD" ]]; then
-        value=$(get_decrypted_param "RadarBackendManagementportalCommonAdminPassword")
+        value=$(_get_decrypted_param "RadarBackendManagementportalCommonAdminPassword")
         echo "$key=$value" >> ./.env
     else
         echo "$key=$val" >> ./.env
     fi
 done < <(grep . ./etc/env.template)
 
-gmail_user=$(get_decrypted_param "RadarBackendGmailUser")
-gmail_password=$(get_decrypted_param "RadarBackendGmailPassword")
-cat > ./etc/smtp.env << EOF
-GMAIL_USER=$gmail_user
-GMAIL_PASSWORD=$gmail_password
-RELAY_NETWORKS=:172.0.0.0/8:192.168.0.0/16
-EOF
+# Overwrite SMTP environment variables
+_get_secure_file "RadarBackendSmtpEnv" ./etc/smtp.env
 
-output_restructure_config=$(get_decrypted_param "RadarBackendOutputRestructureConfig")
-printf "%b\n" "$output_restructure_config" > ./etc/hdfs-restructure/restructure.yml
+# Overwrite configuration on output restructure
+_get_secure_file "RadarBackendOutputRestructureConfig" ./etc/hdfs-restructure/restructure.yml
 mkdir -p ./etc/hdfs-restructure/output/+tmp
 chmod -R +w ./etc/hdfs-restructure/output
 
