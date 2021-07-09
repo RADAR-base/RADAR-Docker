@@ -22,13 +22,13 @@ cp ./etc/hdfs-restructure/restructure.yml.template ./etc/hdfs-restructure/restru
 
 function get_param () {
     local param_value=$(aws ssm get-parameters --region eu-west-1 --names $1 --query Parameters[0].Value)
-    param_value=$(echo $param_value | sed -e 's/^"//' -e 's/"$//')
+    param_value=$(echo "$param_value" | sed -e 's/^"//' -e 's/"$//')
     echo $param_value
 }
 
 function get_decrypted_param () {
     local param_value=$(aws ssm get-parameters --region eu-west-1 --names $1 --with-decryption --query Parameters[0].Value)
-    param_value=$(echo $param_value | sed -e 's/^"//' -e 's/"$//')
+    param_value=$(echo "$param_value" | sed -e 's/^"//' -e 's/"$//')
     echo $param_value
 }
 
@@ -97,7 +97,7 @@ RELAY_NETWORKS=:172.0.0.0/8:192.168.0.0/16
 EOF
 
 output_restructure_config=$(get_decrypted_param "RadarBackendOutputRestructureConfig")
-echo "$output_restructure_config" > ./etc/hdfs-restructure/restructure.yml
+printf "%b\n" "$output_restructure_config" > ./etc/hdfs-restructure/restructure.yml
 mkdir -p ./etc/hdfs-restructure/output/+tmp
 chmod -R +w ./etc/hdfs-restructure/output
 
