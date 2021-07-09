@@ -3,9 +3,9 @@ name: Main
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [ master, dev, configuration ]
   pull_request:
-    branches: [ master, dev ]
+    branches: [ master, dev, configuration ]
 
 jobs:
   continuous-integration:
@@ -64,7 +64,7 @@ jobs:
 
   deployment-to-stage:
     # Deploy to stage on merging into dev
-    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/configuration'
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest

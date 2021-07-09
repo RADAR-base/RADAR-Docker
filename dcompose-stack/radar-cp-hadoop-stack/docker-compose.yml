@@ -822,7 +822,7 @@ services:
         retries: 3
 
   radar-output:
-    image: radarbase/radar-output-restructure:1.0.0
+    image: radarbase/radar-output-restructure:1.1.1-hdfs
     restart: always
     stop_signal: SIGINT
     networks:

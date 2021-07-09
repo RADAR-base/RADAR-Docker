@@ -18,6 +18,7 @@ cp ./etc/webserver/ip-access-control.conf.template ./etc/webserver/ip-access-con
 cp ./etc/webserver/nginx.conf.template ./etc/webserver/nginx.conf
 cp ./etc/webserver/optional-services.conf.template ./etc/webserver/optional-services.conf
 cp ./etc/smtp.env.template ./etc/smtp.env
+cp ./etc/hdfs-restructure/restructure.yml.template ./etc/hdfs-restructure/restructure.yml
 
 function get_param () {
     local param_value=$(aws ssm get-parameters --region eu-west-1 --names $1 --query Parameters[0].Value)
@@ -94,6 +95,11 @@ GMAIL_USER=$gmail_user
 GMAIL_PASSWORD=$gmail_password
 RELAY_NETWORKS=:172.0.0.0/8:192.168.0.0/16
 EOF
+
+output_restructure_config=$(get_decrypted_param "RadarBackendOutputRestructureConfig")
+echo "$output_restructure_config" > ./etc/hdfs-restructure/restructure.yml
+mkdir -p ./etc/hdfs-restructure/output/+tmp
+chmod -R +w ./etc/hdfs-restructure/output
 
 sed -i -e '2,$s/^#//' ./etc/webserver/optional-services.conf
 
