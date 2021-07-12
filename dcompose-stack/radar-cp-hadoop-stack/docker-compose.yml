@@ -779,7 +779,7 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.3.9
+    image: radarbase/radar-gateway:0.3.10
     networks:
       - api
       - kafka
