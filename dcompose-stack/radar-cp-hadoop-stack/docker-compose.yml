@@ -691,6 +691,7 @@ services:
   #---------------------------------------------------------------------------#
   managementportal-app:
     image: radarbase/management-portal:0.5.5
+    restart: always
     networks:
       - default
       - api
@@ -736,6 +737,7 @@ services:
       args:
         POSTGRES_VERSION: ${POSTGRES_VERSION}
     image: radarbase/postgres:${POSTGRES_VERSION}-1
+    restart: always
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
@@ -780,6 +782,7 @@ services:
   #---------------------------------------------------------------------------#
   gateway:
     image: radarbase/radar-gateway:0.3.10
+    restart: always
     networks:
       - api
       - kafka
