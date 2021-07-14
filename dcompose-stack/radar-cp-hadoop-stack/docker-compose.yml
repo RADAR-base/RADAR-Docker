@@ -474,6 +474,7 @@ services:
   #---------------------------------------------------------------------------#
   smtp:
     image: namshi/smtp:latest
+    restart: always
     networks:
       - mail
       - default
@@ -482,6 +483,13 @@ services:
     restart: always
     env_file:
       - ./etc/smtp.env
+    command: ["/bin/sh", "-c", "apt-get update && apt-get install -y wget && exim -bd -q15m -v"]
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:25"]
+      interval: 1m
+      timeout: 15s
+      retries: 3
+      start_period: 30s
 
   #---------------------------------------------------------------------------#
   # RADAR mongo connector                                                     #
@@ -701,7 +709,7 @@ services:
       radarbase-postgresql:
         condition: service_healthy
       smtp:
-        condition: service_started
+        condition: service_healthy
       catalog-server:
         condition: service_healthy
     environment:
