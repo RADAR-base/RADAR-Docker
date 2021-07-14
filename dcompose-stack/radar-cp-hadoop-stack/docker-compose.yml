@@ -698,7 +698,7 @@ services:
   # Management Portal                                                         #
   #---------------------------------------------------------------------------#
   managementportal-app:
-    image: radarbase/management-portal:0.5.5
+    image: radarbase/management-portal:0.6.5
     restart: always
     networks:
       - default
