@@ -275,6 +275,7 @@ services:
       args:
         SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
     image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
+    restart: always
     networks:
       - kafka
       - zookeeper
@@ -815,6 +816,7 @@ services:
       args:
         SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
     image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
+    restart: always
     networks:
       - management
     command: radar-schemas-tools serve /schema/merged
@@ -854,6 +856,7 @@ services:
 
   output-redis:
     image: bitnami/redis:5.0.8
+    restart: always
     volumes:
       - redis-data:/data
     networks:
