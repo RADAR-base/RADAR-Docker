@@ -1,5 +1,5 @@
 ---
-version: '2.2'
+version: '2.3'
 
 networks:
   zookeeper:
@@ -275,6 +275,7 @@ services:
       args:
         SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
     image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
+    restart: always
     networks:
       - kafka
       - zookeeper
@@ -474,6 +475,7 @@ services:
   #---------------------------------------------------------------------------#
   smtp:
     image: namshi/smtp:latest
+    restart: always
     networks:
       - mail
       - default
@@ -482,6 +484,13 @@ services:
     restart: always
     env_file:
       - ./etc/smtp.env
+    command: ["/bin/sh", "-c", "apt-get update && apt-get install -y wget && exim -bd -q15m -v"]
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:25"]
+      interval: 1m
+      timeout: 15s
+      retries: 3
+      start_period: 30s
 
   #---------------------------------------------------------------------------#
   # RADAR mongo connector                                                     #
@@ -691,6 +700,7 @@ services:
   #---------------------------------------------------------------------------#
   managementportal-app:
     image: radarbase/management-portal:0.6.5
+    restart: always
     networks:
       - default
       - api
@@ -700,7 +710,7 @@ services:
       radarbase-postgresql:
         condition: service_healthy
       smtp:
-        condition: service_started
+        condition: service_healthy
       catalog-server:
         condition: service_healthy
     environment:
@@ -736,6 +746,7 @@ services:
       args:
         POSTGRES_VERSION: ${POSTGRES_VERSION}
     image: radarbase/postgres:${POSTGRES_VERSION}-1
+    restart: always
     volumes:
       - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
       - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
@@ -779,7 +790,8 @@ services:
   # RADAR Gateway                                                             #
   #---------------------------------------------------------------------------#
   gateway:
-    image: radarbase/radar-gateway:0.3.9
+    image: radarbase/radar-gateway:0.3.10
+    restart: always
     networks:
       - api
       - kafka
@@ -790,7 +802,7 @@ services:
     command: ["radar-gateway", "/etc/radar-gateway/gateway.yml"]
     healthcheck:
       # should give an unauthenticated response, rather than a 404
-      test: ["CMD-SHELL", "wget --spider localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]
+      test: ["CMD-SHELL", "curl --fail localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
@@ -804,6 +816,7 @@ services:
       args:
         SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
     image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
+    restart: always
     networks:
       - management
     command: radar-schemas-tools serve /schema/merged
@@ -822,7 +835,7 @@ services:
         retries: 3
 
   radar-output:
-    image: radarbase/radar-output-restructure:1.0.0
+    image: radarbase/radar-output-restructure:1.1.1-hdfs
     restart: always
     stop_signal: SIGINT
     networks:
@@ -843,6 +856,7 @@ services:
 
   output-redis:
     image: bitnami/redis:5.0.8
+    restart: always
     volumes:
       - redis-data:/data
     networks:
