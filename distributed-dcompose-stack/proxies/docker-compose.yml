@@ -55,6 +55,7 @@ services:
     image: radarbase/radar-schemas-tools:${RADAR_SCHEMAS_VERSION}
     depends_on:
       - schema-registry-1
+    command: "topic_init.sh"
     volumes:
       - ./etc/schema:/schema/conf
     environment:
