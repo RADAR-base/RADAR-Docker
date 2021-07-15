@@ -52,10 +52,6 @@ services:
   # Kafka Init                                                                #
   #---------------------------------------------------------------------------#
   kafka-init:
-    build:
-      context: ../../dcompose-stack/radar-cp-hadoop-stack/images/radar-kafka-init
-      args:
-        SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
     image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
     depends_on:
       - schema-registry-1
