@@ -38,6 +38,7 @@ jobs:
           cd dcompose-stack/radar-cp-hadoop-stack/ci
           ./setup-env.sh
           cd ../
+          bin/radar-docker down
           bin/radar-docker install
           sleep 120
           bin/radar-docker ps
@@ -49,6 +50,7 @@ jobs:
           cd dcompose-stack/radar-cp-s3-stack/ci
           ./setup-env.sh
           cd ../
+          bin/radar-docker down
           bin/radar-docker install
           sleep 120
           bin/radar-docker ps
@@ -59,6 +61,7 @@ jobs:
         run: |
           cd  dcompose-stack/firebase-app-server
           cp etc/env.template .env
+          sudo docker-compose down
           sudo docker-compose up -d --build && sleep 15 && [ -z "$(sudo docker-compose ps | tail -n +3 | grep " Exit ")" ]
           sudo docker-compose down
 

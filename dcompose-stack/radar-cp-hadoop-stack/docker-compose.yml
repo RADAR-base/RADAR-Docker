@@ -271,6 +271,7 @@ services:
   #---------------------------------------------------------------------------#
   kafka-init:
     image: radarbase/radar-schemas-tools:${RADAR_SCHEMAS_VERSION}
+    restart: "no" # On start failure, users need to run "install" again
     networks:
       - kafka
       - zookeeper
@@ -476,7 +477,6 @@ services:
       - default
     volumes:
       - /var/spool/exim
-    restart: always
     env_file:
       - ./etc/smtp.env
     command: ["/bin/sh", "-c", "apt-get update && apt-get install -y wget && exim -bd -q15m -v"]
@@ -539,7 +539,7 @@ services:
       retries: 3
 
   #---------------------------------------------------------------------------#
-  # RADAR HDFS connector                                                     #
+  # RADAR HDFS connector                                                      #
   #---------------------------------------------------------------------------#
   radar-hdfs-connector:
     image: radarbase/radar-connect-hdfs-sink:0.2.1
