@@ -275,7 +275,7 @@ services:
       args:
         SCHEMAS_VERSION: ${RADAR_SCHEMAS_VERSION}
     image: radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
-    restart: always
+    restart: on-failure
     networks:
       - kafka
       - zookeeper
