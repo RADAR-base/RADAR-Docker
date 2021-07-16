@@ -276,7 +276,6 @@ services:
       - zookeeper
     command: "topic_init.sh"
     depends_on:
-      - zookeeper-1
       - kafka-1
       - kafka-2
       - kafka-3
