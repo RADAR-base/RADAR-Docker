@@ -477,7 +477,6 @@ services:
       - default
     volumes:
       - /var/spool/exim
-    restart: always
     env_file:
       - ./etc/smtp.env
     command: ["/bin/sh", "-c", "apt-get update && apt-get install -y wget && exim -bd -q15m -v"]
