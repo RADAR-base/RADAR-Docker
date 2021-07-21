@@ -11,7 +11,7 @@ zookeeper:
 #List of Kafka brokers
 broker:
     - host: kafka-1
-      port: 9093
+      port: 9092
 
 #=========================== Schema Registry ===========================#
 #List of Schema Registry instances
