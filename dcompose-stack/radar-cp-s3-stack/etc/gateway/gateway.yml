@@ -17,11 +17,11 @@ kafka:
   # poolSize: 20
   # Kafka producer settings. Read from https://kafka.apache.org/documentation/#producerconfigs.
   producer:
-    bootstrap.servers: kafka-1:9092,kafka-2:9092,kafka-3:9092
+    bootstrap.servers: kafka-1:9093,kafka-2:9093,kafka-3:9093
     # Kafka Admin Client settings. Read from https://kafka.apache.org/documentation/#adminclientconfigs.
     #admin:
     # bootstrap server property is copied from the producer settings if none is provided.
-    #bootstrap.servers: kafka-1:9092
+    #bootstrap.servers: kafka-1:9093
   # Kafka serialization settings, used in KafkaAvroSerializer. Read from [io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig].
   serialization:
     schema.registry.url: http://schema-registry-1:8081
