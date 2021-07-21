@@ -8,12 +8,11 @@ on:
     branches: [ master, dev, ci-improvement ]
 
 jobs:
-  strategy:
-    max-parallel: 3
 
   ci-with-email-and-hdfs-support:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    concurrency: ci-with-email-and-hdfs-support
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     steps:
@@ -51,6 +50,7 @@ jobs:
   ci-with-s3-connector:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    concurrency: radar-docker-ci-with-s3-connector
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     steps:
@@ -88,6 +88,7 @@ jobs:
   ci-firebase-messaging-stack:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    concurrency: radar-docker-ci-firebase-messaging-stack
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     steps:
@@ -125,7 +126,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     needs: [ci-with-email-and-hdfs-support, ci-with-s3-connector, ci-firebase-messaging-stack]
-    concurrency: staging_environment
+    concurrency: radar-docker-deployment-to-stage
 
     steps:
       - name: Configure AWS credentials
