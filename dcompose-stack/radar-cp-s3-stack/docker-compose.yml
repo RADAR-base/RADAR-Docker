@@ -264,6 +264,7 @@ services:
   #---------------------------------------------------------------------------#
   kafka-init:
     image: radarbase/radar-schemas-tools:${RADAR_SCHEMAS_VERSION}
+    restart: "no" # On start failure, users need to run "install" again
     networks:
       - kafka
       - zookeeper
