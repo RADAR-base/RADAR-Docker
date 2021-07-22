@@ -3,9 +3,9 @@ name: Main
 
 on:
   push:
-    branches: [ master, dev, ci-improvement ]
+    branches: [ master, dev ]
   pull_request:
-    branches: [ master, dev, ci-improvement ]
+    branches: [ master, dev ]
 
 jobs:
 
