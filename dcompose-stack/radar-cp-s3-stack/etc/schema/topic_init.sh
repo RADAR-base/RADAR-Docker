@@ -10,12 +10,14 @@ echo "Creating RADAR-base topics..."
 for i in {1..5}; do
     if radar-schemas-tools create -c "${KAFKA_CONFIG_PATH}" -p $KAFKA_NUM_PARTITIONS -r $KAFKA_NUM_REPLICATION -b $KAFKA_NUM_BROKERS -s "${KAFKA_BOOTSTRAP_SERVERS}" merged; then
         echo "Created topics at attempt ${i}"
+        break
     else
         if [ i -eq 5 ]; then
             echo "FAILED TO CREATE TOPICS"
             exit 1
         else
             echo "FAILED TO CREATE TOPICS ... Retrying"
+            sleep 10
         fi
     fi
 done
