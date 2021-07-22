@@ -268,7 +268,7 @@ services:
     networks:
       - kafka
       - zookeeper
-    command: "topic_init.sh"
+    command: "/schema/conf/topic_init.sh"
     depends_on:
       - kafka-1
       - kafka-2
