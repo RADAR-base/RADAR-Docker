@@ -96,7 +96,7 @@ sudo-linux bin/radar-docker run --rm mc
 
 KAFKA_INIT_OPTS=(
     --rm -v "$PWD/etc/schema:/schema/conf"
-    radarbase/kafka-init:${RADAR_SCHEMAS_VERSION}
+    radarbase/radar-schemas-tools:${RADAR_SCHEMAS_VERSION}
   )
 
 # Set topics

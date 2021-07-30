@@ -268,7 +268,7 @@ services:
     networks:
       - kafka
       - zookeeper
-    command: "/schema/conf/topic_init.sh"
+    command: "topic_init.sh"
     depends_on:
       - kafka-1
       - kafka-2
@@ -282,6 +282,7 @@ services:
       KAFKA_NUM_BROKERS: 3
       KAFKA_NUM_PARTITIONS: 3
       KAFKA_NUM_REPLICATION: 3
+      TOPIC_INIT_TRIES: ${TOPIC_INIT_TRIES}
 
   #---------------------------------------------------------------------------#
   # RADAR Cold Storage                                                        #
@@ -623,6 +624,7 @@ services:
       KAFKA_NUM_BROKERS: 3
       RADAR_NUM_PARTITIONS: 3
       RADAR_NUM_REPLICATION_FACTOR: 3
+      TOPIC_INIT_TRIES: ${TOPIC_INIT_TRIES}
     healthcheck:
         test: ["CMD", "curl", "-f", "localhost:9010/source-types"]
         interval: 1m30s

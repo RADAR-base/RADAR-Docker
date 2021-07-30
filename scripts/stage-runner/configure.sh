@@ -54,9 +54,6 @@ do
         echo "$key=true" >> ./.env
     elif [[ "$key" == "ENABLE_OPTIONAL_SERVICES" ]]; then
         echo "$key=true" >> ./.env
-    elif [[ "$key" == "RADAR_SCHEMAS_VERSION" ]]; then
-        value=$(_get_param "RadarBackendRadarSchemasVersion")
-        echo "$key=$value" >> ./.env
     elif [[ "$key" == "HOTSTORAGE_USERNAME" ]]; then
         value=$(_get_decrypted_param "RadarBackendHotstorageUsername")
         echo "$key=$value" >> ./.env
