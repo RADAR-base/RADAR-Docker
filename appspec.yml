@@ -1,0 +1,22 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/RADAR-Docker
+hooks:
+  BeforeInstall:
+    - location: scripts/stage-runner/stop.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/stage-runner/configure.sh
+      timeout: 120
+      runas: root
+  ApplicationStart:
+    - location: scripts/stage-runner/start.sh
+      timeout: 900
+      runas: root
+  ValidateService:
+    - location: scripts/stage-runner/checkhealth.sh
+      timeout: 300
+      runas: root

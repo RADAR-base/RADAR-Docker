@@ -1,0 +1,25 @@
+[Unit]
+Description=RADAR-Docker service
+
+[Service]
+TimeoutStartSec=0
+TimeoutStopSec=90
+Restart=always
+RestartSec=10
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=radar-docker
+
+WorkingDirectory=
+
+ExecStart=./lib/systemd/start-radar-stack.sh
+
+ExecReload=/usr/local/bin/docker-compose restart
+
+ExecStop=/usr/local/bin/docker-compose down
+
+NotifyAccess=all
+
+[Install]
+WantedBy=default.target

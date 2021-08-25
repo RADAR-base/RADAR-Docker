@@ -1,7 +1,13 @@
 # RADAR-Docker 2.2.0
 
+[![Build Status](https://github.com/RADAR-base/RADAR-Docker/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/RADAR-base/RADAR-Docker/actions/workflows/main.yml?query=branch%3Amaster)
 
-The dockerized RADAR stack for deploying the RADAR-base platform. Component repositories can be found at [RADAR-base DockerHub org](https://hub.docker.com/u/radarbase/dashboard/)
+The dockerized RADAR stack for deploying the RADAR-base platform. Component repositories can be found at [RADAR-base DockerHub org](https://hub.docker.com/u/radarbase/dashboard/).
+
+
+| :exclamation:  Important Notice         |
+|:----------------------------------------|
+|We have made a lot of improvements to the RADAR-based platform over the past years. One of the key improvements is migrating to Kubernetes based deployment to allow automated application deployment, scaling, and management. Please note that the RADAR-Docker stack is not actively maintained and will be deprecated by the end of 2021. Hence, we strongly recommend you to set-up the Kubernetes based installation of the platform. You can find the installation guidelines from the [RADAR-Kubernetes repository](https://github.com/RADAR-base/RADAR-Kubernetes).<br/><br/>Please be informed that we are still working on improving our documentation. If you would like to contribute by improving the documentation or providing feedback, please contact the RADAR-base community via slack.|
 
 ## Installation instructions 
 To install RADAR-base stack, do the following: 

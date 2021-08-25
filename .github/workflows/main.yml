@@ -1,0 +1,146 @@
+# Continuous integration and conditional deployment to stage
+name: Main
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+
+jobs:
+
+  ci-with-email-and-hdfs-support:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    concurrency: ci-with-email-and-hdfs-support
+
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "8"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Before install
+        run: |
+          docker --version
+          mkdir -p "$HOME/bin";
+          export PATH="$HOME/bin:$PATH";
+          sudo docker-compose --version
+
+      - name: With email and HDFS support
+        run: |
+          cd dcompose-stack/radar-cp-hadoop-stack/ci
+          ./setup-env.sh
+          cd ../
+          bin/radar-docker down
+          bin/radar-docker install
+          sleep 120
+          bin/radar-docker ps
+          [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ]
+          bin/radar-docker down && sleep 90
+
+  ci-with-s3-connector:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    concurrency: radar-docker-ci-with-s3-connector
+
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "8"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Before install
+        run: |
+          docker --version
+          mkdir -p "$HOME/bin";
+          export PATH="$HOME/bin:$PATH";
+          sudo docker-compose --version
+
+      - name: With S3 Connector
+        run: |
+          cd dcompose-stack/radar-cp-s3-stack/ci
+          ./setup-env.sh
+          cd ../
+          bin/radar-docker down
+          bin/radar-docker install
+          sleep 120
+          bin/radar-docker ps
+          # [ -z "$(bin/radar-docker ps | tail -n +3 | grep " Exit " | grep -v "kafka-init_1")" ] # https://github.com/RADAR-base/RADAR-Docker/issues/262
+          bin/radar-docker down && sleep 90
+
+  ci-firebase-messaging-stack:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    concurrency: radar-docker-ci-firebase-messaging-stack
+
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "8"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Before install
+        run: |
+          docker --version
+          mkdir -p "$HOME/bin";
+          export PATH="$HOME/bin:$PATH";
+          sudo docker-compose --version
+
+      - name: Firebase messaging stack
+        run: |
+          cd  dcompose-stack/firebase-app-server
+          cp etc/env.template .env
+          sudo docker-compose down
+          sudo docker-compose up -d --build && sleep 15 && [ -z "$(sudo docker-compose ps | tail -n +3 | grep " Exit ")" ]
+          sudo docker-compose down
+
+  deployment-to-stage:
+    # Deploy to stage on merging into dev
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: [ci-with-email-and-hdfs-support, ci-with-s3-connector, ci-firebase-messaging-stack]
+    concurrency: radar-docker-deployment-to-stage
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Create deployment
+        id: deploy
+        run: |
+          aws deploy create-deployment \
+            --application-name radar-backend \
+            --deployment-group-name RadarBackendDeploymentGroupName \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}

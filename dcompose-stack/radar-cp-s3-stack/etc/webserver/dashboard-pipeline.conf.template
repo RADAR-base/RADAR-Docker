@@ -1,0 +1,9 @@
+location /dashboard/ {
+      proxy_pass         http://dashboard:80/;
+      proxy_set_header   Host $host;
+}
+location /api/ {
+  include cors.conf;
+  proxy_pass         http://rest-api:8080/api/;
+  proxy_set_header   Host $host;
+}

@@ -1,0 +1,662 @@
+---
+version: '3.5'
+
+networks:
+  zookeeper:
+    driver: bridge
+    internal: true
+  kafka:
+    driver: bridge
+    internal: true
+  api:
+    driver: bridge
+    internal: true
+  mail:
+    driver: bridge
+    internal: true
+  monitor:
+    driver: bridge
+    internal: true
+  management:
+    driver: bridge
+    internal: true
+  minio:
+    driver: bridge
+    internal: true
+    # driver_opts:
+    #     com.docker.network.driver.mtu: 1450
+  redis:
+    driver: bridge
+    internal: true
+
+volumes:
+  kafka-1-data: {}
+  kafka-2-data: {}
+  kafka-3-data: {}
+  zookeeper-1-data: {}
+  zookeeper-2-data: {}
+  zookeeper-3-data: {}
+  zookeeper-1-log: {}
+  zookeeper-2-log: {}
+  zookeeper-3-log: {}
+  radar-backend-monitor-disconnect-data: {}
+  redis-data: {}
+  certs:
+    external: true
+  certs-data:
+    external: true
+
+services:
+  #---------------------------------------------------------------------------#
+  # Zookeeper Cluster                                                         #
+  #---------------------------------------------------------------------------#
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:5.5.1
+    networks:
+      - zookeeper
+    volumes:
+      - zookeeper-1-data:/var/lib/zookeeper/data
+      - zookeeper-1-log:/var/lib/zookeeper/log
+    restart: always
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-1 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:5.5.1
+    networks:
+      - zookeeper
+    volumes:
+      - zookeeper-2-data:/var/lib/zookeeper/data
+      - zookeeper-2-log:/var/lib/zookeeper/log
+    restart: always
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-2 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  zookeeper-3:
+    image: confluentinc/cp-zookeeper:5.5.1
+    networks:
+      - zookeeper
+    volumes:
+      - zookeeper-3-data:/var/lib/zookeeper/data
+      - zookeeper-3-log:/var/lib/zookeeper/log
+    restart: always
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "[ $$(echo dump | nc zookeeper-3 2181 | head -c1 | wc -c) -gt 0 ] || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # Kafka Cluster                                                             #
+  #---------------------------------------------------------------------------#
+  kafka-1:
+    image: confluentinc/cp-kafka:5.5.1
+    networks:
+      - kafka
+      - zookeeper
+    volumes:
+      - kafka-1-data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_MESSAGE_MAX_BYTES: 4000048
+      KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "2.5"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "2.5"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_OFFSETS_RETENTION_MINUTES: 10080
+    healthcheck:
+      test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/1 || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  kafka-2:
+    image: confluentinc/cp-kafka:5.5.1
+    networks:
+      - kafka
+      - zookeeper
+    volumes:
+      - kafka-2-data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_MESSAGE_MAX_BYTES: 4000048
+      KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "2.5"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "2.5"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_OFFSETS_RETENTION_MINUTES: 10080
+    healthcheck:
+      test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/2 || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  kafka-3:
+    image: confluentinc/cp-kafka:5.5.1
+    networks:
+      - kafka
+      - zookeeper
+    volumes:
+      - kafka-3-data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 730
+      KAFKA_MESSAGE_MAX_BYTES: 4000048
+      KAFKA_LOG4J_LOGGERS: kafka.producer.async.DefaultEventHandler=INFO,kafka.controller=INFO,state.change.logger=INFO
+      KAFKA_COMPRESSION_TYPE: lz4
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: "2.5"
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: "2.5"
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_OFFSETS_RETENTION_MINUTES: 10080
+    healthcheck:
+      test: ["CMD-SHELL", "echo dump | nc zookeeper-1 2181 | grep -q /brokers/ids/3 || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # Schema Registry                                                           #
+  #---------------------------------------------------------------------------#
+  schema-registry-1:
+    image: confluentinc/cp-schema-registry:5.5.1
+    networks:
+      - kafka
+      - zookeeper
+      - api
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    restart: always
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper-1:2181
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8081/subjects"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # REST proxy                                                                #
+  #---------------------------------------------------------------------------#
+  rest-proxy-1:
+    image: confluentinc/cp-kafka-rest:5.4.1
+    networks:
+      - kafka
+      - zookeeper
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+    restart: always
+    environment:
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_REST_LISTENERS: http://0.0.0.0:8082
+      KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      KAFKA_REST_HOST_NAME: rest-proxy-1
+      KAFKA_REST_COMPRESSION_TYPE: lz4
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8082/topics"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # Kafka Init                                                                #
+  #---------------------------------------------------------------------------#
+  kafka-init:
+    image: radarbase/radar-schemas-tools:${RADAR_SCHEMAS_VERSION}
+    restart: "no" # On start failure, users need to run "install" again
+    networks:
+      - kafka
+      - zookeeper
+    command: "topic_init.sh"
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+    volumes:
+      - ./etc/schema:/schema/conf
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
+      KAFKA_NUM_BROKERS: 3
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_NUM_REPLICATION: 3
+      TOPIC_INIT_TRIES: ${TOPIC_INIT_TRIES}
+
+  #---------------------------------------------------------------------------#
+  # RADAR Cold Storage                                                        #
+  #---------------------------------------------------------------------------#
+  minio1:
+    image: minio/minio:RELEASE.2021-06-17T00-10-46Z
+    networks:
+      - default
+      - minio
+    volumes:
+      - "${MINIO1_DATA1}/data/:/data1"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server http://minio{1...4}/data1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  minio2:
+    image: minio/minio:RELEASE.2021-06-17T00-10-46Z
+    networks:
+      - minio
+    volumes:
+      - "${MINIO2_DATA1}/data/:/data1"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server http://minio{1...4}/data1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  minio3:
+    image: minio/minio:RELEASE.2021-06-17T00-10-46Z
+    networks:
+      - minio
+    volumes:
+      - "${MINIO3_DATA1}/data/:/data1"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server http://minio{1...4}/data1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  minio4:
+    image: minio/minio:RELEASE.2021-06-17T00-10-46Z
+    networks:
+      - minio
+    volumes:
+      - "${MINIO4_DATA1}/data/:/data1"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server http://minio{1...4}/data1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  mc:
+    image: minio/mc:RELEASE.2021-06-13T17-48-22Z
+    networks:
+      - minio
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_INTERMEDIATE_BUCKET_NAME: ${MINIO_INTERMEDIATE_BUCKET_NAME}
+      MINIO_OUTPUT_BUCKET_NAME: ${MINIO_OUTPUT_BUCKET_NAME}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+    depends_on:
+      - minio1
+      - minio2
+      - minio3
+      - minio4
+    entrypoint: >
+      /bin/sh -c "
+      echo Waiting for minio service to start...;
+      set -e;
+      mc alias set minio http://minio1:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
+      count=0;
+      while ! mc ls minio;
+      do
+      if [ $$count -eq 30 ]; then
+      echo Cannot connect to minio;
+      exit 1;
+      fi;
+      sleep 1;
+      count=$$((count + 1));
+      done;
+      echo Connected to minio!;
+
+      /usr/bin/mc mb -p minio/${MINIO_INTERMEDIATE_BUCKET_NAME};
+      /usr/bin/mc mb -p minio/${MINIO_OUTPUT_BUCKET_NAME};
+      exit 0;
+      "
+  #---------------------------------------------------------------------------#
+  # Email server                                                              #
+  #---------------------------------------------------------------------------#
+  smtp:
+    image: namshi/smtp:latest
+    networks:
+      - mail
+      - default
+    volumes:
+      - /var/spool/exim
+    restart: always
+    env_file:
+      - ./etc/smtp.env
+
+  #---------------------------------------------------------------------------#
+  # RADAR S3 connector                                                     #
+  #---------------------------------------------------------------------------#
+  radar-s3-connector:
+    image: radarbase/radar-s3-connector:1.0.0
+    restart: on-failure
+    networks:
+      - zookeeper
+      - kafka
+      - minio
+
+    volumes:
+      - ./etc/s3-connector/sink-s3.properties:/etc/kafka-connect/sink-s3.properties
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry-1
+      - kafka-init
+      - minio1
+      - minio2
+      - minio3
+      - minio4
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "default"
+      CONNECT_CONFIG_STORAGE_TOPIC: "default.config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "default.offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "default.status"
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry-1:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: "/tmp/connect2.offset"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "radar-s3-connector"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      CONNECTOR_PROPERTY_FILE_PREFIX: "sink-s3"
+      CONNECT_VALUE_CONVERTER_CONNECT_META_DATA: "false"
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
+      KAFKA_BROKERS: 3
+      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
+      AWS_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      AWS_SECRET_KEY: ${MINIO_SECRET_KEY}
+    healthcheck:
+      test: ["CMD-SHELL", "curl  -sf localhost:8083/connectors/radar-s3-sink-connector/status | grep -o '\"state\":\"[^\"]*\"' | tr '\\n' ',' | grep -vq FAILED || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # Docker Monitoring                                                         #
+  #---------------------------------------------------------------------------#
+  portainer:
+    image: portainer/portainer:1.22.0
+    command: --admin-password '${PORTAINER_PASSWORD_HASH}'
+    networks:
+      - monitor
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: always
+
+  #---------------------------------------------------------------------------#
+  # Webserver                                                                 #
+  #---------------------------------------------------------------------------#
+  webserver:
+    image: nginx:1.19.7-alpine
+    restart: always
+    networks:
+      - api
+      - monitor
+      - default
+      - minio
+    depends_on:
+      - portainer
+      - schema-registry-1
+      - gateway
+      - managementportal-app
+      - kafka-manager
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/letsencrypt
+      - certs-data:/data/letsencrypt
+      - "./etc/webserver/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./etc/webserver/cors.conf:/etc/nginx/cors.conf:ro"
+      - "./etc/webserver/ip-access-control.conf:/etc/nginx/ip-access-control.conf:ro"
+      - "./etc/webserver/kafka-manager.htpasswd:/etc/nginx/kafka-manager.htpasswd:ro"
+      - "./etc/webserver/optional-services.conf:/etc/nginx/optional-services.conf"
+      - "./etc/webserver/dashboard-pipeline.conf:/etc/nginx/dashboard-pipeline.conf"
+    # healthcheck hard to do, however, it is possible to monitor this externally
+    # with
+    # docker logs --since 2m radarcphadoopstack_webserver_1 | grep "connect() failed"
+
+  #---------------------------------------------------------------------------#
+  # Management Portal                                                         #
+  #---------------------------------------------------------------------------#
+  managementportal-app:
+    image: radarbase/management-portal:0.6.4
+    networks:
+      - default
+      - api
+      - management
+      - mail
+    depends_on:
+      - radarbase-postgresql
+      - smtp
+      - catalog-server
+    environment:
+      SPRING_PROFILES_ACTIVE: prod,swagger
+      SPRING_DATASOURCE_URL: jdbc:postgresql://radarbase-postgresql:5432/managementportal
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      MANAGEMENTPORTAL_MAIL_FROM: ${FROM_EMAIL}
+      MANAGEMENTPORTAL_COMMON_BASEURL: https://${SERVER_NAME}/
+      MANAGEMENTPORTAL_COMMON_MANAGEMENT_PORTAL_BASE_URL: https://${SERVER_NAME}/managementportal
+      MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET: ${MANAGEMENTPORTAL_FRONTEND_CLIENT_SECRET}
+      MANAGEMENTPORTAL_OAUTH_CLIENTS_FILE: /mp-includes/config/oauth_client_details.csv
+      MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT: ${MANAGEMENTPORTAL_CATALOGUE_SERVER_ENABLE_AUTO_IMPORT}
+      MANAGEMENTPORTAL_CATALOGUE_SERVER_SERVER_URL: http://catalog-server:9010/source-types
+      MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD: ${MANAGEMENTPORTAL_COMMON_ADMIN_PASSWORD}
+      MANAGEMENTPORTAL_COMMON_PRIVACY_POLICY_URL: ${MANAGEMENTPORTAL_COMMON_PRIVACY_POLICY_URL}
+      MANAGEMENTPORTAL_OAUTH_META_TOKEN_TIMEOUT: PT2H
+      SPRING_APPLICATION_JSON: '{"managementportal":{"oauth":{"checkingKeyAliases":["${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_0}","${MANAGEMENTPORTAL_OAUTH_CHECKING_KEY_ALIASES_1}"]}}}'
+      JHIPSTER_SLEEP: 10 # gives time for the database to boot before the application
+      JAVA_OPTS: -Xmx256m  # maximum heap size for the JVM running ManagementPortal, increase this as necessary
+    volumes:
+      - ./etc/managementportal/:/mp-includes/
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "localhost:8080/managementportal/oauth/token_key"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+
+  radarbase-postgresql:
+    build:
+      context: ./images/postgres
+      args:
+        POSTGRES_VERSION: ${POSTGRES_VERSION}
+    image: radarbase/postgres:${POSTGRES_VERSION}-1
+    volumes:
+      - "${MP_POSTGRES_DIR}/data/:/var/lib/postgresql/data/"
+      - "./postgres-backup/backups/postgresql:/backups/database/postgresql/"
+      - "./postgres-backup/scripts:/backup-scripts"
+    environment:
+      POSTGRES_USER : ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_MULTIPLE_DATABASES: managementportal,restsourceauthorizer
+    networks:
+      - management
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U '${POSTGRES_USER}' managementportal -l || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # Kafka Manager                                                             #
+  #---------------------------------------------------------------------------#
+  kafka-manager:
+    image: radarbase/kafka-manager:1.3.3.18
+    networks:
+      - zookeeper
+      - kafka
+      - api
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    environment:
+      ZK_HOSTS: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(wget -q -O - localhost:9000/kafkamanager/api/health) = healthy ] || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # RADAR Gateway                                                             #
+  #---------------------------------------------------------------------------#
+  gateway:
+    image: radarbase/radar-gateway:0.5.3
+    networks:
+      - api
+      - kafka
+    depends_on:
+      - rest-proxy-1
+    volumes:
+      - ./etc/gateway:/etc/radar-gateway
+    command: ["radar-gateway", "/etc/radar-gateway/gateway.yml"]
+    healthcheck:
+      # should give an unauthenticated response, rather than a 404
+      test: ["CMD-SHELL", "wget --spider localhost/radar-gateway/topics 2>&1 | grep -q 401 || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+
+  #---------------------------------------------------------------------------#
+  # Catalog server from radar-schemas                                         #
+  #---------------------------------------------------------------------------#
+  catalog-server:
+    image: radarbase/radar-schemas-tools:${RADAR_SCHEMAS_VERSION}
+    networks:
+      - management
+    command: radar-catalog-server /schema/merged
+    volumes:
+      - ./etc/schema:/schema/conf
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:9092,PLAINTEXT://kafka-2:9092,PLAINTEXT://kafka-3:9092
+      KAFKA_SCHEMA_REGISTRY: http://schema-registry-1:8081
+      KAFKA_NUM_BROKERS: 3
+      RADAR_NUM_PARTITIONS: 3
+      RADAR_NUM_REPLICATION_FACTOR: 3
+      TOPIC_INIT_TRIES: ${TOPIC_INIT_TRIES}
+    healthcheck:
+        test: ["CMD", "curl", "-f", "localhost:9010/source-types"]
+        interval: 1m30s
+        timeout: 5s
+        retries: 3
+
+  radar-output:
+    image: radarbase/radar-output-restructure:1.1.6.1
+    restart: always
+    stop_signal: SIGINT
+    networks:
+      - redis
+      - minio
+    depends_on:
+      - output-redis
+      - minio1
+      - minio2
+      - minio3
+      - minio4
+    volumes:
+      - ./etc/output-restructure/restructure.yml:/etc/restructure.yml
+      - ./output:/output
+    environment:
+      RADAR_HDFS_RESTRUCTURE_OPTS: -Xms250m -Xmx2g
+    command: -F /etc/restructure.yml -S
+    user: "0:0"
+
+  output-redis:
+    image: bitnami/redis:5.0.9
+    volumes:
+      - redis-data:/data
+    networks:
+      - redis
+    environment:
+      ALLOW_EMPTY_PASSWORD: 'yes'
