@@ -41,6 +41,24 @@ services:
       KAFKA_BROKERS: 3
       # For backwards compatibility
       TOPIC_LIST: "application_record_counts"
+  
+  #---------------------------------------------------------------------------#
+  # RADAR backend Realtime Inference Consumer                                 #
+  #---------------------------------------------------------------------------#
+  radar-backend-realtime-consumer:
+    image: yatharthranjan89/radar-backend:1.0.0
+    command: 
+      - "realtime_consumers"
+      - "-c /etc/radar.yml"
+    volumes:
+      - ./etc/radar-backend/radar.yml:/etc/radar.yml
+    restart: always
+    environment:
+      KAFKA_REST_PROXY: ${REST_PROXY_URL}
+      KAFKA_SCHEMA_REGISTRY: ${SCHEMA_REGISTRY_URL}
+      KAFKA_BROKERS: 3
+      # For backwards compatibility
+      TOPIC_LIST: "application_record_counts"
 
 
   #---------------------------------------------------------------------------#

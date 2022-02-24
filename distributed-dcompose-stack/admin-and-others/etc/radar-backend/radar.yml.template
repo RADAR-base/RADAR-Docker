@@ -83,4 +83,37 @@ stream:
         - android_phone_gyroscope
       output_topic: source_statistics_android_phone
 
+#====================== Realtime Inference Consumer ======================#
+realtime-consumers:
+  - name: 'lstm-lung-study-consumer' # Name of the consumer
+    topic: 'lung_study_lstm_ad_inference' # Kafka topic to consume from (this should contain the inference results)
+    notify_errors:
+      email_addresses:
+        - 'admin@radar-base.org'
+    conditions:
+      - name: 'LocalJsonPathCondition' # Name of the condition
+        projects: [ 'radar-test' ]  # Only evaluate for these projects
+        subjects: [ 'sub-1', 'sub-2' ]  # Only evaluate for these subjects
+        properties:
+          jsonpath: '$[?(@.invocation_result.anomaly_detected == true)]' # JsonPath expression to evaluate
+          key: 'invocation_result' # Key that contains data to evaluate 
+    actions:
+      - name: 'ActiveAppNotificationAction' # Name of the action
+        projects: [ 'radar-test' ] # Only execute for these projects
+        subjects: [ 'sub-1', 'sub-2' ]  # Only execute for these subjects
+        properties:
+          questionnaire_name: 'ers' # Name of the questionnaire to trigger
+          time_of_day: '09:00:00' # Local user time of day to trigger at
+          default_timezone: 'Europe/London' # Default timezone to use for the time of day if not found in the appserver
+          appserver_base_url: 'http://localhost:8080/' # Base URL of the appserver
+          management_portal_token_url: 'http://localhost/managementportal/api/oauth/token' # URL to get the management portal token
+          client_id: 'realtime_consumer' # Client ID for the management portal
+          client_secret: 'secret' # Client secret for the management portal
+          metadata_key: 'invocation_result' # Key that contains the metdata to be forwarded to the aRMT app
+      - name: 'EmailUserAction'
+        projects: [ 'radar-test' ]
+        subjects: [ 'sub-1', 'sub-2' ]
+        properties:
+          email_addresses: [ 'admin@radar-base.org' ]
+
 persistence_path: /var/lib/radar/data
