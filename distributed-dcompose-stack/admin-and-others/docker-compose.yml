@@ -4,7 +4,7 @@ version: '2.2'
 volumes:
   portainer_data: {}
   radar-backend-monitor-disconnect-data: {}
-  radar-source-statistics-data: {}
+  # radar-source-statistics-data: {}
 
 services:
   #---------------------------------------------------------------------------#
@@ -25,22 +25,22 @@ services:
       TOPIC_LIST: "application_record_counts"
 
 
-  #---------------------------------------------------------------------------#
-  # RADAR Source Statitics monitor                                                     #
-  #---------------------------------------------------------------------------#
-  radar-source-statistics-monitor:
-    image: radarbase/radar-backend:0.4.0
-    command: statistics
-    volumes:
-      - ./etc/radar-backend/radar.yml:/etc/radar.yml
-      - radar-source-statistics-data:/var/lib/radar/data
-    restart: always
-    environment:
-      KAFKA_REST_PROXY: ${REST_PROXY_URL}
-      KAFKA_SCHEMA_REGISTRY: ${SCHEMA_REGISTRY_URL}
-      KAFKA_BROKERS: 3
-      # For backwards compatibility
-      TOPIC_LIST: "application_record_counts"
+  # #---------------------------------------------------------------------------#
+  # # RADAR Source Statitics monitor                                                     #
+  # #---------------------------------------------------------------------------#
+  # radar-source-statistics-monitor:
+  #   image: radarbase/radar-backend:0.4.0
+  #   command: statistics
+  #   volumes:
+  #     - ./etc/radar-backend/radar.yml:/etc/radar.yml
+  #     - radar-source-statistics-data:/var/lib/radar/data
+  #   restart: always
+  #   environment:
+  #     KAFKA_REST_PROXY: ${REST_PROXY_URL}
+  #     KAFKA_SCHEMA_REGISTRY: ${SCHEMA_REGISTRY_URL}
+  #     KAFKA_BROKERS: 3
+  #     # For backwards compatibility
+  #     TOPIC_LIST: "application_record_counts"
   
   #---------------------------------------------------------------------------#
   # RADAR backend Realtime Inference Consumer                                 #
