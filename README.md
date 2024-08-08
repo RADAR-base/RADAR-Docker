@@ -1,4 +1,11 @@
+# Deprecated. Use [RADAR-Kubernetes repository](https://github.com/RADAR-base/RADAR-Kubernetes).
+----
+
+
+
 # RADAR-Docker 2.2.0
+
+
 
 [![Build Status](https://github.com/RADAR-base/RADAR-Docker/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/RADAR-base/RADAR-Docker/actions/workflows/main.yml?query=branch%3Amaster)
 
